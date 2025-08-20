@@ -1,4 +1,5 @@
 import { Mail, Phone, MapPin } from 'lucide-react'
+import type React from 'react'
 
 export default function Contact() {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
