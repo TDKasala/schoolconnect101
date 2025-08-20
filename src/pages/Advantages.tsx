@@ -159,7 +159,7 @@ export default function Advantages() {
             </div>
           </div>
 
-          <div className="mt-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-primary-600 text-white p-6 text-center shadow-lg">
+          <div id="cta" className="mt-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-primary-600 text-white p-6 text-center shadow-lg">
             <h3 className="text-lg font-semibold">Calcul ROI - École de 200 élèves</h3>
             <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
               <div>
