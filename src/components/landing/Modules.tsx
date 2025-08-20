@@ -5,17 +5,20 @@ export default function Modules() {
     {
       icon: <BookOpen className="h-5 w-5 text-primary-600"/>,
       title: 'POSP',
-      text: 'Gestion pédagogique: élèves, classes, présences, notes, bulletins.'
+      text: 'Gestion pédagogique: élèves, classes, présences, notes, bulletins.',
+      link: 'mailto:contact@schoolconnect.cd?subject=Infos%20POSP%20-%20SchoolConnect'
     },
     {
       icon: <Banknote className="h-5 w-5 text-primary-600"/>,
       title: 'UBank',
-      text: 'Gestion financière: frais scolaires, échéances, paiements, reçus.'
+      text: 'Gestion financière: frais scolaires, échéances, paiements, reçus.',
+      link: 'mailto:contact@schoolconnect.cd?subject=Infos%20UBank%20-%20SchoolConnect'
     },
     {
       icon: <Users className="h-5 w-5 text-primary-600"/>,
       title: 'Portails',
-      text: 'Accès parents et élèves: suivi en temps réel et communication.'
+      text: 'Accès parents et élèves: suivi en temps réel et communication.',
+      link: 'mailto:contact@schoolconnect.cd?subject=Infos%20Portails%20-%20SchoolConnect'
     }
   ]
 
@@ -35,7 +38,7 @@ export default function Modules() {
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">{m.title}</h3>
               <p className="text-gray-600 text-sm">{m.text}</p>
-              <a href="#" className="mt-3 inline-block text-sm font-medium text-primary-600 group-hover:text-primary-700">Découvrir {m.title} →</a>
+              <a href={(m as any).link} className="mt-3 inline-block text-sm font-medium text-primary-600 group-hover:text-primary-700">En savoir plus →</a>
             </div>
           ))}
         </div>

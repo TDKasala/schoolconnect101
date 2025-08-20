@@ -9,7 +9,7 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <a href="/" className="flex items-center gap-2">
-              <img src="/logo.svg" alt="SchoolConnect" className="h-7 w-7" />
+              <img src="/logo.png" alt="SchoolConnect" className="h-7 w-7" />
               <span className="font-semibold">SchoolConnect</span>
             </a>
 

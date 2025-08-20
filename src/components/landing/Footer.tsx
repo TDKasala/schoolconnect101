@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div>
             <div className="flex items-center gap-2">
-              <img src="/logo.svg" alt="SchoolConnect" className="h-7 w-7" />
+              <img src="/logo.png" alt="SchoolConnect" className="h-7 w-7" />
               <span className="font-semibold text-white">SchoolConnect</span>
             </div>
             <p className="mt-3 text-sm text-gray-400">Plateforme de gestion scolaire moderne, optimisée pour les écoles congolaises.</p>
