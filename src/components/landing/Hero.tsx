@@ -2,12 +2,12 @@ import { Check, ArrowRight } from 'lucide-react'
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden pt-28 pb-16 md:pt-32 md:pb-24 bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-600 text-white">
+    <section className="relative overflow-hidden pt-28 pb-16 md:pt-32 md:pb-24 bg-gradient-to-br from-primary-700 via-primary-600 to-accent-600 text-white">
       {/* background decorative blobs */}
       <div className="absolute inset-0">
-        <div className="absolute -top-24 -left-24 h-64 w-64 rounded-full bg-white/10 blur-3xl"/>
-        <div className="absolute -bottom-24 -right-24 h-64 w-64 rounded-full bg-indigo-400/20 blur-3xl"/>
-        <div className="absolute top-20 right-32 hidden md:block h-40 w-40 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/10 rotate-6"/>
+        <div className="absolute -top-24 -left-24 h-64 w-64 rounded-full bg-white/10 blur-3xl animate-blob"/>
+        <div className="absolute -bottom-24 -right-24 h-64 w-64 rounded-full bg-yellow-300/30 blur-3xl animate-blob"/>
+        <div className="absolute top-20 right-32 hidden md:block h-40 w-40 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/10 rotate-6 animate-float"/>
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -25,10 +25,10 @@ export default function Hero() {
             </p>
 
             <div className="mt-8 flex flex-col sm:flex-row gap-3">
-              <a href="#demo" className="inline-flex items-center justify-center rounded-md bg-white px-5 py-3 text-blue-700 font-semibold shadow-sm hover:bg-blue-50">
+              <a href="#demo" className="inline-flex items-center justify-center rounded-md bg-white px-5 py-3 text-primary-700 font-semibold shadow-sm hover:bg-primary-50">
                 Demander une démo
               </a>
-              <a href="#" className="inline-flex items-center justify-center gap-2 rounded-md bg-blue-500 px-5 py-3 font-semibold shadow-sm hover:bg-blue-400">
+              <a href="#" className="inline-flex items-center justify-center gap-2 rounded-md bg-primary-500 px-5 py-3 font-semibold shadow-glow hover:bg-primary-400 bg-gradient-to-r from-primary-500 via-accent-500 to-primary-500 bg-[length:200%_100%] animate-shimmer">
                 Ouvrir un compte <ArrowRight className="h-4 w-4"/>
               </a>
             </div>
@@ -41,16 +41,16 @@ export default function Hero() {
             </ul>
           </div>
 
-          <div className="relative">
+          <div className="relative animate-float">
             <div className="mx-auto max-w-md md:max-w-none md:ml-8">
               {/* card mockup */}
-              <div className="relative rounded-2xl bg-white text-gray-900 shadow-2xl p-4 md:p-6 border border-blue-50">
+              <div className="relative rounded-2xl bg-white text-gray-900 shadow-2xl p-4 md:p-6 border border-primary-50">
                 <div className="flex items-center justify-between">
                   <div className="font-semibold">Éducation de Qualité</div>
                   <div className="text-xs text-gray-500">Espace admin</div>
                 </div>
                 <div className="mt-4 grid grid-cols-3 gap-3 text-center">
-                  <div className="rounded-lg bg-blue-50 p-3">
+                  <div className="rounded-lg bg-primary-50 p-3">
                     <div className="text-xs text-gray-500">Élèves</div>
                     <div className="text-xl font-bold text-blue-700">247</div>
                   </div>
@@ -63,7 +63,7 @@ export default function Hero() {
                     <div className="text-xl font-bold text-blue-700">94%</div>
                   </div>
                 </div>
-                <div className="mt-4 h-24 rounded-lg bg-gradient-to-br from-blue-100 via-indigo-100 to-white"/>
+                <div className="mt-4 h-24 rounded-lg bg-gradient-to-br from-primary-100 via-accent-100 to-white"/>
               </div>
 
               {/* floating shapes */}

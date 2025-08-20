@@ -30,10 +30,46 @@ export default {
           700: '#b45309',
           800: '#92400e',
           900: '#78350f',
+        },
+        accent: {
+          50: '#eff6ff',
+          100: '#e0e7ff',
+          200: '#c7d2fe',
+          300: '#a5b4fc',
+          400: '#818cf8',
+          500: '#6366f1',
+          600: '#4f46e5',
+          700: '#4338ca',
+          800: '#3730a3',
+          900: '#312e81',
         }
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
+      boxShadow: {
+        glow: '0 10px 30px -5px rgba(37, 99, 235, 0.35), 0 6px 18px -8px rgba(99, 102, 241, 0.35)',
+      },
+      keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-6px)' },
+        },
+        blob: {
+          '0%': { transform: 'translate(0px, 0px) scale(1)' },
+          '33%': { transform: 'translate(10px, -10px) scale(1.05)' },
+          '66%': { transform: 'translate(-8px, 6px) scale(0.98)' },
+          '100%': { transform: 'translate(0px, 0px) scale(1)' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '200% 0' },
+          '100%': { backgroundPosition: '-200% 0' },
+        },
+      },
+      animation: {
+        float: 'float 5s ease-in-out infinite',
+        blob: 'blob 10s ease-in-out infinite',
+        shimmer: 'shimmer 2.5s linear infinite',
       },
     },
   },
