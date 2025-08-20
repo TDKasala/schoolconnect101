@@ -19,6 +19,7 @@ export default function Footer() {
               <li><a href="#features" className="hover:text-white">Fonctionnalités</a></li>
               <li><a href="#modules" className="hover:text-white">Modules</a></li>
               <li><a href="#cta" className="hover:text-white">Commencer</a></li>
+              <li><a href="/contact" className="hover:text-white">Contact</a></li>
               <li><a href="mailto:support@schoolconnect.cd?subject=Support%20SchoolConnect" className="hover:text-white">Support</a></li>
             </ul>
           </div>
