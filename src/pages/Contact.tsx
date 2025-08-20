@@ -25,6 +25,9 @@ export default function Contact() {
           <p className="inline-flex items-center gap-2 text-xs bg-primary-50 text-primary-700 px-3 py-1 rounded-full mb-3">Contact</p>
           <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900">Contactez l'équipe SchoolConnect</h1>
           <p className="mt-3 text-gray-600 max-w-2xl mx-auto">Nous sommes là pour répondre à vos questions et vous accompagner dans la digitalisation de votre école.</p>
+          <div className="mt-6">
+            <a href="/" className="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">← Retour à l’accueil</a>
+          </div>
         </div>
       </section>
 
