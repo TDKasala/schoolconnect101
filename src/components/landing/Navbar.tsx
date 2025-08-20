@@ -15,7 +15,7 @@ export default function Navbar() {
 
             <nav className="hidden md:flex items-center gap-6 text-sm text-gray-700">
               <a href="#features" className="hover:text-gray-900">Fonctionnalités</a>
-              <a href="#avantages" className="hover:text-gray-900">Avantages</a>
+              <a href="/avantages" className="hover:text-gray-900">Avantages</a>
               <a href="#modules" className="hover:text-gray-900">Modules</a>
               <a href="#tarifs" className="hover:text-gray-900">Tarifs</a>
             </nav>
@@ -34,7 +34,7 @@ export default function Navbar() {
           <div className="md:hidden border-t border-gray-100">
             <div className="px-4 py-3 space-y-3 text-sm">
               <a href="#features" className="block">Fonctionnalités</a>
-              <a href="#avantages" className="block">Avantages</a>
+              <a href="/avantages" className="block">Avantages</a>
               <a href="#modules" className="block">Modules</a>
               <a href="#tarifs" className="block">Tarifs</a>
               <div className="pt-2 flex gap-3">

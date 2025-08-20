@@ -15,6 +15,7 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold text-white mb-3">Liens rapides</h4>
             <ul className="space-y-2 text-sm">
+              <li><a href="/avantages" className="hover:text-white">Avantages</a></li>
               <li><a href="#features" className="hover:text-white">Fonctionnalités</a></li>
               <li><a href="#modules" className="hover:text-white">Modules</a></li>
               <li><a href="#cta" className="hover:text-white">Commencer</a></li>
