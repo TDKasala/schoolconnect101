@@ -4,6 +4,7 @@ import PWAPrompt from './components/pwa/PWAPrompt'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Advantages from './pages/Advantages'
 import Contact from './pages/Contact'
+import Pedagogie from './pages/features/Pedagogie'
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/avantages" element={<Advantages />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/fonctionnalites/pedagogie" element={<Pedagogie />} />
       </Routes>
       <PWAPrompt />
     </BrowserRouter>
