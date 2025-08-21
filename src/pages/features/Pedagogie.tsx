@@ -1,4 +1,5 @@
 import { ArrowLeft, CheckCircle2, Calendar, ClipboardList, BookOpen, BarChart3, AlarmClock, School } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 export default function Pedagogie() {
   return (
@@ -13,9 +14,9 @@ export default function Pedagogie() {
             conçus pour simplifier le quotidien des enseignants.
           </p>
           <div className="mt-6 flex items-center justify-center gap-3">
-            <a href="/" className="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+            <Link to="/" className="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
               <ArrowLeft className="mr-2 h-4 w-4" /> Retour à l’accueil
-            </a>
+            </Link>
             <a href="mailto:contact@schoolconnect.cd?subject=Demande%20de%20d%C3%A9mo%20P%C3%A9dagogie" className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">
               Demander une démo
             </a>
