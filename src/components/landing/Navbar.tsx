@@ -21,6 +21,7 @@ export default function Navbar() {
               <Link to="/avantages" className="hover:text-gray-900">Avantages</Link>
               <a href="#modules" className="hover:text-gray-900">Modules</a>
               <Link to="/tarifs" className="hover:text-gray-900">Tarifs</Link>
+              <Link to="/faq" className="hover:text-gray-900">FAQ</Link>
               <Link to="/contact" className="hover:text-gray-900">Contact</Link>
             </nav>
 
@@ -43,6 +44,7 @@ export default function Navbar() {
               <Link to="/avantages" className="block">Avantages</Link>
               <a href="#modules" className="block">Modules</a>
               <Link to="/tarifs" className="block">Tarifs</Link>
+              <Link to="/faq" className="block">FAQ</Link>
               <Link to="/contact" className="block">Contact</Link>
               <div className="pt-2 flex gap-3">
                 <a href="mailto:contact@schoolconnect.cd?subject=Demande%20de%20d%C3%A9mo" className="text-gray-700">Demander une démo</a>

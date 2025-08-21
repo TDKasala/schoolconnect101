@@ -7,6 +7,7 @@ import Contact from './pages/Contact'
 import Pedagogie from './pages/features/Pedagogie'
 import Finances from './pages/features/Finances'
 import Tarifs from './pages/Tarifs'
+import FAQ from './pages/FAQ'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/fonctionnalites/pedagogie" element={<Pedagogie />} />
         <Route path="/fonctionnalites/finances" element={<Finances />} />
         <Route path="/tarifs" element={<Tarifs />} />
+        <Route path="/faq" element={<FAQ />} />
       </Routes>
       <PWAPrompt />
     </BrowserRouter>
