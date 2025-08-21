@@ -1,4 +1,4 @@
-import { ArrowLeft, CheckCircle2, Calendar, ClipboardList, Notebook, BarChart3, AlarmClock, School } from 'lucide-react'
+import { ArrowLeft, CheckCircle2, Calendar, ClipboardList, BookOpen, BarChart3, AlarmClock, School } from 'lucide-react'
 
 export default function Pedagogie() {
   return (
@@ -47,10 +47,11 @@ export default function Pedagogie() {
               </ul>
             </div>
 
-            {/* Carnet de notes */}
+            {/* Carnet de notes */
+            }
             <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
               <div className="flex items-center gap-3">
-                <Notebook className="h-5 w-5 text-primary-600" />
+                <BookOpen className="h-5 w-5 text-primary-600" />
                 <h3 className="font-semibold text-gray-900">Carnet de notes en ligne</h3>
               </div>
               <p className="mt-2 text-sm text-gray-600">Gestion complète des évaluations avec saisie simplifiée et consultation en temps réel.</p>
@@ -147,7 +148,7 @@ export default function Pedagogie() {
 
             <div className="mt-6 flex gap-3">
               <a href="mailto:contact@schoolconnect.cd?subject=Demande%20de%20d%C3%A9mo%20P%C3%A9dagogie" className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">Demander une démo</a>
-              <a href="#tarifs" className="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Voir les tarifs</a>
+              <a href="#cta" className="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Voir les tarifs</a>
             </div>
           </div>
 
@@ -183,7 +184,7 @@ export default function Pedagogie() {
           <p className="mt-2 text-gray-600 max-w-2xl mx-auto">Découvrez comment le module Pédagogie peut transformer la gestion de vos classes.</p>
           <div className="mt-6 flex items-center justify-center gap-3">
             <a href="mailto:contact@schoolconnect.cd?subject=Demande%20de%20d%C3%A9mo%20P%C3%A9dagogie" className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">Demander une démo</a>
-            <a href="#tarifs" className="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Voir les tarifs</a>
+            <a href="#cta" className="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Voir les tarifs</a>
           </div>
         </div>
       </section>
