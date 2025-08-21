@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Advantages from './pages/Advantages'
 import Contact from './pages/Contact'
 import Pedagogie from './pages/features/Pedagogie'
+import Finances from './pages/features/Finances'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/avantages" element={<Advantages />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/fonctionnalites/pedagogie" element={<Pedagogie />} />
+        <Route path="/fonctionnalites/finances" element={<Finances />} />
       </Routes>
       <PWAPrompt />
     </BrowserRouter>
