@@ -149,7 +149,7 @@ export default function Pedagogie() {
 
             <div className="mt-6 flex gap-3">
               <a href="mailto:contact@schoolconnect.cd?subject=Demande%20de%20d%C3%A9mo%20P%C3%A9dagogie" className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">Demander une démo</a>
-              <a href="#cta" className="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Voir les tarifs</a>
+              <Link to="/tarifs" className="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Voir les tarifs</Link>
             </div>
           </div>
 
@@ -185,7 +185,7 @@ export default function Pedagogie() {
           <p className="mt-2 text-gray-600 max-w-2xl mx-auto">Découvrez comment le module Pédagogie peut transformer la gestion de vos classes.</p>
           <div className="mt-6 flex items-center justify-center gap-3">
             <a href="mailto:contact@schoolconnect.cd?subject=Demande%20de%20d%C3%A9mo%20P%C3%A9dagogie" className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">Demander une démo</a>
-            <a href="#cta" className="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Voir les tarifs</a>
+            <Link to="/tarifs" className="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Voir les tarifs</Link>
           </div>
         </div>
       </section>
