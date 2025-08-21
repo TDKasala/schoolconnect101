@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin } from 'lucide-react'
+import { Mail, Phone, MapPin, ArrowLeft } from 'lucide-react'
 import type React from 'react'
 
 export default function Contact() {
@@ -26,7 +26,9 @@ export default function Contact() {
           <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900">Contactez l'équipe SchoolConnect</h1>
           <p className="mt-3 text-gray-600 max-w-2xl mx-auto">Nous sommes là pour répondre à vos questions et vous accompagner dans la digitalisation de votre école.</p>
           <div className="mt-6">
-            <a href="/" className="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">← Retour à l’accueil</a>
+            <a href="/" className="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+              <ArrowLeft className="mr-2 h-4 w-4" /> Retour à l’accueil
+            </a>
           </div>
         </div>
       </section>
