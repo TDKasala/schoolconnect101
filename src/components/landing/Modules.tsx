@@ -1,4 +1,5 @@
 import { BookOpen, Banknote, Users } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 export default function Modules() {
   const modules = [
@@ -6,21 +7,21 @@ export default function Modules() {
       icon: <BookOpen className="h-5 w-5 text-primary-600"/>,
       title: 'POSP',
       text: 'Gestion pédagogique: élèves, classes, présences, notes, bulletins.',
-      link: 'mailto:contact@schoolconnect.cd?subject=Infos%20POSP%20-%20SchoolConnect'
+      to: '/fonctionnalites/pedagogie'
     },
     {
       icon: <Banknote className="h-5 w-5 text-primary-600"/>,
       title: 'UBank',
       text: 'Gestion financière: frais scolaires, échéances, paiements, reçus.',
-      link: 'mailto:contact@schoolconnect.cd?subject=Infos%20UBank%20-%20SchoolConnect'
+      to: '/fonctionnalites/finances'
     },
     {
       icon: <Users className="h-5 w-5 text-primary-600"/>,
       title: 'Portails',
       text: 'Accès parents et élèves: suivi en temps réel et communication.',
-      link: 'mailto:contact@schoolconnect.cd?subject=Infos%20Portails%20-%20SchoolConnect'
+      href: 'mailto:contact@schoolconnect.cd?subject=Infos%20Portails%20-%20SchoolConnect'
     }
-  ]
+  ] as const
 
   return (
     <section id="modules" className="py-16 md:py-20">
@@ -38,7 +39,11 @@ export default function Modules() {
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">{m.title}</h3>
               <p className="text-gray-600 text-sm">{m.text}</p>
-              <a href={(m as any).link} className="mt-3 inline-block text-sm font-medium text-primary-600 group-hover:text-primary-700">En savoir plus →</a>
+              {'to' in m ? (
+                <Link to={(m as any).to} className="mt-3 inline-block text-sm font-medium text-primary-600 group-hover:text-primary-700">En savoir plus →</Link>
+              ) : (
+                <a href={(m as any).href} className="mt-3 inline-block text-sm font-medium text-primary-600 group-hover:text-primary-700">En savoir plus →</a>
+              )}
             </div>
           ))}
         </div>
