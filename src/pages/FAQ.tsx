@@ -1,4 +1,4 @@
-import { HelpCircle } from 'lucide-react'
+import { HelpCircle, ArrowLeft } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 export default function FAQ() {
@@ -37,6 +37,11 @@ export default function FAQ() {
           <p className="inline-flex items-center gap-2 text-xs bg-primary-50 text-primary-700 px-3 py-1 rounded-full mb-3">Aide</p>
           <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900">Questions fréquentes</h1>
           <p className="mt-3 text-gray-600 max-w-2xl mx-auto">Tout ce qu'il faut savoir pour bien démarrer avec SchoolConnect.</p>
+          <div className="mt-6 flex items-center justify-center">
+            <Link to="/" className="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+              <ArrowLeft className="mr-2 h-4 w-4" /> Retour à l’accueil
+            </Link>
+          </div>
         </div>
       </section>
 
