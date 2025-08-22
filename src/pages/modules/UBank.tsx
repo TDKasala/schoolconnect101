@@ -60,12 +60,12 @@ export default function UBank() {
             Maîtrisez parfaitement vos finances scolaires avec des outils de gestion comptable adaptés aux réalités des écoles congolaises.
           </p>
           <div className="mt-8">
-            <a
-              href="mailto:contact@schoolconnect.cd?subject=Demande%20de%20d%C3%A9mo%20-%20Module%20Finances"
+            <Link
+              to="/contact"
               className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
             >
               Demander une démo
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -187,9 +187,9 @@ export default function UBank() {
           </h2>
           <p className="mt-4 text-lg leading-6 text-gray-500">Découvrez comment le module Finances peut améliorer la gestion financière de votre école.</p>
           <div className="mt-8 flex justify-center gap-4">
-            <a href="mailto:contact@schoolconnect.cd?subject=Demande%20de%20d%C3%A9mo%20-%20Module%20Finances" className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
+            <Link to="/contact" className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
               Demander une démo
-            </a>
+            </Link>
             <Link to="/tarifs" className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-200">
               Voir les tarifs
             </Link>

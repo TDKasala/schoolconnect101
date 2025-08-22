@@ -1,4 +1,5 @@
 import { Check, ArrowRight } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 export default function Hero() {
   return (
@@ -25,9 +26,9 @@ export default function Hero() {
             </p>
 
             <div className="mt-8 flex flex-col sm:flex-row gap-3">
-              <a href="#demo" className="inline-flex items-center justify-center rounded-md bg-white px-5 py-3 text-primary-700 font-semibold shadow-sm hover:bg-primary-50">
+              <Link to="/contact" className="inline-flex items-center justify-center rounded-md bg-white px-5 py-3 text-primary-700 font-semibold shadow-sm hover:bg-primary-50">
                 Demander une démo
-              </a>
+              </Link>
               <a href="#" className="inline-flex items-center justify-center gap-2 rounded-md bg-primary-500 px-5 py-3 font-semibold shadow-glow hover:bg-primary-400 bg-gradient-to-r from-primary-500 via-accent-500 to-primary-500 bg-[length:200%_100%] animate-shimmer">
                 Ouvrir un compte <ArrowRight className="h-4 w-4"/>
               </a>

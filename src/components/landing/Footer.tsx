@@ -1,4 +1,5 @@
 import { Mail, MapPin, Phone } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 export default function Footer() {
   return (
@@ -15,11 +16,10 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold text-white mb-3">Liens rapides</h4>
             <ul className="space-y-2 text-sm">
-              <li><a href="/avantages" className="hover:text-white">Avantages</a></li>
-              <li><a href="#features" className="hover:text-white">Fonctionnalités</a></li>
-              <li><a href="#modules" className="hover:text-white">Modules</a></li>
-              <li><a href="#cta" className="hover:text-white">Commencer</a></li>
-              <li><a href="/contact" className="hover:text-white">Contact</a></li>
+              <li><Link to="/avantages" className="hover:text-white">Avantages</Link></li>
+              <li><Link to="/tarifs" className="hover:text-white">Tarifs</Link></li>
+              <li><Link to="/contact" className="hover:text-white">Contact</Link></li>
+              <li><Link to="/faq" className="hover:text-white">FAQ</Link></li>
               <li><a href="mailto:support@schoolconnect.cd?subject=Support%20SchoolConnect" className="hover:text-white">Support</a></li>
             </ul>
           </div>

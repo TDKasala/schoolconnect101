@@ -59,12 +59,11 @@ export default function Navbar() {
                 </div>
               </div>
               <Link to="/tarifs" className="hover:text-gray-900">Tarifs</Link>
-              <Link to="/faq" className="hover:text-gray-900">FAQ</Link>
               <Link to="/contact" className="hover:text-gray-900">Contact</Link>
             </nav>
 
             <div className="hidden md:flex items-center gap-3">
-              <a href="mailto:contact@schoolconnect.cd?subject=Demande%20de%20d%C3%A9mo" className="text-sm font-medium text-gray-700 hover:text-gray-900">Demander une démo</a>
+              <Link to="/contact" className="text-sm font-medium text-gray-700 hover:text-gray-900">Demander une démo</Link>
               <a href="#cta" className="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">Ouvrir un compte</a>
             </div>
 
@@ -104,10 +103,9 @@ export default function Navbar() {
                 </div>
               )}
               <Link to="/tarifs" className="block">Tarifs</Link>
-              <Link to="/faq" className="block">FAQ</Link>
               <Link to="/contact" className="block">Contact</Link>
               <div className="pt-2 flex gap-3">
-                <a href="mailto:contact@schoolconnect.cd?subject=Demande%20de%20d%C3%A9mo" className="text-gray-700">Demander une démo</a>
+                <Link to="/contact" className="text-gray-700">Demander une démo</Link>
                 <a href="#cta" className="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white">Ouvrir un compte</a>
               </div>
             </div>

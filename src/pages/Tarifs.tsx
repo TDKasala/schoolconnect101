@@ -85,7 +85,7 @@ export default function Tarifs() {
                 </ul>
                 <div className="mt-6">
                   {p.name === 'Entreprise' ? (
-                    <a href="mailto:contact@schoolconnect.cd?subject=Tarifs%20Entreprise%20-%20SchoolConnect" className="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">{p.cta}</a>
+                    <Link to="/contact" className="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">{p.cta}</Link>
                   ) : (
                     <a href="mailto:contact@schoolconnect.cd?subject=Souscription%20-%20SchoolConnect" className={`inline-flex items-center rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90 ${p.featured ? 'bg-blue-600' : 'bg-gray-800'}`}>{p.cta}</a>
                   )}
@@ -105,7 +105,7 @@ export default function Tarifs() {
           <h2 className="text-2xl font-bold text-gray-900">Besoin d’un devis personnalisé ?</h2>
           <p className="mt-2 text-gray-600 max-w-2xl mx-auto">Contactez-nous pour une offre adaptée à la taille et aux besoins de votre école.</p>
           <div className="mt-6 flex items-center justify-center gap-3">
-            <a href="mailto:contact@schoolconnect.cd?subject=Demande%20devis%20-%20SchoolConnect" className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">Nous contacter</a>
+            <Link to="/contact" className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">Nous contacter</Link>
           </div>
         </div>
       </section>

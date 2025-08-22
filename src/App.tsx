@@ -13,6 +13,8 @@ import PortailsFeature from './pages/features/Portails'
 import POSP from './pages/modules/POSP'
 import UBank from './pages/modules/UBank'
 import PortailsModule from './pages/modules/PortailsModule'
+import Privacy from './pages/Privacy'
+import Terms from './pages/Terms'
 
 function App() {
   return (
@@ -30,6 +32,8 @@ function App() {
         <Route path="/modules/portails" element={<PortailsModule />} />
         <Route path="/tarifs" element={<Tarifs />} />
         <Route path="/faq" element={<FAQ />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
       </Routes>
       <PWAPrompt />
     </BrowserRouter>

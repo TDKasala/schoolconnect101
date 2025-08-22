@@ -67,7 +67,7 @@ export default function FAQ() {
             <p className="text-gray-700">Vous n'avez pas trouvé votre réponse ?</p>
             <div className="mt-4 flex items-center justify-center gap-3">
               <Link to="/tarifs" className="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Voir les tarifs</Link>
-              <a href="mailto:contact@schoolconnect.cd?subject=Question%20-%20SchoolConnect" className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">Nous contacter</a>
+              <Link to="/contact" className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">Nous contacter</Link>
             </div>
           </div>
         </div>

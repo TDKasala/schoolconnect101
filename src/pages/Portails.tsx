@@ -45,12 +45,12 @@ export default function Portails() {
             Trois portails spécialisés pour répondre aux besoins spécifiques de chaque acteur de votre établissement scolaire.
           </p>
           <div className="mt-8">
-            <a
-              href="mailto:contact@schoolconnect.cd?subject=Demande%20de%20d%C3%A9mo%20-%20Module%20Portails"
+            <Link
+              to="/contact"
               className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
             >
               Demander une démo
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -187,9 +187,9 @@ export default function Portails() {
           </h2>
           <p className="mt-4 text-lg leading-6 text-gray-500">Découvrez comment nos trois portails spécialisés peuvent transformer la communication dans votre école.</p>
           <div className="mt-8 flex justify-center gap-4">
-            <a href="mailto:contact@schoolconnect.cd?subject=Demande%20de%20d%C3%A9mo%20-%20Module%20Portails" className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+            <Link to="/contact" className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
               Demander une démo
-            </a>
+            </Link>
             <Link to="/tarifs" className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200">
               Voir les tarifs
             </Link>
