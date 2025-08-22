@@ -7,19 +7,19 @@ export default function Modules() {
       icon: <BookOpen className="h-5 w-5 text-primary-600"/>,
       title: 'POSP',
       text: 'Gestion pédagogique: élèves, classes, présences, notes, bulletins.',
-      to: '/fonctionnalites/pedagogie'
+      to: '/modules/posp'
     },
     {
       icon: <Banknote className="h-5 w-5 text-primary-600"/>,
       title: 'UBank',
       text: 'Gestion financière: frais scolaires, échéances, paiements, reçus.',
-      to: '/fonctionnalites/finances'
+      to: '/modules/ubank'
     },
     {
       icon: <Users className="h-5 w-5 text-primary-600"/>,
       title: 'Portails',
       text: 'Accès parents et élèves: suivi en temps réel et communication.',
-      href: 'mailto:contact@schoolconnect.cd?subject=Infos%20Portails%20-%20SchoolConnect'
+      to: '/modules/portails'
     }
   ] as const
 

@@ -10,6 +10,9 @@ import Tarifs from './pages/Tarifs'
 import FAQ from './pages/FAQ'
 import Portails from './pages/Portails'
 import PortailsFeature from './pages/features/Portails'
+import POSP from './pages/modules/POSP'
+import UBank from './pages/modules/UBank'
+import PortailsModule from './pages/modules/PortailsModule'
 
 function App() {
   return (
@@ -22,6 +25,9 @@ function App() {
         <Route path="/fonctionnalites/finances" element={<Finances />} />
         <Route path="/fonctionnalites/portails" element={<PortailsFeature />} />
         <Route path="/portails" element={<Portails />} />
+        <Route path="/modules/posp" element={<POSP />} />
+        <Route path="/modules/ubank" element={<UBank />} />
+        <Route path="/modules/portails" element={<PortailsModule />} />
         <Route path="/tarifs" element={<Tarifs />} />
         <Route path="/faq" element={<FAQ />} />
       </Routes>
