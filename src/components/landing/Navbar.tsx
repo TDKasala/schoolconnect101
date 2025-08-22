@@ -1,9 +1,16 @@
 import { useState } from 'react'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, ChevronDown } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+  const [featuresOpen, setFeaturesOpen] = useState(false)
+
+  const featureLinks = [
+    { name: 'Pédagogie', href: '/fonctionnalites/pedagogie' },
+    { name: 'Finances', href: '/fonctionnalites/finances' },
+    { name: 'Portails', href: '/fonctionnalites/portails' },
+  ]
   return (
     <header className="fixed top-0 inset-x-0 z-50">
       <div className="backdrop-blur supports-[backdrop-filter]:bg-white/60 bg-white/90 border-b border-gray-100">
@@ -15,10 +22,20 @@ export default function Navbar() {
             </Link>
 
             <nav className="hidden md:flex items-center gap-6 text-sm text-gray-700">
-              <a href="#features" className="hover:text-gray-900">Fonctionnalités</a>
-              <Link to="/fonctionnalites/pedagogie" className="hover:text-gray-900">Pédagogie</Link>
-              <Link to="/fonctionnalites/finances" className="hover:text-gray-900">Finances</Link>
-              <Link to="/fonctionnalites/portails" className="hover:text-gray-900">Portails</Link>
+              <div className="relative group">
+                <button className="flex items-center gap-1 hover:text-gray-900">
+                  Fonctionnalités <ChevronDown className="h-4 w-4 transition-transform group-hover:rotate-180" />
+                </button>
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 bg-white border border-gray-100 rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none group-hover:pointer-events-auto">
+                  <div className="py-1">
+                    {featureLinks.map((link) => (
+                      <Link key={link.name} to={link.href} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                        {link.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
               <Link to="/avantages" className="hover:text-gray-900">Avantages</Link>
               <a href="#modules" className="hover:text-gray-900">Modules</a>
               <Link to="/tarifs" className="hover:text-gray-900">Tarifs</Link>
@@ -39,10 +56,19 @@ export default function Navbar() {
         {open && (
           <div className="md:hidden border-t border-gray-100">
             <div className="px-4 py-3 space-y-3 text-sm">
-              <a href="#features" className="block">Fonctionnalités</a>
-              <Link to="/fonctionnalites/pedagogie" className="block">Pédagogie</Link>
-              <Link to="/fonctionnalites/finances" className="block">Finances</Link>
-              <Link to="/fonctionnalites/portails" className="block">Portails</Link>
+              <button onClick={() => setFeaturesOpen(!featuresOpen)} className="w-full flex justify-between items-center">
+                Fonctionnalités
+                <ChevronDown className={`h-4 w-4 transition-transform ${featuresOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {featuresOpen && (
+                <div className="pl-4 space-y-2 py-2">
+                  {featureLinks.map((link) => (
+                    <Link key={link.name} to={link.href} className="block text-gray-600 hover:text-gray-900">
+                      {link.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
               <Link to="/avantages" className="block">Avantages</Link>
               <a href="#modules" className="block">Modules</a>
               <Link to="/tarifs" className="block">Tarifs</Link>
