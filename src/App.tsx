@@ -8,6 +8,8 @@ import Pedagogie from './pages/features/Pedagogie'
 import Finances from './pages/features/Finances'
 import Tarifs from './pages/Tarifs'
 import FAQ from './pages/FAQ'
+import Portails from './pages/Portails'
+import PortailsFeature from './pages/features/Portails'
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/fonctionnalites/pedagogie" element={<Pedagogie />} />
         <Route path="/fonctionnalites/finances" element={<Finances />} />
+        <Route path="/fonctionnalites/portails" element={<PortailsFeature />} />
+        <Route path="/portails" element={<Portails />} />
         <Route path="/tarifs" element={<Tarifs />} />
         <Route path="/faq" element={<FAQ />} />
       </Routes>

@@ -18,6 +18,7 @@ export default function Navbar() {
               <a href="#features" className="hover:text-gray-900">Fonctionnalités</a>
               <Link to="/fonctionnalites/pedagogie" className="hover:text-gray-900">Pédagogie</Link>
               <Link to="/fonctionnalites/finances" className="hover:text-gray-900">Finances</Link>
+              <Link to="/fonctionnalites/portails" className="hover:text-gray-900">Portails</Link>
               <Link to="/avantages" className="hover:text-gray-900">Avantages</Link>
               <a href="#modules" className="hover:text-gray-900">Modules</a>
               <Link to="/tarifs" className="hover:text-gray-900">Tarifs</Link>
@@ -41,6 +42,7 @@ export default function Navbar() {
               <a href="#features" className="block">Fonctionnalités</a>
               <Link to="/fonctionnalites/pedagogie" className="block">Pédagogie</Link>
               <Link to="/fonctionnalites/finances" className="block">Finances</Link>
+              <Link to="/fonctionnalites/portails" className="block">Portails</Link>
               <Link to="/avantages" className="block">Avantages</Link>
               <a href="#modules" className="block">Modules</a>
               <Link to="/tarifs" className="block">Tarifs</Link>
