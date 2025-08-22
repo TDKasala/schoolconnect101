@@ -1,4 +1,5 @@
 import { ShieldCheck, Sparkles, MapPin } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 export default function Features() {
   const items = [
@@ -30,14 +31,13 @@ export default function Features() {
 
         <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
           {items.map((it, i) => (
-            <div key={i} className="group bg-white rounded-xl shadow-sm border border-gray-100 p-6 transition duration-300 ease-out hover:-translate-y-1 hover:shadow-glow">
+            <Link to="/avantages" key={i} className="group bg-white rounded-xl shadow-sm border border-gray-100 p-6 transition duration-300 ease-out hover:-translate-y-1 hover:shadow-glow block">
               <div className="h-10 w-10 rounded-lg bg-primary-50 flex items-center justify-center mb-4">
                 {it.icon}
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">{it.title}</h3>
               <p className="text-gray-600 text-sm">{it.text}</p>
-              <a href="#" className="mt-3 inline-block text-sm font-medium text-primary-600 group-hover:text-primary-700">En savoir plus →</a>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
