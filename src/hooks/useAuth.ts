@@ -1,4 +1,4 @@
-import { useAuth as useAuthContext } from '../contexts/AuthContext'
+import { useAuthContext } from '../contexts/AuthContext'
 
 // Re-export the main auth hook
 export const useAuth = useAuthContext
