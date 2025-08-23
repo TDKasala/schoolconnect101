@@ -82,12 +82,9 @@ ALTER TABLE public.audit_log_archive ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Platform admins can view all audit logs" ON public.audit_logs
   FOR SELECT USING (
     EXISTS (
-      SELECT 1 FROM public.user_profiles up
-      JOIN public.user_roles ur ON up.user_id = ur.user_id
-      JOIN public.roles r ON ur.role_id = r.id
-      WHERE up.user_id = auth.uid()
-      AND r.name = 'platform_admin'
-      AND up.approved = true
+      SELECT 1 FROM auth.users u
+      WHERE u.id = auth.uid()
+      AND u.raw_user_meta_data->>'role' = 'platform_admin'
     )
   );
 
@@ -98,24 +95,18 @@ CREATE POLICY "System can insert audit logs" ON public.audit_logs
 CREATE POLICY "Platform admins can view all security alerts" ON public.security_alerts
   FOR SELECT USING (
     EXISTS (
-      SELECT 1 FROM public.user_profiles up
-      JOIN public.user_roles ur ON up.user_id = ur.user_id
-      JOIN public.roles r ON ur.role_id = r.id
-      WHERE up.user_id = auth.uid()
-      AND r.name = 'platform_admin'
-      AND up.approved = true
+      SELECT 1 FROM auth.users u
+      WHERE u.id = auth.uid()
+      AND u.raw_user_meta_data->>'role' = 'platform_admin'
     )
   );
 
 CREATE POLICY "Platform admins can update security alerts" ON public.security_alerts
   FOR UPDATE USING (
     EXISTS (
-      SELECT 1 FROM public.user_profiles up
-      JOIN public.user_roles ur ON up.user_id = ur.user_id
-      JOIN public.roles r ON ur.role_id = r.id
-      WHERE up.user_id = auth.uid()
-      AND r.name = 'platform_admin'
-      AND up.approved = true
+      SELECT 1 FROM auth.users u
+      WHERE u.id = auth.uid()
+      AND u.raw_user_meta_data->>'role' = 'platform_admin'
     )
   );
 
@@ -126,12 +117,9 @@ CREATE POLICY "System can insert security alerts" ON public.security_alerts
 CREATE POLICY "Platform admins can view archived audit logs" ON public.audit_log_archive
   FOR SELECT USING (
     EXISTS (
-      SELECT 1 FROM public.user_profiles up
-      JOIN public.user_roles ur ON up.user_id = ur.user_id
-      JOIN public.roles r ON ur.role_id = r.id
-      WHERE up.user_id = auth.uid()
-      AND r.name = 'platform_admin'
-      AND up.approved = true
+      SELECT 1 FROM auth.users u
+      WHERE u.id = auth.uid()
+      AND u.raw_user_meta_data->>'role' = 'platform_admin'
     )
   );
 
