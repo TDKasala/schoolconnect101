@@ -2,9 +2,19 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import type { User, Session } from '@supabase/supabase-js';
 
+interface UserProfile {
+  id: string;
+  email: string;
+  full_name: string;
+  role: 'platform_admin' | 'school_admin' | 'teacher' | 'parent';
+  approved: boolean;
+  school_id: string | null;
+}
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
+  profile: UserProfile | null;
   loading: boolean;
   error: string | null;
   signOut: () => Promise<void>;
@@ -23,8 +33,40 @@ export const useAuth = () => {
 export const SimpleAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const fetchProfile = async (userId: string) => {
+    try {
+      console.log('SimpleAuth: Fetching profile for user:', userId);
+      
+      const { data, error } = await supabase
+        .from('users')
+        .select('id, email, full_name, role, approved, school_id')
+        .eq('id', userId)
+        .single();
+
+      if (error) {
+        console.error('SimpleAuth: Profile fetch error:', error);
+        if (error.code === '42P17') {
+          setError('Database configuration error. Please contact administrator.');
+        } else if (error.code === 'PGRST116') {
+          console.log('SimpleAuth: User profile not found');
+          setProfile(null);
+        } else {
+          setError(`Profile fetch failed: ${error.message}`);
+        }
+        return;
+      }
+
+      console.log('SimpleAuth: Profile fetched successfully:', data);
+      setProfile(data);
+    } catch (err) {
+      console.error('SimpleAuth: Profile fetch exception:', err);
+      setError('Failed to fetch user profile');
+    }
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -46,6 +88,11 @@ export const SimpleAuthProvider: React.FC<{ children: React.ReactNode }> = ({ ch
           if (mounted) {
             setSession(session);
             setUser(session?.user ?? null);
+            
+            // Fetch profile if user exists
+            if (session?.user) {
+              await fetchProfile(session.user.id);
+            }
           }
         }
         
@@ -65,7 +112,7 @@ export const SimpleAuthProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     initializeAuth();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('SimpleAuth: Auth state changed:', event);
       
       if (!mounted) return;
@@ -74,7 +121,12 @@ export const SimpleAuthProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       setUser(session?.user ?? null);
       setError(null);
       
-      // Loading is already false from initialization
+      // Fetch profile for new session
+      if (session?.user) {
+        await fetchProfile(session.user.id);
+      } else {
+        setProfile(null);
+      }
     });
 
     return () => {
@@ -89,6 +141,7 @@ export const SimpleAuthProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       await supabase.auth.signOut();
       setUser(null);
       setSession(null);
+      setProfile(null);
       setError(null);
       window.location.href = '/login';
     } catch (err) {
@@ -101,6 +154,7 @@ export const SimpleAuthProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const value: AuthContextType = {
     user,
     session,
+    profile,
     loading,
     error,
     signOut

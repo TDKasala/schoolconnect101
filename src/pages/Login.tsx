@@ -10,21 +10,38 @@ export const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
-  const { user, session, loading } = useAuth();
+  const { user, session, profile, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     console.log('Login: Auth state changed', { 
       user: !!user, 
       session: !!session,
+      profile: !!profile,
       loading
     });
     
-    if (!loading && user) {
-      console.log('Login: User authenticated, redirecting to admin dashboard');
-      navigate('/admin/dashboard');
+    if (!loading && user && profile) {
+      console.log('Login: User authenticated with role:', profile.role);
+      
+      // Role-based redirect
+      switch (profile.role) {
+        case 'platform_admin':
+          console.log('Login: Redirecting platform_admin to admin dashboard');
+          navigate('/admin/dashboard');
+          break;
+        case 'school_admin':
+        case 'teacher':
+        case 'parent':
+          console.log('Login: Redirecting user to regular dashboard');
+          navigate('/dashboard');
+          break;
+        default:
+          console.log('Login: Unknown role, redirecting to dashboard');
+          navigate('/dashboard');
+      }
     }
-  }, [user, session, loading, navigate]);
+  }, [user, session, profile, loading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
