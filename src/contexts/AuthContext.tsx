@@ -66,21 +66,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const fetchProfile = async (userId: string) => {
     try {
       console.log('AuthContext: Fetching profile for user:', userId);
-      
-      // Set a timeout to prevent infinite loading
-      const timeoutId = setTimeout(() => {
-        console.warn('AuthContext: Profile fetch timeout, setting loading to false');
-        setLoading(false);
-        setError('Profile fetch timed out');
-      }, 10000); // 10 second timeout
 
       const { data, error } = await supabase
         .from('users')
         .select('*')
         .eq('id', userId)
         .single();
-
-      clearTimeout(timeoutId);
 
       if (error) {
         console.error('AuthContext: Error fetching profile:', error);
@@ -90,7 +81,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           console.error('AuthContext: RLS policy recursion detected - please fix database policies');
           setError('Database configuration error. Please contact administrator.');
           setProfile(null);
-          setLoading(false);
           return;
         }
         
@@ -101,17 +91,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           console.error('AuthContext: Profile fetch error:', error.code, error.message);
           setError(`Profile fetch failed: ${error.message}`);
         }
-        setLoading(false);
         return;
       }
 
       console.log('AuthContext: Profile fetched successfully:', data);
       setProfile(data);
-      setLoading(false);
     } catch (err) {
       console.error('AuthContext: Unexpected error in fetchProfile:', err);
       setError('Failed to fetch user profile');
-      setLoading(false);
     }
   };
 
@@ -290,20 +277,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setSession(session);
           setUser(session?.user ?? null);
           
+          // Always set loading to false after session check
+          console.log('AuthContext: Session check complete, setting loading to false');
+          setLoading(false);
+          clearTimeout(initTimeout);
+          
+          // Fetch profile separately without affecting loading state
           if (session?.user) {
             console.log('AuthContext: Fetching profile for user:', session.user.id);
-            try {
-              await fetchProfile(session.user.id);
-            } catch (profileError) {
+            fetchProfile(session.user.id).catch(profileError => {
               console.error('AuthContext: Profile fetch failed during init:', profileError);
-              // Don't block authentication if profile fetch fails
-              setLoading(false);
-            }
-          } else {
-            console.log('AuthContext: No session, setting loading to false');
-            setLoading(false);
+            });
           }
-          clearTimeout(initTimeout);
         }
       } catch (err) {
         console.error('AuthContext: Unexpected error during initialization:', err);
@@ -329,19 +314,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(session?.user ?? null);
       setError(null);
       
+      // Always set loading to false after auth state change
+      setLoading(false);
+      
       if (session?.user) {
         console.log('AuthContext: User authenticated, fetching profile...');
-        try {
-          await fetchProfile(session.user.id);
-        } catch (profileError) {
+        fetchProfile(session.user.id).catch(profileError => {
           console.error('AuthContext: Profile fetch failed during auth change:', profileError);
-          // Don't block authentication if profile fetch fails
-          setLoading(false);
-        }
+        });
       } else {
         console.log('AuthContext: User signed out, clearing state');
         setProfile(null);
-        setLoading(false);
       }
     });
 
