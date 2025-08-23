@@ -1,30 +1,27 @@
-// Script to create a test platform admin user
-// This script demonstrates how to programmatically create a platform admin user
-
+// Script to create Denis as platform admin
 import { createClient } from '@supabase/supabase-js';
 
-// Supabase configuration (using the same as in the app)
+// Supabase configuration
 const supabaseUrl = 'https://agmatjypwmmzgxutlgxa.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFnbWF0anlwd21temd4dXRsZ3hhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU5NDQ4NzMsImV4cCI6MjA3MTUyMDg3M30.6m9iFo5H4I5e5bv0uGl3_DqT_CyS7MfALuWtVjxBcTI';
 
-// Create Supabase client
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// Platform admin user credentials
-const testAdmin = {
+const adminUser = {
   email: 'deniskasala17@gmail.com',
   password: '@Raysunkasala2016',
   fullName: 'Denis Kasala'
 };
 
-async function createTestAdmin() {
-  console.log('Creating test platform admin user...');
+async function createDenisAdmin() {
+  console.log('Creating Denis as platform admin...');
   
   try {
     // Sign up the user
+    console.log('Signing up user...');
     const { data, error } = await supabase.auth.signUp({
-      email: testAdmin.email,
-      password: testAdmin.password
+      email: adminUser.email,
+      password: adminUser.password
     });
     
     if (error) {
@@ -32,33 +29,34 @@ async function createTestAdmin() {
       return;
     }
     
-    console.log('User signed up successfully:', data.user?.id);
+    console.log('User signed up successfully. User ID:', data.user?.id);
     
-    // Update user role to platform_admin in the public.users table
     if (data.user?.id) {
-      // First, we need to insert the user profile
+      // Create user profile with platform_admin role
+      console.log('Creating user profile...');
       const { error: insertError } = await supabase
         .from('users')
         .insert({
           id: data.user.id,
-          email: testAdmin.email,
-          full_name: testAdmin.fullName,
+          email: adminUser.email,
+          full_name: adminUser.fullName,
           role: 'platform_admin',
           school_id: null,
           is_active: true,
-          created_at: new Date(),
-          updated_at: new Date()
+          approved: true
         });
         
       if (insertError) {
+        console.log('Insert failed, trying update...');
         // If insert fails, try update
         const { error: updateError } = await supabase
           .from('users')
           .update({
-            full_name: testAdmin.fullName,
+            full_name: adminUser.fullName,
             role: 'platform_admin',
             school_id: null,
-            updated_at: new Date()
+            is_active: true,
+            approved: true
           })
           .eq('id', data.user.id);
           
@@ -73,10 +71,11 @@ async function createTestAdmin() {
       }
     }
     
-    console.log('\nTest platform admin user created successfully!');
-    console.log('Email:', testAdmin.email);
-    console.log('Password:', testAdmin.password);
-    console.log('Full Name:', testAdmin.fullName);
+    console.log('\n✅ Denis platform admin user created successfully!');
+    console.log('📧 Email:', adminUser.email);
+    console.log('🔑 Password:', adminUser.password);
+    console.log('👤 Full Name:', adminUser.fullName);
+    console.log('🛡️ Role: platform_admin');
     
   } catch (err) {
     console.error('Unexpected error:', err);
@@ -84,4 +83,4 @@ async function createTestAdmin() {
 }
 
 // Run the function
-createTestAdmin();
+createDenisAdmin();

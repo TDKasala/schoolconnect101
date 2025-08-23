@@ -65,6 +65,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const fetchProfile = async (userId: string) => {
     try {
+      console.log('Fetching profile for user:', userId);
       const { data, error } = await supabase
         .from('users')
         .select('*')
@@ -73,12 +74,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       if (error) {
         console.error('Error fetching profile:', error);
+        // Set loading to false even if profile fetch fails
+        setLoading(false);
         return;
       }
 
+      console.log('Profile fetched successfully:', data);
       setProfile(data);
+      setLoading(false);
     } catch (err) {
       console.error('Error in fetchProfile:', err);
+      setLoading(false);
     }
   };
 
@@ -138,7 +144,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           email: data.user.email!,
           first_name: userData.first_name,
           last_name: userData.last_name,
-          role: userData.role,
+          role: userData.role as 'platform_admin' | 'school_admin' | 'teacher' | 'parent',
           school_id: userData.school_id || null,
           approved: false,
         });
@@ -212,7 +218,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
       
