@@ -1,4 +1,4 @@
-import { ArrowLeft, FileCheck, Users, Copyright, ShieldAlert, FilePenLine, Mail } from 'lucide-react';
+import { ArrowLeft, FileCheck, Users, Copyright, ShieldAlert, FileEdit, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/landing/Footer';
 import Navbar from '../components/landing/Navbar';
@@ -25,7 +25,7 @@ const termsSections = [
     content: 'SchoolConnect est fourni \"tel quel\". Nous ne serons pas responsables des dommages indirects, accessoires, ou consécutifs résultant de l\'utilisation de notre plateforme.',
   },
   {
-    icon: FilePenLine,
+    icon: FileEdit,
     title: '5. Modifications des Conditions',
     content: 'Nous nous réservons le droit de modifier ces conditions à tout moment. Nous vous informerons de tout changement important en publiant les nouvelles conditions sur cette page.',
   },
