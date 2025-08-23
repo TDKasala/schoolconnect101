@@ -13,6 +13,7 @@ import { Dashboard } from './pages/Dashboard'
 import { AdminLayout } from './components/admin/AdminLayout';
 import { AdminOverview } from './pages/admin/AdminOverview';
 import { AdminAnalytics } from './pages/admin/AdminAnalytics';
+import { AdminNotifications } from './pages/admin/AdminNotifications';
 import { AdminUsers } from './pages/admin/AdminUsers';
 import { AdminRoles } from './pages/admin/AdminRoles';
 import { AdminSettingsPage } from './pages/admin/AdminSettingsPage';
@@ -36,6 +37,7 @@ function App() {
             <Route path="/admin" element={<AdminLayout />}>
               <Route path="dashboard" element={<AdminOverview />} />
               <Route path="analytics" element={<AdminAnalytics />} />
+              <Route path="notifications" element={<AdminNotifications />} />
               <Route path="users" element={<AdminUsers />} />
               <Route path="roles" element={<AdminRoles />} />
               <Route path="settings" element={<AdminSettingsPage />} />

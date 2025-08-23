@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/SimpleAuthContext';
+import { NotificationBell } from '../NotificationBell';
 import { 
   Shield, 
   Users, 
@@ -13,7 +14,8 @@ import {
   X,
   LogOut,
   LayoutDashboard,
-  BarChart3
+  BarChart3,
+  Bell
 } from 'lucide-react';
 
 interface NavigationItem {
@@ -35,6 +37,12 @@ const navigationItems: NavigationItem[] = [
     label: 'Analytics & Reports',
     icon: BarChart3,
     path: '/admin/analytics'
+  },
+  {
+    id: 'notifications',
+    label: 'Notifications',
+    icon: Bell,
+    path: '/admin/notifications'
   },
   {
     id: 'users',
@@ -228,6 +236,7 @@ export const AdminLayout: React.FC = () => {
               </h1>
             </div>
             <div className="flex items-center space-x-4">
+              <NotificationBell />
               <span className="hidden sm:block text-sm text-gray-600">
                 Welcome, {profile?.full_name || 'Admin'}
               </span>
