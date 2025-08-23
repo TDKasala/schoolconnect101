@@ -66,18 +66,39 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const fetchProfile = async (userId: string) => {
     try {
       console.log('AuthContext: Fetching profile for user:', userId);
+      
+      // Set a timeout to prevent infinite loading
+      const timeoutId = setTimeout(() => {
+        console.warn('AuthContext: Profile fetch timeout, setting loading to false');
+        setLoading(false);
+        setError('Profile fetch timed out');
+      }, 10000); // 10 second timeout
+
       const { data, error } = await supabase
         .from('users')
         .select('*')
         .eq('id', userId)
         .single();
 
+      clearTimeout(timeoutId);
+
       if (error) {
         console.error('AuthContext: Error fetching profile:', error);
+        
+        // Handle RLS policy errors specifically
+        if (error.code === '42P17') {
+          console.error('AuthContext: RLS policy recursion detected - please fix database policies');
+          setError('Database configuration error. Please contact administrator.');
+          setProfile(null);
+          setLoading(false);
+          return;
+        }
+        
         if (error.code === 'PGRST116') {
           console.log('AuthContext: User profile not found in database');
           setProfile(null);
         } else {
+          console.error('AuthContext: Profile fetch error:', error.code, error.message);
           setError(`Profile fetch failed: ${error.message}`);
         }
         setLoading(false);
@@ -235,10 +256,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     let mounted = true;
+    let initTimeout: NodeJS.Timeout;
     
     const initializeAuth = async () => {
       try {
         console.log('AuthContext: Initializing authentication...');
+        
+        // Set a global timeout to prevent infinite loading
+        initTimeout = setTimeout(() => {
+          if (mounted) {
+            console.warn('AuthContext: Initialization timeout, forcing loading to false');
+            setLoading(false);
+            setError('Authentication initialization timed out');
+          }
+        }, 15000); // 15 second timeout
         
         // Get initial session
         const { data: { session }, error } = await supabase.auth.getSession();
@@ -248,6 +279,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           if (mounted) {
             setError(error.message);
             setLoading(false);
+            clearTimeout(initTimeout);
           }
           return;
         }
@@ -260,17 +292,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           
           if (session?.user) {
             console.log('AuthContext: Fetching profile for user:', session.user.id);
-            await fetchProfile(session.user.id);
+            try {
+              await fetchProfile(session.user.id);
+            } catch (profileError) {
+              console.error('AuthContext: Profile fetch failed during init:', profileError);
+              // Don't block authentication if profile fetch fails
+              setLoading(false);
+            }
           } else {
             console.log('AuthContext: No session, setting loading to false');
             setLoading(false);
           }
+          clearTimeout(initTimeout);
         }
       } catch (err) {
         console.error('AuthContext: Unexpected error during initialization:', err);
         if (mounted) {
           setError('Failed to initialize authentication');
           setLoading(false);
+          clearTimeout(initTimeout);
         }
       }
     };
@@ -291,7 +331,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       
       if (session?.user) {
         console.log('AuthContext: User authenticated, fetching profile...');
-        await fetchProfile(session.user.id);
+        try {
+          await fetchProfile(session.user.id);
+        } catch (profileError) {
+          console.error('AuthContext: Profile fetch failed during auth change:', profileError);
+          // Don't block authentication if profile fetch fails
+          setLoading(false);
+        }
       } else {
         console.log('AuthContext: User signed out, clearing state');
         setProfile(null);
@@ -301,6 +347,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     return () => {
       mounted = false;
+      if (initTimeout) clearTimeout(initTimeout);
       subscription.unsubscribe();
       console.log('AuthContext: Cleanup completed');
     };
