@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { Eye, EyeOff, Loader2, Mail, Lock } from 'lucide-react';
 
@@ -8,11 +8,30 @@ export const Login: React.FC = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { signIn, error } = useAuth();
+  const { user, profile, loading, signIn, error } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const from = location.state?.from?.pathname || '/dashboard';
+  useEffect(() => {
+    console.log('Login: Auth state changed', { 
+      user: !!user, 
+      profile: !!profile, 
+      loading,
+      profileRole: profile?.role 
+    });
+    
+    if (!loading && user) {
+      if (profile?.role === 'platform_admin') {
+        console.log('Login: Platform admin authenticated, redirecting to admin dashboard');
+        navigate('/admin');
+      } else if (profile) {
+        console.log('Login: User authenticated, redirecting to dashboard');
+        navigate('/dashboard');
+      } else {
+        console.log('Login: User authenticated but no profile found');
+        // Stay on login page or show error
+      }
+    }
+  }, [user, profile, loading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,8 +41,7 @@ export const Login: React.FC = () => {
     const { error } = await signIn(email, password);
     
     if (!error) {
-      console.log('Login: Sign in successful, redirecting to:', from);
-      navigate(from, { replace: true });
+      console.log('Login: Sign in successful');
     } else {
       console.error('Login: Sign in failed:', error);
     }

@@ -65,7 +65,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const fetchProfile = async (userId: string) => {
     try {
-      console.log('Fetching profile for user:', userId);
+      console.log('AuthContext: Fetching profile for user:', userId);
       const { data, error } = await supabase
         .from('users')
         .select('*')
@@ -73,20 +73,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         .single();
 
       if (error) {
-        console.error('Error fetching profile:', error);
+        console.error('AuthContext: Error fetching profile:', error);
         if (error.code === 'PGRST116') {
-          console.log('User profile not found, user needs to complete registration');
+          console.log('AuthContext: User profile not found in database');
           setProfile(null);
+        } else {
+          setError(`Profile fetch failed: ${error.message}`);
         }
         setLoading(false);
         return;
       }
 
-      console.log('Profile fetched successfully:', data);
+      console.log('AuthContext: Profile fetched successfully:', data);
       setProfile(data);
       setLoading(false);
     } catch (err) {
-      console.error('Error in fetchProfile:', err);
+      console.error('AuthContext: Unexpected error in fetchProfile:', err);
+      setError('Failed to fetch user profile');
       setLoading(false);
     }
   };
@@ -166,13 +169,38 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const signOut = async () => {
-    setLoading(true);
-    await supabase.auth.signOut();
-    setUser(null);
-    setSession(null);
-    setProfile(null);
-    setError(null);
-    setLoading(false);
+    try {
+      console.log('AuthContext: Signing out user...');
+      setLoading(true);
+      
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        console.error('AuthContext: Error during signOut:', error);
+        setError(error.message);
+      } else {
+        console.log('AuthContext: User signed out successfully');
+      }
+      
+      // Clear state regardless of signOut result
+      setUser(null);
+      setSession(null);
+      setProfile(null);
+      setError(null);
+      setLoading(false);
+      
+      // Force redirect to login
+      window.location.href = '/login';
+    } catch (err) {
+      console.error('AuthContext: Unexpected error during signOut:', err);
+      // Clear state even on error
+      setUser(null);
+      setSession(null);
+      setProfile(null);
+      setError(null);
+      setLoading(false);
+      window.location.href = '/login';
+    }
   };
 
   const refreshProfile = async () => {
@@ -206,34 +234,76 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchProfile(session.user.id);
-      } else {
-        setLoading(false);
+    let mounted = true;
+    
+    const initializeAuth = async () => {
+      try {
+        console.log('AuthContext: Initializing authentication...');
+        
+        // Get initial session
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('AuthContext: Error getting session:', error);
+          if (mounted) {
+            setError(error.message);
+            setLoading(false);
+          }
+          return;
+        }
+
+        console.log('AuthContext: Initial session:', session ? 'Found' : 'None');
+        
+        if (mounted) {
+          setSession(session);
+          setUser(session?.user ?? null);
+          
+          if (session?.user) {
+            console.log('AuthContext: Fetching profile for user:', session.user.id);
+            await fetchProfile(session.user.id);
+          } else {
+            console.log('AuthContext: No session, setting loading to false');
+            setLoading(false);
+          }
+        }
+      } catch (err) {
+        console.error('AuthContext: Unexpected error during initialization:', err);
+        if (mounted) {
+          setError('Failed to initialize authentication');
+          setLoading(false);
+        }
       }
-    });
+    };
+
+    initializeAuth();
 
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('AuthContext: Auth state changed:', event, session ? 'Session exists' : 'No session');
+      
+      if (!mounted) return;
+      
       setSession(session);
       setUser(session?.user ?? null);
+      setError(null);
       
       if (session?.user) {
+        console.log('AuthContext: User authenticated, fetching profile...');
         await fetchProfile(session.user.id);
       } else {
+        console.log('AuthContext: User signed out, clearing state');
         setProfile(null);
+        setLoading(false);
       }
-      
-      setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+      console.log('AuthContext: Cleanup completed');
+    };
   }, []);
 
   const value: AuthContextType = {

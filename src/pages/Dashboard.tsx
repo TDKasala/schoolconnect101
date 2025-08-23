@@ -3,55 +3,117 @@ import { useAuth } from '../hooks/useAuth';
 import { Loader2, User, Shield, Building, Users } from 'lucide-react';
 
 export const Dashboard: React.FC = () => {
-  const { user, profile, loading, signOut } = useAuth();
+  const { user, profile, loading, signOut, error } = useAuth();
 
-  console.log('Dashboard: Auth state', { user: !!user, profile: !!profile, loading });
+  console.log('Dashboard: Auth state', { 
+    user: !!user, 
+    profile: !!profile, 
+    loading, 
+    error,
+    profileRole: profile?.role 
+  });
 
+  // Show loading only for a reasonable time
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-blue-light to-white">
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin text-brand-blue mx-auto mb-4" />
-          <p className="text-gray-600">Chargement du tableau de bord...</p>
-          <button 
-            onClick={() => signOut()}
-            className="mt-4 text-sm text-brand-blue hover:text-brand-blue-dark"
-          >
-            Forcer la déconnexion
-          </button>
+          <p className="text-gray-600 mb-4">Chargement du tableau de bord...</p>
+          <div className="space-y-2">
+            <button 
+              onClick={() => signOut()}
+              className="block mx-auto text-sm text-brand-blue hover:text-brand-blue-dark underline"
+            >
+              Se déconnecter
+            </button>
+            <button 
+              onClick={() => window.location.reload()}
+              className="block mx-auto text-sm text-gray-500 hover:text-gray-700 underline"
+            >
+              Actualiser la page
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
-  if (!user) {
+  // Show error state
+  if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-blue-light to-white">
-        <div className="text-center">
-          <p className="text-gray-600">Utilisateur non connecté</p>
-          <button 
-            onClick={() => window.location.href = '/login'}
-            className="mt-4 bg-brand-blue text-white px-4 py-2 rounded-lg"
-          >
-            Se connecter
-          </button>
+        <div className="text-center max-w-md">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+            <h2 className="text-lg font-semibold text-red-800 mb-2">Erreur d'authentification</h2>
+            <p className="text-red-600 mb-4">{error}</p>
+            <div className="space-y-2">
+              <button 
+                onClick={() => signOut()}
+                className="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+              >
+                Se déconnecter
+              </button>
+              <button 
+                onClick={() => window.location.reload()}
+                className="w-full bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
+              >
+                Réessayer
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
+  // No user - redirect to login
+  if (!user) {
+    window.location.href = '/login';
+    return null;
+  }
+
+  // No profile - show profile missing message
   if (!profile) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-blue-light to-white">
-        <div className="text-center">
-          <p className="text-gray-600 mb-4">Profil utilisateur non trouvé</p>
-          <p className="text-sm text-gray-500 mb-4">Votre profil doit être créé par un administrateur</p>
-          <button 
-            onClick={() => signOut()}
-            className="bg-brand-blue text-white px-4 py-2 rounded-lg"
-          >
-            Se déconnecter
-          </button>
+        <div className="text-center max-w-md">
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+            <h2 className="text-lg font-semibold text-yellow-800 mb-2">Profil manquant</h2>
+            <p className="text-yellow-700 mb-4">
+              Votre profil utilisateur n'a pas été trouvé dans la base de données. 
+              Veuillez contacter un administrateur.
+            </p>
+            <button 
+              onClick={() => signOut()}
+              className="w-full bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700"
+            >
+              Se déconnecter
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Check if user has platform_admin role
+  if (profile.role !== 'platform_admin') {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-blue-light to-white">
+        <div className="text-center max-w-md">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+            <h2 className="text-lg font-semibold text-red-800 mb-2">Accès non autorisé</h2>
+            <p className="text-red-600 mb-4">
+              Vous n'avez pas les permissions nécessaires pour accéder au tableau de bord administrateur.
+              Rôle actuel: {profile.role}
+            </p>
+            <button 
+              onClick={() => signOut()}
+              className="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+            >
+              Se déconnecter
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -192,7 +254,7 @@ export const Dashboard: React.FC = () => {
                 </button>
               )}
               
-              {(profile.role === 'school_admin' || profile.role === 'platform_admin') && (
+              {profile.role === 'platform_admin' && (
                 <button className="w-full text-left p-3 rounded-lg border border-gray-200 hover:border-brand-blue hover:bg-brand-blue-light transition-colors">
                   <div className="font-medium text-gray-900">Gestion de l'école</div>
                   <div className="text-sm text-gray-600">Configurer les paramètres de l'école</div>
