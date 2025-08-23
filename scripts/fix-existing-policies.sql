@@ -59,12 +59,12 @@ CREATE POLICY "Platform admins can manage all platform announcements" ON public.
 
 CREATE POLICY "Users can view announcements targeted to their role" ON public.platform_announcements
   FOR SELECT USING (
-    target_audience ? (
+    target_roles ? (
       SELECT raw_user_meta_data->>'role' 
       FROM auth.users 
       WHERE id = auth.uid()
     )
-    OR target_audience ? 'all'
+    OR target_roles IS NULL
   );
 
 CREATE POLICY "Platform admins can manage all announcement views" ON public.announcement_views
@@ -77,7 +77,7 @@ CREATE POLICY "Platform admins can manage all announcement views" ON public.anno
   );
 
 CREATE POLICY "Users can manage their own announcement views" ON public.announcement_views
-  FOR ALL USING (viewer_id = auth.uid());
+  FOR ALL USING (user_id = auth.uid());
 
 CREATE POLICY "Platform admins can view all communication logs" ON public.communication_logs
   FOR SELECT USING (
