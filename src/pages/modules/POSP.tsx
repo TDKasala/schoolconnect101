@@ -1,6 +1,6 @@
 import { ArrowRight, BookOpen, BarChart, UserCheck, Calendar, Award, TrendingUp, Users, Shield, Zap } from 'lucide-react';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
+import Navbar from '../../components/landing/Navbar';
+import Footer from '../../components/landing/Footer';
 import { Link } from 'react-router-dom';
 
 const features = [
