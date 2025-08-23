@@ -17,7 +17,8 @@ import {
   BarChart3,
   Bell,
   FileSearch,
-  MessageCircle
+  MessageCircle,
+  Mail
 } from 'lucide-react';
 
 interface NavigationItem {
@@ -57,6 +58,12 @@ const navigationItems: NavigationItem[] = [
     label: 'Platform Messaging',
     icon: MessageCircle,
     path: '/admin/platform-messaging'
+  },
+  {
+    id: 'contact-center',
+    label: 'Contact Center',
+    icon: Mail,
+    path: '/admin/contact-center'
   },
   {
     id: 'users',
