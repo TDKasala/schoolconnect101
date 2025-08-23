@@ -12,7 +12,8 @@ import {
   Menu,
   X,
   LogOut,
-  LayoutDashboard
+  LayoutDashboard,
+  BarChart3
 } from 'lucide-react';
 
 interface NavigationItem {
@@ -28,6 +29,12 @@ const navigationItems: NavigationItem[] = [
     label: 'Dashboard Overview',
     icon: LayoutDashboard,
     path: '/admin/dashboard'
+  },
+  {
+    id: 'analytics',
+    label: 'Analytics & Reports',
+    icon: BarChart3,
+    path: '/admin/analytics'
   },
   {
     id: 'users',
