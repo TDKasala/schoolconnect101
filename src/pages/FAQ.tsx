@@ -1,77 +1,95 @@
-import { HelpCircle, ArrowLeft } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { ChevronDown } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import Footer from '../components/landing/Footer';
+import Navbar from '../components/landing/Navbar';
 
 export default function FAQ() {
   const faqs = [
     {
       q: "Qu'est-ce que SchoolConnect ?",
-      a: "SchoolConnect est une plateforme SaaS complète pour la gestion des écoles en RDC : pédagogie, finances, communication et plus.",
+      a: "SchoolConnect est une plateforme de gestion scolaire tout-en-un conçue pour les écoles de la RDC. Elle simplifie la pédagogie, les finances, la communication et l'administration pour vous permettre de vous concentrer sur l'essentiel : l'éducation.",
     },
     {
-      q: 'Comment sont gérées les données ?',
-      a: "Vos données sont hébergées de façon sécurisée (Supabase/PostgreSQL). Sauvegardes régulières et chiffrement en transit.",
+      q: 'La plateforme est-elle sécurisée ?',
+      a: "Absolument. La sécurité de vos données est notre priorité absolue. Nous utilisons Supabase et PostgreSQL, des technologies de pointe, avec des sauvegardes régulières, un chiffrement des données en transit et au repos, et des contrôles d'accès stricts.",
     },
     {
-      q: 'Proposez-vous une démo ?',
-      a: "Oui. Vous pouvez demander une démo personnalisée en nous écrivant. Nous présentons les modules adaptés à vos besoins.",
+      q: 'Proposez-vous une démonstration du produit ?',
+      a: "Oui ! Nous serions ravis de vous offrir une démonstration personnalisée et gratuite. Contactez-nous pour planifier une session où nous explorerons ensemble les fonctionnalités les plus pertinentes pour votre établissement.",
     },
     {
-      q: 'Quels sont les tarifs ?',
-      a: "Nous proposons plusieurs formules adaptées aux réalités locales. Consultez la page Tarifs pour les détails.",
+      q: 'Comment fonctionne la tarification ?',
+      a: "Nous avons une structure de tarification flexible et transparente, conçue pour s'adapter à toutes les tailles d'écoles. Consultez notre page de tarifs pour découvrir nos plans, y compris notre offre de démarrage gratuite.",
     },
     {
-      q: "Puis-je commencer avec un seul établissement ?",
-      a: "Oui. Vous pouvez démarrer avec une école puis évoluer vers plusieurs établissements sans changer d'outil.",
+      q: "Est-ce que SchoolConnect convient aux grands réseaux d'écoles ?",
+      a: "Oui. Notre plan Entreprise est spécifiquement conçu pour les groupes scolaires. Il offre un déploiement sur-mesure, des intégrations avancées, un accompagnement dédié et la capacité de gérer plusieurs établissements depuis une seule interface.",
     },
     {
-      q: 'Avez-vous un support ?',
-      a: "Nous offrons un support par email et, selon le plan, un accompagnement prioritaire avec formation.",
+      q: 'Quel type de support client offrez-vous ?',
+      a: "Nous offrons un support réactif par email pour tous nos clients. Nos plans payants incluent un support prioritaire par email et téléphone, ainsi qu'un gestionnaire de compte dédié pour notre plan Entreprise afin de garantir votre succès.",
     },
-  ] as const
+  ] as const;
 
   return (
-    <main className="pt-20">
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-primary-50 to-white py-12 md:py-16 text-center">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="inline-flex items-center gap-2 text-xs bg-primary-50 text-primary-700 px-3 py-1 rounded-full mb-3">Aide</p>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900">Questions fréquentes</h1>
-          <p className="mt-3 text-gray-600 max-w-2xl mx-auto">Tout ce qu'il faut savoir pour bien démarrer avec SchoolConnect.</p>
-          <div className="mt-6 flex items-center justify-center">
-            <Link to="/" className="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
-              <ArrowLeft className="mr-2 h-4 w-4" /> Retour à l’accueil
-            </Link>
+    <div className="bg-white text-gray-800">
+      <Navbar />
+      <main>
+        {/* Hero Section */}
+        <section className="bg-brand-blue-light py-20 md:py-28">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 tracking-tight">
+              Vous Avez des Questions ? <span className="text-brand-blue">Nous Avons les Réponses.</span>
+            </h1>
+            <p className="mt-6 max-w-3xl mx-auto text-lg md:text-xl text-gray-600">
+              Trouvez ici les réponses aux questions les plus fréquentes sur SchoolConnect, sa sécurité, et ses fonctionnalités.
+            </p>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* FAQ list */}
-      <section className="py-12 md:py-16">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="space-y-4">
-            {faqs.map((f) => (
-              <div key={f.q} className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
-                <div className="flex items-start gap-3">
-                  <HelpCircle className="h-5 w-5 text-primary-600 mt-0.5" />
-                  <div>
-                    <h3 className="font-semibold text-gray-900">{f.q}</h3>
-                    <p className="mt-1 text-gray-700 text-sm">{f.a}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Extra help */}
-          <div className="mt-10 text-center">
-            <p className="text-gray-700">Vous n'avez pas trouvé votre réponse ?</p>
-            <div className="mt-4 flex items-center justify-center gap-3">
-              <Link to="/tarifs" className="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Voir les tarifs</Link>
-              <Link to="/contact" className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">Nous contacter</Link>
+        {/* FAQ Accordion Section */}
+        <section className="py-20 md:py-28 bg-gray-50">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="space-y-6">
+              {faqs.map((faq) => (
+                <details
+                  key={faq.q}
+                  className="group p-6 bg-white rounded-2xl shadow-sm border border-gray-200 hover:border-brand-blue transition-colors duration-300"
+                >
+                  <summary className="flex justify-between items-center cursor-pointer list-none">
+                    <span className="font-semibold text-lg text-gray-900">{faq.q}</span>
+                    <ChevronDown className="h-6 w-6 text-brand-blue transition-transform duration-300 group-open:rotate-180" />
+                  </summary>
+                  <p className="mt-4 text-gray-700 leading-relaxed">
+                    {faq.a}
+                  </p>
+                </details>
+              ))}
             </div>
           </div>
-        </div>
-      </section>
-    </main>
-  )
+        </section>
+
+        {/* CTA Section */}
+        <section className="bg-white py-20">
+          <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+            <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+              Vous ne trouvez pas votre réponse ?
+            </h2>
+            <p className="mt-4 text-lg leading-6 text-gray-600">
+              Notre équipe est là pour vous aider. Contactez-nous pour toute question supplémentaire.
+            </p>
+            <div className="mt-10">
+              <Link
+                to="/contact"
+                className="inline-flex items-center justify-center rounded-lg bg-brand-green px-8 py-3 text-base font-semibold text-white shadow-lg hover:bg-brand-green/90 transform hover:scale-105 transition-transform duration-300"
+              >
+                Nous Contacter
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
+  );
 }

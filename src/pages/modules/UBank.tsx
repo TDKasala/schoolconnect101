@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
-import { ArrowLeft, CheckCircle, DollarSign, ClipboardList, Receipt, TrendingDown, LayoutDashboard, FileText, ShieldCheck, TrendingUp, FileSignature } from 'lucide-react';
+import { ArrowLeft, CheckCircle, DollarSign, ClipboardList, Receipt, TrendingDown, LayoutDashboard, FileText, ShieldCheck, TrendingUp, FileSignature, Banknote, BarChart3, ShieldAlert } from 'lucide-react';
+import Footer from '../../components/landing/Footer';
+import Navbar from '../../components/landing/Navbar';
 
 const features = [
   {
@@ -42,161 +44,160 @@ const features = [
 
 export default function UBank() {
   return (
-    <div className="bg-gray-50">
-      {/* Hero Section */}
-      <div className="relative bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-            <Link
-                to="/"
-                className="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 mb-8"
-            >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Retour à l’accueil
+    <div className="bg-white text-gray-800">
+      <Navbar />
+      <main>
+        {/* Hero Section */}
+        <section className="bg-brand-green-light py-20 md:py-28">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <Link to="/" className="inline-flex items-center gap-2 text-brand-green-dark font-semibold mb-4 group">
+              <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+              Retour à l'accueil
             </Link>
-          <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
-            Module Finances
-          </h1>
-          <p className="mt-6 max-w-2xl mx-auto text-xl text-gray-500">
-            Maîtrisez parfaitement vos finances scolaires avec des outils de gestion comptable adaptés aux réalités des écoles congolaises.
-          </p>
-          <div className="mt-8">
-            <Link
-              to="/contact"
-              className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
-            >
-              Demander une démo
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Features Section */}
-      <div className="py-16 sm:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-3xl font-extrabold text-gray-900">Gestion Financière Complète</h2>
-            <p className="mt-4 text-lg text-gray-500">
-              De l'inscription au suivi budgétaire, gérez toutes vos finances en toute transparence
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 tracking-tight">
+              Module <span className="text-brand-green">UBank</span>: La Gestion Financière Simplifiée
+            </h1>
+            <p className="mt-6 max-w-3xl mx-auto text-lg md:text-xl text-gray-600">
+              Optimisez la santé financière de votre école avec des outils puissants pour le suivi des frais, la gestion des dépenses et des rapports détaillés.
             </p>
+            <div className="mt-10">
+              <Link
+                to="/contact"
+                className="inline-flex items-center justify-center rounded-lg bg-brand-green px-8 py-3 text-base font-semibold text-white shadow-lg hover:bg-brand-green/90 transform hover:scale-105 transition-transform duration-300"
+              >
+                Demander une Démo Gratuite
+              </Link>
+            </div>
           </div>
-          <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {features.map((feature) => (
-              <div key={feature.title} className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                <div className="flex items-start">
-                    <div className="flex-shrink-0">{feature.icon}</div>
-                    <div className="ml-4">
-                        <h3 className="text-lg font-semibold text-gray-900">{feature.title}</h3>
-                        <p className="mt-1 text-sm text-gray-600">{feature.description}</p>
-                        <ul className="mt-3 space-y-1">
-                            {feature.details.map(detail => (
-                                <li key={detail} className="flex items-start">
-                                    <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                                    <span className="ml-2 text-sm text-gray-500">{detail}</span>
-                                </li>
-                            ))}
-                        </ul>
+        </section>
+
+        {/* Features Section */}
+        <section className="py-20 md:py-28 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900">Une Suite Financière Complète</h2>
+              <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-600">
+                De l'inscription des élèves à la clôture comptable, UBank couvre tous vos besoins financiers.
+              </p>
+            </div>
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {features.map((feature) => (
+                <div key={feature.title} className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                  <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-brand-green-light text-brand-green">
+                    {feature.icon}
+                  </div>
+                  <h3 className="mt-6 text-xl font-bold text-gray-900">{feature.title}</h3>
+                  <p className="mt-2 text-gray-600">{feature.description}</p>
+                  <ul className="mt-4 space-y-2">
+                    {feature.details.map((detail) => (
+                      <li key={detail} className="flex items-start">
+                        <CheckCircle className="h-5 w-5 text-brand-green flex-shrink-0 mt-0.5" />
+                        <span className="ml-3 text-gray-700">{detail}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Dashboard Preview Section */}
+        <section className="py-20 md:py-28 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
+              <div className="text-left">
+                <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900">Votre Tour de Contrôle Financière</h2>
+                <p className="mt-4 text-lg text-gray-600">
+                  Prenez des décisions éclairées grâce à un tableau de bord intuitif qui centralise toutes vos données financières en temps réel.
+                </p>
+                <ul className="mt-8 space-y-4">
+                  <li className="flex items-start"><Banknote className="h-6 w-6 text-brand-green flex-shrink-0" /><span className="ml-4 text-lg font-medium">Vue d'ensemble des revenus et dépenses</span></li>
+                  <li className="flex items-start"><BarChart3 className="h-6 w-6 text-brand-green flex-shrink-0" /><span className="ml-4 text-lg font-medium">Suivi du taux de recouvrement</span></li>
+                  <li className="flex items-start"><ShieldAlert className="h-6 w-6 text-brand-green flex-shrink-0" /><span className="ml-4 text-lg font-medium">Alertes automatiques pour les paiements en retard</span></li>
+                </ul>
+              </div>
+              <div className="mt-12 lg:mt-0">
+                <div className="bg-gray-100 p-8 rounded-2xl shadow-xl transform hover:scale-105 transition-transform duration-500">
+                  <h4 className="font-bold text-xl text-gray-800">Aperçu Financier - Trimestre 1</h4>
+                  <div className="mt-6 bg-white p-6 rounded-lg shadow-inner">
+                    <div className="flex justify-between items-center">
+                      <p className="text-gray-600">Recettes Totales</p>
+                      <p className="font-bold text-2xl text-brand-green">2,450,000 FC</p>
                     </div>
+                    <div className="mt-4 flex justify-between items-center">
+                      <p className="text-gray-600">Taux de Paiement</p>
+                      <p className="font-bold text-2xl text-brand-green">89%</p>
+                    </div>
+                    <div className="mt-6 pt-4 border-t border-gray-200">
+                      <div className="flex justify-between text-sm"><p>Frais scolaires</p><p className="font-medium">1,800,000 FC</p></div>
+                      <div className="flex justify-between text-sm mt-1"><p>Inscriptions</p><p className="font-medium">650,000 FC</p></div>
+                      <div className="flex justify-between text-sm mt-1 text-red-600"><p>Dépenses</p><p className="font-medium">-420,000 FC</p></div>
+                    </div>
+                    <div className="mt-4 pt-4 border-t border-gray-200 flex justify-between font-bold text-lg">
+                      <p>Solde Net</p>
+                      <p className="text-brand-green">2,030,000 FC</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-            ))}
+            </div>
           </div>
-        </div>
-      </div>
+        </section>
 
-      {/* Dashboard Preview */}
-      <div className="bg-white py-16 sm:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-                <h2 className="text-3xl font-extrabold text-gray-900">Tableau de bord financier en temps réel</h2>
+        {/* Benefits Section */}
+        <section className="py-20 md:py-28 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900">Les Avantages Clés de UBank</h2>
             </div>
-            <div className="mt-12 lg:grid lg:grid-cols-3 lg:gap-8 items-center">
-                <div className="lg:col-span-1">
-                    <h3 className="text-xl font-semibold text-gray-800">Suivi en temps réel</h3>
-                    <p className="mt-2 text-gray-600">Visualisez instantanément l'état de vos finances avec des indicateurs mis à jour automatiquement.</p>
-                    <h3 className="mt-6 text-xl font-semibold text-gray-800">Analyses détaillées</h3>
-                    <p className="mt-2 text-gray-600">Comprenez vos flux financiers avec des graphiques et analyses approfondies.</p>
-                    <h3 className="mt-6 text-xl font-semibold text-gray-800">Rapports automatiques</h3>
-                    <p className="mt-2 text-gray-600">Générez des rapports financiers professionnels en un clic.</p>
-                </div>
-                <div className="mt-10 lg:mt-0 lg:col-span-2 bg-gray-100 p-8 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300">
-                    <h4 className="font-bold text-lg text-gray-800">Aperçu financier</h4>
-                    <div className="mt-4 bg-white p-6 rounded-lg shadow-inner">
-                        <div className="flex justify-between items-center">
-                            <p className="text-gray-600">Recettes ce mois</p>
-                            <p className="font-bold text-2xl text-green-600">2,450,000 USD</p>
-                        </div>
-                        <div className="mt-4 flex justify-between items-center">
-                            <p className="text-gray-600">Taux de paiement</p>
-                            <p className="font-bold text-2xl text-green-600">89%</p>
-                        </div>
-                        <div className="mt-6 border-t pt-4">
-                            <div className="flex justify-between text-sm">
-                                <p>Frais scolaires</p>
-                                <p className="font-medium">$1,800,000 USD</p>
-                            </div>
-                            <div className="flex justify-between text-sm mt-1">
-                                <p>Inscriptions</p>
-                                <p className="font-medium">$650,000 USD</p>
-                            </div>
-                            <div className="flex justify-between text-sm mt-1 text-red-600">
-                                <p>Dépenses</p>
-                                <p className="font-medium">-$420,000 USD</p>
-                            </div>
-                        </div>
-                        <div className="mt-4 border-t pt-4 flex justify-between font-bold text-lg">
-                            <p>Solde net</p>
-                            <p>$2,030,000 USD</p>
-                        </div>
-                    </div>
-                </div>
+            <div className="grid md:grid-cols-3 gap-8 text-center">
+              <div className="p-8 bg-white rounded-2xl shadow-sm">
+                <ShieldCheck className="h-12 w-12 text-brand-green mx-auto" />
+                <h3 className="mt-6 text-xl font-bold">Transparence et Contrôle</h3>
+                <p className="mt-2 text-gray-600">Suivez chaque transaction et gardez un contrôle total sur les finances de votre école.</p>
+              </div>
+              <div className="p-8 bg-white rounded-2xl shadow-sm">
+                <TrendingUp className="h-12 w-12 text-brand-green mx-auto" />
+                <h3 className="mt-6 text-xl font-bold">Optimisation des Recettes</h3>
+                <p className="mt-2 text-gray-600">Maximisez vos revenus grâce à un suivi rigoureux des paiements et des rappels automatiques.</p>
+              </div>
+              <div className="p-8 bg-white rounded-2xl shadow-sm">
+                <FileSignature className="h-12 w-12 text-brand-green mx-auto" />
+                <h3 className="mt-6 text-xl font-bold">Conformité Assurée</h3>
+                <p className="mt-2 text-gray-600">Générez des rapports financiers conformes aux normes pour une gestion sereine.</p>
+              </div>
             </div>
-        </div>
-      </div>
-
-      {/* Benefits Section */}
-      <div className="py-16 sm:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-                <h2 className="text-3xl font-extrabold text-gray-900">Avantages du Module Finances</h2>
-            </div>
-            <div className="mt-12 grid md:grid-cols-3 gap-8">
-                <div className="flex flex-col items-center text-center">
-                    <ShieldCheck className="h-10 w-10 text-green-600" />
-                    <h3 className="mt-4 text-lg font-semibold">Transparence totale</h3>
-                    <p className="mt-1 text-gray-600">Toutes les transactions sont tracées et documentées pour une transparence maximale.</p>
-                </div>
-                <div className="flex flex-col items-center text-center">
-                    <TrendingUp className="h-10 w-10 text-green-600" />
-                    <h3 className="mt-4 text-lg font-semibold">Amélioration des recettes</h3>
-                    <p className="mt-1 text-gray-600">Optimisez vos recettes grâce à un suivi rigoureux des paiements.</p>
-                </div>
-                <div className="flex flex-col items-center text-center">
-                    <FileSignature className="h-10 w-10 text-green-600" />
-                    <h3 className="mt-4 text-lg font-semibold">Conformité comptable</h3>
-                    <p className="mt-1 text-gray-600">Respectez les normes comptables avec des rapports conformes aux standards.</p>
-                </div>
-            </div>
-        </div>
-      </div>
-
-      {/* Final CTA */}
-       <div className="bg-white">
-        <div className="max-w-4xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-            <span className="block">Maîtrisez vos finances scolaires</span>
-          </h2>
-          <p className="mt-4 text-lg leading-6 text-gray-500">Découvrez comment le module Finances peut améliorer la gestion financière de votre école.</p>
-          <div className="mt-8 flex justify-center gap-4">
-            <Link to="/contact" className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
-              Demander une démo
-            </Link>
-            <Link to="/tarifs" className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-200">
-              Voir les tarifs
-            </Link>
           </div>
-        </div>
-      </div>
+        </section>
 
+        {/* Final CTA Section */}
+        <section className="bg-brand-blue text-white">
+          <div className="max-w-4xl mx-auto text-center py-20 px-4 sm:px-6 lg:px-8">
+            <h2 className="text-3xl font-extrabold sm:text-4xl">
+              Prêt à Transformer la Gestion Financière de Votre École ?
+            </h2>
+            <p className="mt-4 text-lg leading-6 text-blue-100">
+              Découvrez par vous-même comment UBank peut simplifier votre comptabilité et sécuriser vos revenus.
+            </p>
+            <div className="mt-10 flex justify-center gap-4">
+              <Link
+                to="/contact"
+                className="inline-flex items-center justify-center rounded-lg bg-white px-8 py-3 text-base font-semibold text-brand-blue shadow-lg hover:bg-gray-100 transform hover:scale-105 transition-transform duration-300"
+              >
+                Demander une Démo
+              </Link>
+              <Link
+                to="/tarifs"
+                className="inline-flex items-center justify-center rounded-lg bg-brand-blue-dark px-8 py-3 text-base font-semibold text-white hover:bg-opacity-90 transform hover:scale-105 transition-transform duration-300"
+              >
+                Voir les Tarifs
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>
+      <Footer />
     </div>
   );
 }

@@ -1,202 +1,280 @@
+import { ArrowLeft, CheckCircle, Users, GraduationCap, UserCog, MessageSquare, Bell, Calendar, ShieldCheck, BarChart2, Banknote, UserPlus } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, CheckCircle, Users, GraduationCap, UserCog, MessageSquare, Bell, Calendar, ShieldCheck } from 'lucide-react';
+import { useState } from 'react';
+import Footer from '../components/landing/Footer';
+import Navbar from '../components/landing/Navbar';
+import { AnimatePresence, motion } from 'framer-motion';
+
+
+const ParentPortalPreview = () => (
+  <div className="bg-white p-6 rounded-2xl shadow-xl border border-gray-200 w-full">
+    <div className="flex items-center gap-4">
+      <img className="h-16 w-16 rounded-full object-cover" src="/images/student-avatar.png" alt="Avatar élève" />
+      <div>
+        <h4 className="font-bold text-xl text-gray-900">Marie Kabongo</h4>
+        <p className="text-gray-600">Classe de 6ème A</p>
+      </div>
+    </div>
+    <div className="mt-6 grid grid-cols-3 gap-4 text-center">
+      <div>
+        <p className="text-sm text-gray-500">Moyenne</p>
+        <p className="font-bold text-2xl text-brand-blue">15.2<span className="text-base">/20</span></p>
+      </div>
+      <div>
+        <p className="text-sm text-gray-500">Présence</p>
+        <p className="font-bold text-2xl text-brand-blue">98%</p>
+      </div>
+      <div>
+        <p className="text-sm text-gray-500">Paiement</p>
+        <p className="font-bold text-lg text-brand-green bg-brand-green/10 px-3 py-1 rounded-full">À jour</p>
+      </div>
+    </div>
+    <div className="mt-6 border-t border-gray-200 pt-4">
+      <h5 className="font-semibold text-gray-800">Dernière Communication</h5>
+      <div className="mt-3 bg-brand-blue-light p-4 rounded-lg">
+        <p className="font-semibold text-brand-blue-dark">Réunion Parents-Professeurs</p>
+        <p className="text-sm text-gray-700">Le 15 mars à 14h. Votre présence est vivement souhaitée.</p>
+      </div>
+    </div>
+  </div>
+);
+
+const TeacherPortalPreview = () => (
+    <div className="bg-white p-6 rounded-2xl shadow-xl border border-gray-200 w-full">
+        <h4 className="font-bold text-xl text-gray-900 mb-4">Carnet de notes - Mathématiques</h4>
+        <div className="space-y-3">
+            <div className="grid grid-cols-3 items-center bg-gray-50 p-2 rounded-lg">
+                <span className="font-medium">Jean Dupont</span>
+                <span className="text-center">17/20</span>
+                <span className="text-right text-green-600">+2 pts</span>
+            </div>
+            <div className="grid grid-cols-3 items-center bg-gray-50 p-2 rounded-lg">
+                <span className="font-medium">Amina Diallo</span>
+                <span className="text-center">14/20</span>
+                <span className="text-right text-red-600">-1 pt</span>
+            </div>
+            <div className="grid grid-cols-3 items-center bg-gray-50 p-2 rounded-lg">
+                <span className="font-medium">Pierre Nzeza</span>
+                <span className="text-center">16/20</span>
+                <span className="text-right text-green-600">+1 pt</span>
+            </div>
+        </div>
+        <div className="mt-6 border-t border-gray-200 pt-4">
+            <h5 className="font-semibold text-gray-800">Prochaine évaluation</h5>
+            <div className="mt-3 bg-brand-yellow-light p-4 rounded-lg">
+                <p className="font-semibold text-yellow-800">Interrogation Chapitre 3</p>
+                <p className="text-sm text-yellow-700">Le 20 mars. Notée sur 20 points.</p>
+            </div>
+        </div>
+    </div>
+);
+
+const AdminPortalPreview = () => (
+    <div className="bg-white p-6 rounded-2xl shadow-xl border border-gray-200 w-full">
+        <h4 className="font-bold text-xl text-gray-900 mb-4">Tableau de Bord de l'École</h4>
+        <div className="grid grid-cols-2 gap-4">
+            <div className="bg-brand-blue-light p-4 rounded-lg">
+                <div className="flex items-center gap-2"><Users className="h-5 w-5 text-brand-blue"/> <span className="font-semibold">Total Élèves</span></div>
+                <p className="font-bold text-2xl mt-1">1,254</p>
+            </div>
+            <div className="bg-brand-green-light p-4 rounded-lg">
+                <div className="flex items-center gap-2"><Banknote className="h-5 w-5 text-brand-green"/> <span className="font-semibold">Taux de Recouvrement</span></div>
+                <p className="font-bold text-2xl mt-1">92%</p>
+            </div>
+        </div>
+        <div className="mt-4 border-t border-gray-200 pt-4">
+            <h5 className="font-semibold text-gray-800 mb-2">Raccourcis rapides</h5>
+            <div className="flex flex-wrap gap-2">
+                <button className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-sm font-medium px-3 py-2 rounded-lg"><UserPlus className="h-4 w-4" /> Inscrire un élève</button>
+                <button className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-sm font-medium px-3 py-2 rounded-lg"><BarChart2 className="h-4 w-4" /> Voir les rapports</button>
+            </div>
+        </div>
+    </div>
+);
 
 const portals = [
   {
-    icon: <Users className="h-8 w-8 text-blue-600" />,
+    id: 'parent',
+    icon: Users,
     title: 'Portail Parent',
-    description: 'Accès complet aux informations de votre enfant avec suivi en temps réel.',
-    benefits: ['Suivi quotidien des progrès', 'Communication facilitée', 'Transparence financière', 'Notifications importantes'],
-    features: ['Consultation des notes en temps réel', 'Suivi des paiements et factures', 'Réception d\'annonces importantes', 'Consultation de l\'emploi du temps', 'Historique des présences', 'Communication directe avec les enseignants'],
+    description: 'Accès complet aux informations de votre enfant avec suivi en temps réel pour une implication parentale renforcée.',
+    features: [
+        'Consultation des notes et bulletins',
+        'Suivi des paiements et facturation',
+        'Calendrier des événements et examens',
+        'Communication directe avec les enseignants',
+        'Historique des présences et absences',
+        'Accès aux rapports de comportement',
+    ],
+    preview: <ParentPortalPreview />,
   },
   {
-    icon: <GraduationCap className="h-8 w-8 text-blue-600" />,
+    id: 'teacher',
+    icon: GraduationCap,
     title: 'Portail Enseignant',
-    description: 'Outils dédiés pour optimiser l\'enseignement et la communication.',
-    benefits: ['Gain de temps considérable', 'Suivi personnalisé des élèves', 'Communication efficace', 'Organisation optimisée'],
-    features: ['Gestion du carnet de notes numérique', 'Pointage des présences simplifié', 'Communication avec parents et admin', 'Planification des cours', 'Suivi des devoirs et évaluations', 'Rapports de performance'],
+    description: 'Outils dédiés pour optimiser la gestion de la classe, l\'enseignement et la communication avec les familles.',
+    features: [
+        'Gestion du carnet de notes numérique',
+        'Pointage des présences simplifié',
+        'Planification des cours et devoirs',
+        'Banque de ressources pédagogiques',
+        'Communication avec parents et administration',
+        'Génération de rapports de performance par élève',
+    ],
+    preview: <TeacherPortalPreview />,
   },
   {
-    icon: <UserCog className="h-8 w-8 text-blue-600" />,
+    id: 'admin',
+    icon: UserCog,
     title: 'Portail Administrateur',
-    description: 'Centre de commande pour la gestion globale de l\'établissement.',
-    benefits: ['Contrôle total de l\'école', 'Vue d\'ensemble complète', 'Gestion simplifiée', 'Décisions éclairées'],
-    features: ['Gestion du personnel et des rôles', 'Configuration de l\'école', 'Supervision des activités', 'Rapports et statistiques globales', 'Gestion des classes et matières', 'Contrôle des accès et permissions'],
+    description: 'Centre de commande pour la gestion globale de l\'établissement, des finances à la communication.',
+    features: [
+        'Tableau de bord avec statistiques clés',
+        'Gestion du personnel, des élèves et des classes',
+        'Supervision des finances et de la facturation',
+        'Gestion des accès et des permissions',
+        'Communication à l\'échelle de l\'école',
+        'Configuration des années académiques',
+    ],
+    preview: <AdminPortalPreview />,
   },
 ];
 
 export default function Portails() {
-  return (
-    <div className="bg-gray-50">
-      {/* Hero Section */}
-      <div className="relative bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-            <Link
-                to="/"
-                className="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 mb-8"
-            >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Retour à l’accueil
-            </Link>
-          <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
-            Portails pour Enseignants, Parents et Administrateurs
-          </h1>
-          <p className="mt-6 max-w-3xl mx-auto text-xl text-gray-500">
-            Trois portails spécialisés pour répondre aux besoins spécifiques de chaque acteur de votre établissement scolaire.
-          </p>
-          <div className="mt-8">
-            <Link
-              to="/contact"
-              className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
-            >
-              Demander une démo
-            </Link>
-          </div>
-        </div>
-      </div>
+  const [activeTab, setActiveTab] = useState(portals[0].id);
+  const activePortal = portals.find(p => p.id === activeTab);
 
-      {/* Portals Section */}
-      <div className="py-16 sm:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-3xl font-extrabold text-gray-900">Portails Spécialisés pour chaque Acteur</h2>
-            <p className="mt-4 text-lg text-gray-500">
-              Enseignants, Parents et Administrateurs disposent chacun d'un portail dédié
+  return (
+    <div className="bg-white text-gray-800">
+      <Navbar />
+      <main>
+        {/* Hero Section */}
+        <section className="bg-brand-blue-light py-20 md:py-28">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 tracking-tight">
+              Des Portails <span className="text-brand-blue">Dédiés</span> pour Chaque Acteur
+            </h1>
+            <p className="mt-6 max-w-3xl mx-auto text-lg md:text-xl text-gray-600">
+              Découvrez des interfaces sur-mesure pour les administrateurs, enseignants et parents, conçues pour une collaboration et une efficacité maximales.
             </p>
           </div>
-          <div className="mt-16 space-y-16">
-            {portals.map((portal) => (
-              <div key={portal.title} className="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
-                <div className="grid md:grid-cols-2 gap-8 items-center">
-                    <div>
-                        <div className="flex items-center gap-4">
-                            {portal.icon}
-                            <h3 className="text-2xl font-bold text-gray-900">{portal.title}</h3>
-                        </div>
-                        <p className="mt-4 text-gray-600">{portal.description}</p>
-                        <div className="mt-6 grid grid-cols-2 gap-4">
-                            {portal.benefits.map(benefit => (
-                                <div key={benefit} className="flex items-center">
-                                    <CheckCircle className="h-5 w-5 text-blue-500 flex-shrink-0" />
-                                    <span className="ml-2 text-sm font-medium text-gray-700">{benefit}</span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                    <div>
-                        <h4 className="font-semibold text-gray-800">Fonctionnalités principales</h4>
-                        <ul className="mt-3 space-y-2">
-                            {portal.features.map(feature => (
-                                <li key={feature} className="flex items-start">
-                                    <CheckCircle className="h-4 w-4 text-blue-500 mt-1 flex-shrink-0" />
-                                    <span className="ml-2 text-sm text-gray-600">{feature}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+        </section>
+
+        {/* Portals TABS Section */}
+        <section className="py-20 md:py-28 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900">
+                Des Outils Puissants pour Chaque Rôle
+              </h2>
+              <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-600">
+                Chaque portail est conçu pour fournir les fonctionnalités exactes dont nos utilisateurs ont besoin, sans complexité inutile.
+              </p>
+            </div>
+
+            <div className="flex justify-center mb-12">
+                <div className="flex space-x-2 bg-gray-200 p-2 rounded-full">
+                    {portals.map(portal => (
+                        <button 
+                            key={portal.id} 
+                            onClick={() => setActiveTab(portal.id)}
+                            className={`${activeTab === portal.id ? 'bg-white text-brand-blue shadow' : 'text-gray-600 hover:bg-gray-300/50'} flex items-center gap-2 px-6 py-3 rounded-full font-semibold transition-colors duration-300`}
+                        >
+                            <portal.icon className={`h-5 w-5 ${activeTab === portal.id ? 'text-brand-blue' : 'text-gray-500'}`} />
+                            {portal.title}
+                        </button>
+                    ))}
                 </div>
-              </div>
-            ))}
+            </div>
+
+            <AnimatePresence mode="wait">
+                {activePortal && (
+                    <motion.div 
+                        key={activePortal.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className="grid md:grid-cols-2 items-center gap-12"
+                    >
+                        <div>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-2">{activePortal.title}</h3>
+                            <p className="text-gray-600 text-lg mb-6">{activePortal.description}</p>
+                            <ul className="space-y-3">
+                                {activePortal.features.map(feature => (
+                                    <li key={feature} className="flex items-start">
+                                        <CheckCircle className="h-6 w-6 text-brand-green mt-1 flex-shrink-0" />
+                                        <span className="ml-3 text-gray-700">{feature}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <div className="flex items-center justify-center">
+                           {activePortal.preview}
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
           </div>
-        </div>
-      </div>
+        </section>
 
-      {/* Communication Section */}
-      <div className="bg-blue-50 py-16 sm:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-                <h2 className="text-3xl font-extrabold text-gray-900">Communication Renforcée</h2>
-                <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-600">Des outils de communication modernes pour maintenir le lien entre tous les acteurs</p>
+        {/* Communication Section */}
+        <section className="bg-white py-20 md:py-28">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900">
+                Une Communication <span className="text-brand-green">Fluide et Centralisée</span>
+              </h2>
+              <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-600">
+                Renforcez les liens entre l'école, les enseignants et les parents grâce à des outils de communication intégrés et intuitifs.
+              </p>
             </div>
-            <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-                <div className="p-4">
-                    <MessageSquare className="h-10 w-10 text-blue-600 mx-auto" />
-                    <h3 className="mt-4 text-lg font-semibold">Messagerie intégrée</h3>
-                    <p className="mt-1 text-gray-600">Communication directe entre parents, enseignants et administration.</p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {[
+                { icon: <MessageSquare className="h-10 w-10 text-brand-blue" />, title: 'Messagerie Intégrée', text: 'Échanges directs et sécurisés entre parents, enseignants et administration.' },
+                { icon: <Bell className="h-10 w-10 text-brand-blue" />, title: 'Notifications en Temps Réel', text: 'Alertes instantanées pour les annonces, absences et événements importants.' },
+                { icon: <Calendar className="h-10 w-10 text-brand-blue" />, title: 'Calendrier Partagé', text: 'Synchronisation des emplois du temps, devoirs et événements scolaires.' },
+                { icon: <ShieldCheck className="h-10 w-10 text-brand-blue" />, title: 'Transparence Totale', text: 'Accès centralisé à l\'information pour une vision claire et partagée.' },
+              ].map(item => (
+                <div key={item.title} className="p-8 bg-gray-50 rounded-2xl text-center transform hover:-translate-y-2 transition-transform duration-300 shadow-sm hover:shadow-lg">
+                  <div className="inline-block p-4 bg-brand-blue-light rounded-full mb-4">
+                    {item.icon}
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900">{item.title}</h3>
+                  <p className="mt-2 text-gray-600">{item.text}</p>
                 </div>
-                <div className="p-4">
-                    <Bell className="h-10 w-10 text-blue-600 mx-auto" />
-                    <h3 className="mt-4 text-lg font-semibold">Notifications en temps réel</h3>
-                    <p className="mt-1 text-gray-600">Alertes instantanées pour les événements importants.</p>
-                </div>
-                <div className="p-4">
-                    <Calendar className="h-10 w-10 text-blue-600 mx-auto" />
-                    <h3 className="mt-4 text-lg font-semibold">Calendrier partagé</h3>
-                    <p className="mt-1 text-gray-600">Synchronisation des événements et rendez-vous importants.</p>
-                </div>
-                <div className="p-4">
-                    <ShieldCheck className="h-10 w-10 text-blue-600 mx-auto" />
-                    <h3 className="mt-4 text-lg font-semibold">Transparence totale</h3>
-                    <p className="mt-1 text-gray-600">Accès aux informations en temps réel pour tous.</p>
-                </div>
+              ))}
             </div>
-        </div>
-      </div>
-
-      {/* Parent Portal Example */}
-      <div className="bg-white py-16 sm:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="lg:grid lg:grid-cols-2 lg:gap-12 items-center">
-                <div className="">
-                    <h2 className="text-3xl font-extrabold text-gray-900">Exemple : Portail Parent</h2>
-                    <p className="mt-4 text-lg text-gray-600">Découvrez comment les parents peuvent suivre facilement les progrès de leur enfant et rester connectés avec l'école.</p>
-                    <ul className="mt-6 space-y-3">
-                        <li className="flex items-start"><CheckCircle className="h-5 w-5 text-blue-500 mt-0.5"/><span className="ml-3">Accès 24h/24, 7j/7 depuis n'importe quel appareil</span></li>
-                        <li className="flex items-start"><CheckCircle className="h-5 w-5 text-blue-500 mt-0.5"/><span className="ml-3">Notifications automatiques pour les événements importants</span></li>
-                        <li className="flex items-start"><CheckCircle className="h-5 w-5 text-blue-500 mt-0.5"/><span className="ml-3">Suivi des paiements et historique financier</span></li>
-                    </ul>
-                </div>
-                <div className="mt-10 lg:mt-0">
-                    <div className="bg-gray-100 p-8 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300">
-                        <div className="flex items-center gap-4">
-                            <img className="h-16 w-16 rounded-full" src="/images/student-avatar.png" alt="Avatar élève" />
-                            <div>
-                                <h4 className="font-bold text-lg text-gray-800">Marie Kabongo</h4>
-                                <p className="text-sm text-gray-600">6ème A - Élève</p>
-                            </div>
-                        </div>
-                        <div className="mt-6 grid grid-cols-3 gap-4 text-center">
-                            <div>
-                                <p className="text-sm text-gray-500">Moyenne</p>
-                                <p className="font-bold text-xl text-blue-700">15.2/20</p>
-                            </div>
-                            <div>
-                                <p className="text-sm text-gray-500">Présences</p>
-                                <p className="font-bold text-xl text-blue-700">18/20 j</p>
-                            </div>
-                            <div>
-                                <p className="text-sm text-gray-500">Frais scolaires</p>
-                                <p className="font-bold text-lg text-green-600">À jour</p>
-                            </div>
-                        </div>
-                        <div className="mt-6 border-t pt-4">
-                            <h5 className="font-semibold text-gray-700">Dernières annonces</h5>
-                            <p className="mt-2 text-sm text-gray-600 bg-blue-50 p-3 rounded-md">Réunion parents-professeurs le 15 mars à 14h</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-      </div>
+          </div>
+        </section>
 
       {/* Final CTA */}
-       <div className="bg-gray-50">
-        <div className="max-w-4xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-            <span className="block">Connectez Enseignants, Parents et Administrateurs</span>
+      <section className="bg-brand-blue">
+        <div className="max-w-4xl mx-auto text-center py-20 px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
+            Connectez Votre Communauté Éducative
           </h2>
-          <p className="mt-4 text-lg leading-6 text-gray-500">Découvrez comment nos trois portails spécialisés peuvent transformer la communication dans votre école.</p>
-          <div className="mt-8 flex justify-center gap-4">
-            <Link to="/contact" className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+          <p className="mt-4 text-lg leading-6 text-blue-100">
+            Découvrez comment nos portails spécialisés peuvent transformer la collaboration au sein de votre école.
+          </p>
+          <div className="mt-10 flex justify-center gap-4">
+            <Link
+              to="/contact"
+              className="inline-flex items-center justify-center rounded-lg bg-brand-green px-6 py-3 text-base font-semibold text-white shadow-lg hover:bg-brand-green/90 transform hover:scale-105 transition-transform duration-300"
+            >
               Demander une démo
             </Link>
-            <Link to="/tarifs" className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200">
+            <Link
+              to="/tarifs"
+              className="inline-flex items-center justify-center rounded-lg bg-white px-6 py-3 text-base font-semibold text-brand-blue shadow-lg hover:bg-gray-100 transform hover:scale-105 transition-transform duration-300"
+            >
               Voir les tarifs
             </Link>
           </div>
         </div>
-      </div>
-
+      </section>
+      </main>
+      <Footer />
     </div>
   );
 }

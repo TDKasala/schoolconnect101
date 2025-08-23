@@ -1,194 +1,273 @@
-import { ArrowLeft } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+import { Zap, Users, BarChart, Globe, Shield, Sparkles, ThumbsUp, Rocket, Target, CheckCircle, Star } from 'lucide-react';
+import Footer from '../components/landing/Footer';
+import Navbar from '../components/landing/Navbar';
+
+const keyAdvantages = [
+  {
+    icon: <Zap className="h-8 w-8 text-brand-blue" />,
+    title: 'Gain de temps considérable',
+    description: 'Automatisez les tâches répétitives et libérez du temps pour l\'essentiel : l\'éducation.',
+    points: [
+      'Saisie automatique des données',
+      'Génération instantanée de rapports',
+      'Calculs automatiques des moyennes',
+      'Notifications automatisées',
+    ],
+  },
+  {
+    icon: <Users className="h-8 w-8 text-brand-blue" />,
+    title: 'Communication améliorée',
+    description: 'Renforcez les liens entre tous les acteurs de votre communauté scolaire.',
+    points: [
+      'Messagerie intégrée en temps réel',
+      'Notifications push instantanées',
+      'Portails dédiés par rôle',
+      'Partage d\'informations sécurisé',
+    ],
+  },
+  {
+    icon: <BarChart className="h-8 w-8 text-brand-blue" />,
+    title: 'Décisions basées sur les données',
+    description: 'Prenez des décisions éclairées grâce à des analyses détaillées et des rapports précis.',
+    points: [
+      'Tableaux de bord interactifs',
+      'Statistiques en temps réel',
+      'Analyses prédictives',
+      'Rapports personnalisables',
+    ],
+  },
+  {
+    icon: <Globe className="h-8 w-8 text-brand-blue" />,
+    title: 'Conception pour la RDC',
+    description: 'Solution optimisée pour fonctionner parfaitement avec les infrastructures congolaises.',
+    points: [
+      'Optimisation faible bande passante',
+      'Mode hors ligne disponible',
+      'Interface en français',
+      'Adaptation aux réalités locales',
+    ],
+  },
+  {
+    icon: <Shield className="h-8 w-8 text-brand-blue" />,
+    title: 'Sécurité et fiabilité',
+    description: 'Vos données sont protégées avec les plus hauts standards de sécurité.',
+    points: [
+      'Chiffrement des données',
+      'Sauvegardes automatiques',
+      'Accès sécurisé par rôles',
+      'Conformité aux standards',
+    ],
+  },
+  {
+    icon: <Sparkles className="h-8 w-8 text-brand-blue" />,
+    title: 'Image professionnelle',
+    description: 'Modernisez l\'image de votre école avec des outils technologiques avancés.',
+    points: [
+      'Interface moderne et intuitive',
+      'Rapports professionnels',
+      'Communication digitale',
+      'Attractivité renforcée',
+    ],
+  },
+];
+
+const testimonials = [
+  {
+    quote: "SchoolConnect a révolutionné notre gestion. Nous avons gagné 70% de temps sur nos tâches administratives.",
+    author: 'Directeur Mukendi',
+    school: 'École Primaire Saint-Joseph, Kinshasa',
+  },
+  {
+    quote: "La communication avec les parents n'a jamais été aussi fluide. Les parents apprécient la transparence.",
+    author: 'Mme Nsimba',
+    school: 'Institut Technique de Lubumbashi',
+  },
+  {
+    quote: "L'interface est si simple que même nos enseignants les moins technophiles l'utilisent sans problème.",
+    author: 'Prof. Kalala',
+    school: 'Collège Moderne de Goma',
+  },
+];
+
+const whyChooseUs = [
+    {
+        icon: <Rocket className="h-8 w-8 text-brand-green" />,
+        title: 'Déploiement Rapide',
+        description: 'Mise en service en moins de 24h avec formation de votre personnel incluse pour une transition en douceur.',
+    },
+    {
+        icon: <ThumbsUp className="h-8 w-8 text-brand-green" />,
+        title: 'Support Local et Réactif',
+        description: 'Notre équipe de support est basée en RDC, parle vos langues et comprend vos défis quotidiens.',
+    },
+    {
+        icon: <Target className="h-8 w-8 text-brand-green" />,
+        title: 'Évolution Continue',
+        description: 'Nous améliorons constamment la plateforme avec des mises à jour régulières basées sur vos retours.',
+    },
+];
 
 export default function Advantages() {
   return (
-    <main className="pt-20">
-      <section className="bg-gradient-to-br from-primary-50 to-white py-12 md:py-16">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="inline-flex items-center gap-2 text-xs bg-primary-50 text-primary-700 px-3 py-1 rounded-full mb-3">Avantages</p>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900">Les Avantages de SchoolConnect</h1>
-          <p className="mt-3 text-gray-600 max-w-2xl mx-auto">Découvrez pourquoi des centaines d'écoles en RDC ont choisi SchoolConnect pour moderniser leur gestion scolaire.</p>
-          <div className="mt-6 flex items-center justify-center gap-3">
-            <Link to="/" className="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
-              <ArrowLeft className="mr-2 h-4 w-4" /> Retour à l’accueil
-            </Link>
-            <a href="#cta" className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">Rejoignez-nous</a>
-          </div>
-
-          <dl className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="rounded-xl bg-white p-4 shadow-sm border border-gray-100">
-              <dt className="text-xs text-gray-500">Écoles utilisatrices</dt>
-              <dd className="text-2xl font-bold text-gray-900">500+</dd>
-            </div>
-            <div className="rounded-xl bg-white p-4 shadow-sm border border-gray-100">
-              <dt className="text-xs text-gray-500">Élèves gérés</dt>
-              <dd className="text-2xl font-bold text-gray-900">50,000+</dd>
-            </div>
-            <div className="rounded-xl bg-white p-4 shadow-sm border border-gray-100">
-              <dt className="text-xs text-gray-500">Enseignants actifs</dt>
-              <dd className="text-2xl font-bold text-gray-900">2,000+</dd>
-            </div>
-            <div className="rounded-xl bg-white p-4 shadow-sm border border-gray-100">
-              <dt className="text-xs text-gray-500">Temps de disponibilité</dt>
-              <dd className="text-2xl font-bold text-gray-900">99.9%</dd>
-            </div>
-          </dl>
-        </div>
-      </section>
-
-      <section className="py-12 md:py-16">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900">Six Avantages Clés</h2>
-            <p className="mt-2 text-gray-600">SchoolConnect transforme la gestion scolaire avec des bénéfices concrets et mesurables</p>
-          </div>
-
-          <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="rounded-xl bg-white p-6 shadow-sm border border-gray-100">
-              <h3 className="font-semibold text-gray-900">Gain de temps considérable</h3>
-              <ul className="mt-2 text-sm text-gray-600 list-disc list-inside space-y-1">
-                <li>Automatisez les tâches répétitives et libérez du temps pour l'essentiel : l'éducation.</li>
-                <li>Saisie automatique des données</li>
-                <li>Génération instantanée de rapports</li>
-                <li>Calculs automatiques des moyennes</li>
-                <li>Notifications automatisées</li>
-              </ul>
-            </div>
-
-            <div className="rounded-xl bg-white p-6 shadow-sm border border-gray-100">
-              <h3 className="font-semibold text-gray-900">Communication améliorée</h3>
-              <ul className="mt-2 text-sm text-gray-600 list-disc list-inside space-y-1">
-                <li>Renforcez les liens entre tous les acteurs de votre communauté scolaire.</li>
-                <li>Messagerie intégrée en temps réel</li>
-                <li>Notifications push instantanées</li>
-                <li>Portails dédiés par rôle</li>
-                <li>Partage d'informations sécurisé</li>
-              </ul>
-            </div>
-
-            <div className="rounded-xl bg-white p-6 shadow-sm border border-gray-100">
-              <h3 className="font-semibold text-gray-900">Décisions basées sur les données</h3>
-              <ul className="mt-2 text-sm text-gray-600 list-disc list-inside space-y-1">
-                <li>Prenez des décisions éclairées grâce à des analyses détaillées et des rapports précis.</li>
-                <li>Tableaux de bord interactifs</li>
-                <li>Statistiques en temps réel</li>
-                <li>Analyses prédictives</li>
-                <li>Rapports personnalisables</li>
-              </ul>
-            </div>
-
-            <div className="rounded-xl bg-white p-6 shadow-sm border border-gray-100">
-              <h3 className="font-semibold text-gray-900">Conception pour la RDC</h3>
-              <ul className="mt-2 text-sm text-gray-600 list-disc list-inside space-y-1">
-                <li>Solution optimisée pour fonctionner parfaitement avec les infrastructures congolaises.</li>
-                <li>Optimisation faible bande passante</li>
-                <li>Mode hors ligne disponible</li>
-                <li>Interface en français</li>
-                <li>Adaptation aux réalités locales</li>
-              </ul>
-            </div>
-
-            <div className="rounded-xl bg-white p-6 shadow-sm border border-gray-100">
-              <h3 className="font-semibold text-gray-900">Sécurité et fiabilité</h3>
-              <ul className="mt-2 text-sm text-gray-600 list-disc list-inside space-y-1">
-                <li>Vos données sont protégées avec les plus hauts standards de sécurité.</li>
-                <li>Chiffrement des données</li>
-                <li>Sauvegardes automatiques</li>
-                <li>Accès sécurisé par rôles</li>
-                <li>Conformité aux standards</li>
-              </ul>
-            </div>
-
-            <div className="rounded-xl bg-white p-6 shadow-sm border border-gray-100">
-              <h3 className="font-semibold text-gray-900">Image professionnelle</h3>
-              <ul className="mt-2 text-sm text-gray-600 list-disc list-inside space-y-1">
-                <li>Modernisez l'image de votre école avec des outils technologiques avancés.</li>
-                <li>Interface moderne et intuitive</li>
-                <li>Rapports professionnels</li>
-                <li>Communication digitale</li>
-                <li>Attractivité renforcée</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-12 md:py-16 bg-gray-50">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-xl md:text-2xl font-extrabold text-gray-900 text-center">Témoignages de nos utilisateurs</h2>
-          <p className="mt-2 text-center text-gray-600">Découvrez ce que disent les directeurs et enseignants qui utilisent SchoolConnect</p>
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <figure className="rounded-xl bg-white p-6 shadow-sm border border-gray-100">
-              <blockquote className="text-gray-700 text-sm">"SchoolConnect a révolutionné notre gestion. Nous avons gagné 70% de temps sur nos tâches administratives."</blockquote>
-              <figcaption className="mt-3 text-xs text-gray-500">Directeur Mukendi · École Primaire Saint-Joseph, Kinshasa</figcaption>
-            </figure>
-            <figure className="rounded-xl bg-white p-6 shadow-sm border border-gray-100">
-              <blockquote className="text-gray-700 text-sm">"La communication avec les parents n'a jamais été aussi fluide. Les parents apprécient la transparence."</blockquote>
-              <figcaption className="mt-3 text-xs text-gray-500">Mme Nsimba · Institut Technique de Lubumbashi</figcaption>
-            </figure>
-            <figure className="rounded-xl bg-white p-6 shadow-sm border border-gray-100">
-              <blockquote className="text-gray-700 text-sm">"L'interface est si simple que même nos enseignants les moins technophiles l'utilisent sans problème."</blockquote>
-              <figcaption className="mt-3 text-xs text-gray-500">Prof. Kalala · Collège Moderne de Goma</figcaption>
-            </figure>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-12 md:py-16">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-xl md:text-2xl font-extrabold text-gray-900 text-center">Pourquoi choisir SchoolConnect ?</h2>
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="rounded-xl bg-white p-6 shadow-sm border border-gray-100">
-              <h3 className="font-semibold text-gray-900">Déploiement rapide</h3>
-              <p className="mt-1 text-sm text-gray-600">Mise en service en moins de 24h avec formation incluse.</p>
-            </div>
-            <div className="rounded-xl bg-white p-6 shadow-sm border border-gray-100">
-              <h3 className="font-semibold text-gray-900">Support local</h3>
-              <p className="mt-1 text-sm text-gray-600">Équipe de support basée en RDC, parlant vos langues.</p>
-            </div>
-            <div className="rounded-xl bg-white p-6 shadow-sm border border-gray-100">
-              <h3 className="font-semibold text-gray-900">Évolution continue</h3>
-              <p className="mt-1 text-sm text-gray-600">Mises à jour régulières basées sur vos retours.</p>
-            </div>
-            <div className="rounded-xl bg-white p-6 shadow-sm border border-gray-100">
-              <h3 className="font-semibold text-gray-900">Retour sur investissement garanti</h3>
-              <p className="mt-1 text-sm text-gray-600">SchoolConnect se rembourse rapidement grâce aux gains d'efficacité et à l'amélioration de la gestion financière.</p>
-              <ul className="mt-2 text-sm text-gray-600 list-disc list-inside space-y-1">
-                <li>Réduction des coûts administratifs</li>
-                <li>Jusqu'à 60% de réduction du temps consacré aux tâches administratives.</li>
-                <li>Amélioration des recettes</li>
-                <li>Meilleur suivi des paiements et réduction des impayés.</li>
-                <li>Attractivité renforcée</li>
-                <li>Image moderne qui attire de nouveaux élèves et enseignants.</li>
-              </ul>
-            </div>
-          </div>
-
-          <div id="cta" className="mt-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-primary-600 text-white p-6 text-center shadow-lg">
-            <h3 className="text-lg font-semibold">Calcul ROI - École de 200 élèves</h3>
-            <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-              <div>
-                <p className="text-white/80">Coût mensuel SchoolConnect</p>
-                <p className="text-xl font-bold">$50 USD</p>
-              </div>
-              <div>
-                <p className="text-white/80">Économies administratives</p>
-                <p className="text-xl font-bold">+$80 USD</p>
-              </div>
-              <div>
-                <p className="text-white/80">Amélioration recettes</p>
-                <p className="text-xl font-bold">+$120 USD</p>
-              </div>
-              <div>
-                <p className="text-white/80">Bénéfice net mensuel</p>
-                <p className="text-xl font-bold">+$150 USD</p>
+    <div className="bg-white text-gray-800">
+      <Navbar />
+      <main>
+        {/* Hero Section */}
+        <section className="bg-brand-blue-light py-20 md:py-28">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 tracking-tight">
+              L'Avantage <span className="text-brand-blue">SchoolConnect</span>
+            </h1>
+            <p className="mt-6 max-w-3xl mx-auto text-lg md:text-xl text-gray-600">
+              Découvrez pourquoi des centaines d'écoles en RDC nous font confiance pour transformer leur gestion et catalyser leur succès.
+            </p>
+            <div className="mt-12">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+                <div className="bg-white/50 p-6 rounded-2xl shadow-sm">
+                  <p className="text-4xl font-bold text-brand-blue">500+</p>
+                  <p className="mt-1 text-sm font-medium text-gray-700">Écoles Partenaires</p>
+                </div>
+                <div className="bg-white/50 p-6 rounded-2xl shadow-sm">
+                  <p className="text-4xl font-bold text-brand-blue">50,000+</p>
+                  <p className="mt-1 text-sm font-medium text-gray-700">Élèves Gérés</p>
+                </div>
+                <div className="bg-white/50 p-6 rounded-2xl shadow-sm">
+                  <p className="text-4xl font-bold text-brand-blue">99.9%</p>
+                  <p className="mt-1 text-sm font-medium text-gray-700">Disponibilité</p>
+                </div>
+                <div className="bg-white/50 p-6 rounded-2xl shadow-sm">
+                  <p className="text-4xl font-bold text-brand-blue">70%</p>
+                  <p className="mt-1 text-sm font-medium text-gray-700">Temps Économisé</p>
+                </div>
               </div>
             </div>
-            <p className="mt-3 text-sm">ROI de 300% dès le premier mois</p>
           </div>
-        </div>
-      </section>
-    </main>
-  )
+        </section>
+
+        {/* Key Advantages Section */}
+        <section className="py-20 md:py-28 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900">Des Bénéfices Concrets pour Votre École</h2>
+              <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-600">
+                SchoolConnect n'est pas juste un logiciel, c'est un partenaire de croissance qui apporte des avantages mesurables.
+              </p>
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {keyAdvantages.map((advantage) => (
+                <div key={advantage.title} className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                  <div className="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-brand-blue-light">
+                    {advantage.icon}
+                  </div>
+                  <h3 className="mt-6 text-xl font-bold text-gray-900">{advantage.title}</h3>
+                  <p className="mt-2 text-gray-600">{advantage.description}</p>
+                  <ul className="mt-4 space-y-2">
+                    {advantage.points.map((point) => (
+                      <li key={point} className="flex items-start">
+                        <CheckCircle className="h-5 w-5 text-brand-green flex-shrink-0 mt-0.5" />
+                        <span className="ml-3 text-gray-700">{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Testimonials Section */}
+        <section className="py-20 md:py-28 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900">Ils nous font confiance</h2>
+              <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-600">
+                Découvrez ce que les directeurs et enseignants disent de leur expérience avec SchoolConnect.
+              </p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-8">
+              {testimonials.map((testimonial) => (
+                <figure key={testimonial.author} className="bg-gray-50 p-8 rounded-2xl shadow-sm border border-gray-100">
+                  <div className="flex text-yellow-400 mb-4">
+                    {[...Array(5)].map((_, i) => <Star key={i} className="h-5 w-5 fill-current" />)}
+                  </div>
+                  <blockquote className="text-gray-700 text-lg leading-relaxed">"{testimonial.quote}"</blockquote>
+                  <figcaption className="mt-6">
+                    <p className="font-bold text-gray-900">{testimonial.author}</p>
+                    <p className="text-sm text-gray-600">{testimonial.school}</p>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Why Choose Us Section */}
+        <section className="py-20 md:py-28 bg-gray-50">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="text-center mb-16">
+                    <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900">Pourquoi Choisir SchoolConnect ?</h2>
+                    <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-600">
+                        Nous allons au-delà du logiciel pour vous offrir un partenariat durable et un service exceptionnel.
+                    </p>
+                </div>
+                <div className="grid md:grid-cols-3 gap-8 text-center">
+                    {whyChooseUs.map((item) => (
+                        <div key={item.title} className="p-8 bg-white rounded-2xl shadow-sm">
+                            <div className="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-brand-green-light text-brand-green mx-auto">
+                                {item.icon}
+                            </div>
+                            <h3 className="mt-6 text-xl font-bold">{item.title}</h3>
+                            <p className="mt-2 text-gray-600">{item.description}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+
+        {/* ROI CTA Section */}
+        <section className="bg-brand-blue">
+          <div className="max-w-4xl mx-auto text-center py-20 px-4 sm:px-6 lg:px-8">
+            <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
+              Un Investissement Rentable Dès le Premier Jour
+            </h2>
+            <p className="mt-4 text-lg leading-6 text-blue-100">
+              Calculez le retour sur investissement pour votre école et voyez comment SchoolConnect se finance par les économies qu'il génère.
+            </p>
+            <div className="mt-10 bg-white/10 p-8 rounded-2xl">
+                <h3 className="text-xl font-bold text-white">ROI pour une école de 200 élèves</h3>
+                <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-white">
+                    <div>
+                        <p className="text-sm opacity-80">Coût Mensuel</p>
+                        <p className="text-3xl font-bold">$50</p>
+                    </div>
+                    <div>
+                        <p className="text-sm opacity-80">Économies Admin</p>
+                        <p className="text-3xl font-bold text-brand-green-light">+$80</p>
+                    </div>
+                    <div>
+                        <p className="text-sm opacity-80">Recettes Améliorées</p>
+                        <p className="text-3xl font-bold text-brand-green-light">+$120</p>
+                    </div>
+                    <div>
+                        <p className="text-sm opacity-80">Bénéfice Net</p>
+                        <p className="text-3xl font-bold text-brand-green-light">+$150</p>
+                    </div>
+                </div>
+                <p className="mt-6 text-lg font-semibold text-white">Soit un retour sur investissement de <span className="text-brand-yellow">300%</span> chaque mois.</p>
+            </div>
+            <div className="mt-10">
+              <Link
+                to="/contact"
+                className="inline-flex items-center justify-center rounded-lg bg-brand-green px-8 py-3 text-base font-semibold text-white shadow-lg hover:bg-brand-green/90 transform hover:scale-105 transition-transform duration-300"
+              >
+                Commencez Votre Transformation
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
+  );
 }

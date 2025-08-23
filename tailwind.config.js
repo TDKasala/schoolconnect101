@@ -42,6 +42,19 @@ export default {
           700: '#4338ca',
           800: '#3730a3',
           900: '#312e81',
+        },
+        brand: {
+          blue: {
+            DEFAULT: '#1E90FF',
+            light: '#F0F8FF',
+          },
+          green: {
+            DEFAULT: '#32CD32',
+            light: '#F0FFF0',
+          },
+          yellow: {
+            DEFAULT: '#FFD700',
+          },
         }
       },
       fontFamily: {
@@ -65,11 +78,22 @@ export default {
           '0%': { backgroundPosition: '200% 0' },
           '100%': { backgroundPosition: '-200% 0' },
         },
+        'fade-in-up': {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(20px)'
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateY(0)'
+          },
+        },
       },
       animation: {
         float: 'float 5s ease-in-out infinite',
         blob: 'blob 10s ease-in-out infinite',
         shimmer: 'shimmer 2.5s linear infinite',
+        'fade-in-up': 'fade-in-up 0.8s ease-out forwards',
       },
     },
   },

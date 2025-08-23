@@ -1,114 +1,127 @@
-import { CheckCircle2, ArrowLeft } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { CheckCircle2, ArrowLeft } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import Footer from '../components/landing/Footer';
+import Navbar from '../components/landing/Navbar';
 
 export default function Tarifs() {
   const plans = [
     {
-      name: 'Starter',
+      name: 'Essentiel',
       price: 'Gratuit',
-      period: '',
-      highlight: 'Pour démarrer',
+      period: 'à vie',
+      description: 'Idéal pour les petites écoles qui débutent avec le numérique.',
       features: [
-        'Jusqu’à 1 école',
-        'Jusqu’à 200 élèves',
-        'Module Pédagogie (base)',
-        'Support par email',
+        'Gestion jusqu’à 200 élèves',
+        'Module Pédagogie de base',
+        'Portail Parent et Enseignant',
+        'Support communautaire',
       ],
-      cta: 'Essayer',
+      cta: 'Commencer Gratuitement',
       featured: false,
     },
     {
-      name: 'Pro',
-      price: '$49',
-      period: '/mois',
-      highlight: 'Le plus populaire',
+      name: 'Professionnel',
+      price: '49',
+      period: '/ mois',
+      description: 'La solution complète pour une gestion scolaire intégrée et efficace.',
       features: [
-        'Écoles illimitées',
-        'Élèves illimités',
-        'Pédagogie + Finances',
-        'Rapports avancés',
-        'Support prioritaire',
+        'Nombre d’élèves illimité',
+        'Modules Pédagogie & Finances',
+        'Portails Admin, Parent, Enseignant',
+        'Rapports et analyses avancés',
+        'Support prioritaire par email & téléphone',
       ],
-      cta: 'Souscrire',
+      cta: 'Choisir Pro',
       featured: true,
     },
     {
       name: 'Entreprise',
-      price: 'Custom',
+      price: 'Sur Devis',
       period: '',
-      highlight: 'Grandes structures',
+      description: 'Pour les grands réseaux scolaires ou besoins spécifiques.',
       features: [
-        'Déploiement dédié',
-        'Intégrations avancées',
-        'SLA & accompagnement',
-        'Formation & onboarding',
+        'Déploiement sur-mesure',
+        'Intégrations personnalisées (API)',
+        'Accompagnement et formation dédiée',
+        'Manager de compte dédié (CSM)',
       ],
-      cta: 'Nous contacter',
+      cta: 'Nous Contacter',
       featured: false,
     },
-  ] as const
+  ] as const;
 
   return (
-    <main className="pt-20">
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-primary-50 to-white py-12 md:py-16 text-center">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="inline-flex items-center gap-2 text-xs bg-primary-50 text-primary-700 px-3 py-1 rounded-full mb-3">Tarification</p>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900">Des tarifs adaptés aux écoles congolaises</h1>
-          <p className="mt-3 text-gray-600 max-w-2xl mx-auto">Choisissez le plan qui correspond à votre réalité. Pas de frais cachés.</p>
-          <div className="mt-6 flex items-center justify-center">
-            <Link to="/" className="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
-              <ArrowLeft className="mr-2 h-4 w-4" /> Retour à l’accueil
-            </Link>
+    <div className="bg-white text-gray-800">
+      <Navbar />
+      <main>
+        {/* Hero Section */}
+        <section className="bg-brand-blue-light py-20 md:py-28">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 tracking-tight">
+              Une Tarification <span className="text-brand-blue">Simple et Transparente</span>
+            </h1>
+            <p className="mt-6 max-w-3xl mx-auto text-lg md:text-xl text-gray-600">
+              Choisissez le plan qui correspond à la taille et aux ambitions de votre établissement. Pas de frais cachés, pas de surprises.
+            </p>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Plans */}
-      <section className="py-12 md:py-16">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {plans.map((p) => (
-              <div key={p.name} className={`rounded-2xl border ${p.featured ? 'border-blue-300 shadow-lg shadow-blue-100' : 'border-gray-100 shadow-sm'} bg-white p-6`}>
-                {p.highlight && (
-                  <p className={`text-xs inline-block mb-3 px-2 py-1 rounded-full ${p.featured ? 'bg-blue-50 text-blue-700' : 'bg-gray-50 text-gray-700'}`}>{p.highlight}</p>
-                )}
-                <h3 className="text-lg font-semibold text-gray-900">{p.name}</h3>
-                <div className="mt-2 flex items-end gap-1">
-                  <span className="text-3xl font-extrabold text-gray-900">{p.price}</span>
-                  {p.period && <span className="text-gray-600">{p.period}</span>}
+        {/* Plans Section */}
+        <section className="py-20 md:py-28 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+              {plans.map((plan) => (
+                <div
+                  key={plan.name}
+                  className={`rounded-2xl p-8 flex flex-col transition-transform duration-300 transform hover:-translate-y-2 ${plan.featured ? 'bg-brand-blue text-white shadow-2xl scale-105' : 'bg-white shadow-lg'}`}>
+                  <h3 className={`text-xl font-bold ${plan.featured ? 'text-white' : 'text-gray-900'}`}>{plan.name}</h3>
+                  <p className={`mt-2 h-12 ${plan.featured ? 'text-blue-100' : 'text-gray-600'}`}>{plan.description}</p>
+                  <div className={`mt-6 flex items-baseline gap-x-2 ${plan.featured ? 'text-white' : 'text-gray-900'}`}>
+                    <span className="text-4xl font-extrabold tracking-tight">{plan.price}</span>
+                    {plan.period && <span className={`text-sm font-semibold ${plan.featured ? 'text-blue-100' : 'text-gray-600'}`}>{plan.period}</span>}
+                  </div>
+                  <ul className={`mt-8 space-y-4 text-sm flex-grow ${plan.featured ? 'text-blue-100' : 'text-gray-700'}`}>
+                    {plan.features.map((feature) => (
+                      <li key={feature} className="flex items-center gap-3">
+                        <CheckCircle2 className={`h-5 w-5 flex-shrink-0 ${plan.featured ? 'text-brand-green' : 'text-brand-blue'}`} />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-10">
+                    <Link
+                      to={plan.name === 'Entreprise' ? '/contact' : 'mailto:contact@schoolconnect.cd?subject=Souscription%20-%20SchoolConnect'}
+                      className={`w-full block text-center rounded-lg px-6 py-3 text-base font-semibold transition-colors duration-300 ${plan.featured ? 'bg-white text-brand-blue hover:bg-gray-100' : 'bg-brand-blue text-white hover:bg-brand-blue/90'}`}>
+                      {plan.cta}
+                    </Link>
+                  </div>
                 </div>
-                <ul className="mt-4 space-y-2 text-sm text-gray-700">
-                  {p.features.map((f) => (
-                    <li key={f} className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-green-600"/>{f}</li>
-                  ))}
-                </ul>
-                <div className="mt-6">
-                  {p.name === 'Entreprise' ? (
-                    <Link to="/contact" className="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">{p.cta}</Link>
-                  ) : (
-                    <a href="mailto:contact@schoolconnect.cd?subject=Souscription%20-%20SchoolConnect" className={`inline-flex items-center rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90 ${p.featured ? 'bg-blue-600' : 'bg-gray-800'}`}>{p.cta}</a>
-                  )}
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
+            <p className="mt-10 text-center text-sm text-gray-500">Tous les prix sont en USD. Facturation en CDF possible au taux du jour.</p>
           </div>
+        </section>
 
-          {/* Note locale */}
-          <p className="mt-8 text-xs text-gray-500">Les prix sont indicatifs. Facturation possible en CDF ou USD selon votre préférence.</p>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-12 md:py-16 bg-gray-50">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl font-bold text-gray-900">Besoin d’un devis personnalisé ?</h2>
-          <p className="mt-2 text-gray-600 max-w-2xl mx-auto">Contactez-nous pour une offre adaptée à la taille et aux besoins de votre école.</p>
-          <div className="mt-6 flex items-center justify-center gap-3">
-            <Link to="/contact" className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500">Nous contacter</Link>
+        {/* CTA Section */}
+        <section className="bg-white py-20">
+          <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+            <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+              Prêt à Transformer Votre École ?
+            </h2>
+            <p className="mt-4 text-lg leading-6 text-gray-600">
+              Rejoignez les écoles qui nous font confiance et faites passer votre gestion au niveau supérieur.
+            </p>
+            <div className="mt-10">
+              <Link
+                to="/contact"
+                className="inline-flex items-center justify-center rounded-lg bg-brand-green px-8 py-3 text-base font-semibold text-white shadow-lg hover:bg-brand-green/90 transform hover:scale-105 transition-transform duration-300">
+                Demander une Démo Gratuite
+              </Link>
+            </div>
           </div>
-        </div>
-      </section>
-    </main>
-  )
+        </section>
+      </main>
+      <Footer />
+    </div>
+  );
 }
