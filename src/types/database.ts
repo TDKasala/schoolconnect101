@@ -93,33 +93,42 @@ export type Database = {
       users: {
         Row: {
           approved: boolean
+          avatar_url: string | null
           created_at: string
           email: string
-          first_name: string
+          full_name: string
           id: string
-          last_name: string
+          last_login: string | null
+          phone: string | null
+          preferences: Json | null
           role: Database["public"]["Enums"]["user_role"]
           school_id: string | null
           updated_at: string
         }
         Insert: {
           approved?: boolean
+          avatar_url?: string | null
           created_at?: string
           email: string
-          first_name: string
+          full_name: string
           id: string
-          last_name: string
+          last_login?: string | null
+          phone?: string | null
+          preferences?: Json | null
           role: Database["public"]["Enums"]["user_role"]
           school_id?: string | null
           updated_at?: string
         }
         Update: {
           approved?: boolean
+          avatar_url?: string | null
           created_at?: string
           email?: string
-          first_name?: string
+          full_name?: string
           id?: string
-          last_name?: string
+          last_login?: string | null
+          phone?: string | null
+          preferences?: Json | null
           role?: Database["public"]["Enums"]["user_role"]
           school_id?: string | null
           updated_at?: string

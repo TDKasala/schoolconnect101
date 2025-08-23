@@ -81,7 +81,7 @@ export const Dashboard: React.FC = () => {
             Tableau de bord
           </h1>
           <p className="text-gray-600 mt-2">
-            Bienvenue, {profile.first_name} {profile.last_name}
+            Bienvenue, {profile.full_name}
           </p>
         </div>
 
@@ -96,7 +96,7 @@ export const Dashboard: React.FC = () => {
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Profil</p>
                 <p className="text-lg font-semibold text-gray-900">
-                  {profile.first_name}
+                  {profile.full_name}
                 </p>
               </div>
             </div>

@@ -145,8 +145,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         .insert({
           id: data.user.id,
           email: data.user.email!,
-          first_name: userData.first_name,
-          last_name: userData.last_name,
+          full_name: `${userData.first_name} ${userData.last_name}`,
           role: userData.role as 'platform_admin' | 'school_admin' | 'teacher' | 'parent',
           school_id: userData.school_id || null,
           approved: false,
