@@ -31,7 +31,7 @@ CREATE POLICY "Platform admins can manage all platform messages" ON public.platf
 CREATE POLICY "Users can view messages sent to them" ON public.platform_messages
   FOR SELECT USING (
     auth.uid() IN (
-      SELECT user_id FROM public.message_recipients 
+      SELECT recipient_id FROM public.message_recipients 
       WHERE message_id = platform_messages.id
     )
   );
@@ -46,7 +46,7 @@ CREATE POLICY "Platform admins can manage all message recipients" ON public.mess
   );
 
 CREATE POLICY "Users can view their own message recipient records" ON public.message_recipients
-  FOR SELECT USING (user_id = auth.uid());
+  FOR SELECT USING (recipient_id = auth.uid());
 
 CREATE POLICY "Platform admins can manage all platform announcements" ON public.platform_announcements
   FOR ALL USING (
@@ -77,7 +77,7 @@ CREATE POLICY "Platform admins can manage all announcement views" ON public.anno
   );
 
 CREATE POLICY "Users can manage their own announcement views" ON public.announcement_views
-  FOR ALL USING (user_id = auth.uid());
+  FOR ALL USING (viewer_id = auth.uid());
 
 CREATE POLICY "Platform admins can view all communication logs" ON public.communication_logs
   FOR SELECT USING (
