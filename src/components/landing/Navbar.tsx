@@ -1,11 +1,16 @@
 import { useState } from 'react'
-import { Menu, X, ChevronDown } from 'lucide-react'
+import { Menu, X, ChevronDown, User, LogOut } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useAuthState } from '../../hooks/useAuth'
+import { useAuth } from '../../hooks/useAuth'
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
   const [featuresOpen, setFeaturesOpen] = useState(false)
   const [modulesOpen, setModulesOpen] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const { isAuthenticated, profile } = useAuthState()
+  const { signOut } = useAuth()
 
   const featureLinks = [
     { name: 'Pédagogie', href: '/fonctionnalites/pedagogie' },
@@ -18,6 +23,16 @@ export default function Navbar() {
     { name: 'UBank', href: '/modules/ubank' },
     { name: 'Portails', href: '/modules/portails' },
   ]
+
+  const handleSignOut = async () => {
+    try {
+      await signOut()
+      setUserMenuOpen(false)
+    } catch (error) {
+      console.error('Error signing out:', error)
+    }
+  }
+
   return (
     <header className="fixed top-0 inset-x-0 z-50">
       <div className="backdrop-blur supports-[backdrop-filter]:bg-brand-blue-light/80 bg-brand-blue-light/95 border-b border-gray-200/80">
@@ -67,8 +82,50 @@ export default function Navbar() {
             </nav>
 
             <div className="hidden md:flex items-center gap-4">
-              <Link to="/contact" className="text-sm font-medium text-gray-600 hover:text-brand-blue">Demander une démo</Link>
-              <Link to="/contact" className="inline-flex items-center rounded-lg bg-brand-green px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-green/90 focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2">Ouvrir un compte</Link>
+              {isAuthenticated ? (
+                <div className="relative">
+                  <button
+                    onClick={() => setUserMenuOpen(!userMenuOpen)}
+                    className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-brand-blue"
+                  >
+                    <User className="h-4 w-4" />
+                    <span>{profile?.full_name || profile?.email}</span>
+                    <ChevronDown className="h-4 w-4" />
+                  </button>
+                  {userMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg">
+                      <div className="py-2">
+                        <Link
+                          to="/profile"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-brand-blue-light hover:text-brand-blue transition-colors duration-150"
+                          onClick={() => setUserMenuOpen(false)}
+                        >
+                          Mon profil
+                        </Link>
+                        <Link
+                          to="/dashboard"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-brand-blue-light hover:text-brand-blue transition-colors duration-150"
+                          onClick={() => setUserMenuOpen(false)}
+                        >
+                          Tableau de bord
+                        </Link>
+                        <button
+                          onClick={handleSignOut}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-brand-blue-light hover:text-brand-blue transition-colors duration-150 flex items-center gap-2"
+                        >
+                          <LogOut className="h-4 w-4" />
+                          Se déconnecter
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <Link to="/login" className="text-sm font-medium text-gray-600 hover:text-brand-blue">Se connecter</Link>
+                  <Link to="/register" className="inline-flex items-center rounded-lg bg-brand-green px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-green/90 focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2">Créer un compte</Link>
+                </>
+              )}
             </div>
 
             <button className="md:hidden p-2 text-gray-700" onClick={() => setOpen(!open)}>
@@ -113,8 +170,23 @@ export default function Navbar() {
               <Link to="/tarifs" className="block text-gray-700 hover:text-brand-blue">Tarifs</Link>
               <Link to="/contact" className="block text-gray-700 hover:text-brand-blue">Contact</Link>
               <div className="pt-4 border-t border-gray-200 flex flex-col gap-4">
-                <Link to="/contact" className="text-center w-full rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50">Demander une démo</Link>
-                <Link to="/contact" className="text-center w-full inline-flex items-center justify-center rounded-lg bg-brand-green px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-green/90">Ouvrir un compte</Link>
+                {isAuthenticated ? (
+                  <>
+                    <Link to="/profile" className="text-center w-full rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50">Mon profil</Link>
+                    <Link to="/dashboard" className="text-center w-full rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50">Tableau de bord</Link>
+                    <button
+                      onClick={handleSignOut}
+                      className="text-center w-full rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50"
+                    >
+                      Se déconnecter
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/login" className="text-center w-full rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50">Se connecter</Link>
+                    <Link to="/register" className="text-center w-full inline-flex items-center justify-center rounded-lg bg-brand-green px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-green/90">Créer un compte</Link>
+                  </>
+                )}
               </div>
             </div>
           </div>
