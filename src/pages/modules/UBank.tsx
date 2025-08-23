@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, CheckCircle, DollarSign, ClipboardList, Receipt, TrendingDown, LayoutDashboard, FileText, ShieldCheck, TrendingUp, FileSignature, Banknote, BarChart3, ShieldAlert } from 'lucide-react';
 import Footer from '../../components/landing/Footer';
 import Navbar from '../../components/landing/Navbar';
+import { useScrollToTop } from '../../hooks/useScrollToTop';
 
 const features = [
   {
@@ -43,6 +44,8 @@ const features = [
 ];
 
 export default function UBank() {
+  useScrollToTop();
+  
   return (
     <div className="bg-white text-gray-800">
       <Navbar />

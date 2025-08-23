@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
-import { Zap, Users, BarChart, Globe, Shield, Sparkles, ThumbsUp, Rocket, Target, CheckCircle, Star } from 'lucide-react';
+import { CheckCircle, Star, Users, Shield, Zap, BarChart, Globe, Sparkles, Rocket, ThumbsUp, Target } from 'lucide-react';
 import Footer from '../components/landing/Footer';
 import Navbar from '../components/landing/Navbar';
+import { useScrollToTop } from '../hooks/useScrollToTop';
 
 const keyAdvantages = [
   {
@@ -109,6 +110,8 @@ const whyChooseUs = [
 ];
 
 export default function Advantages() {
+  useScrollToTop();
+  
   return (
     <div className="bg-white text-gray-800">
       <Navbar />

@@ -2,6 +2,7 @@ import { ArrowRight, MessageSquare, GraduationCap, CalendarCheck, BarChart2, Shi
 import Navbar from '../../components/landing/Navbar';
 import Footer from '../../components/landing/Footer';
 import { Link } from 'react-router-dom';
+import { useScrollToTop } from '../../hooks/useScrollToTop';
 
 const portalFeatures = [
   {
@@ -59,6 +60,8 @@ const ParentPortalPreview = () => (
 );
 
 export default function PortailsModule() {
+  useScrollToTop();
+  
   return (
     <div className="bg-white text-gray-800">
       <Navbar />

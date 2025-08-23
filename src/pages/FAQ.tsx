@@ -2,8 +2,11 @@ import { ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/landing/Footer';
 import Navbar from '../components/landing/Navbar';
+import { useScrollToTop } from '../hooks/useScrollToTop';
 
 export default function FAQ() {
+  useScrollToTop();
+  
   const faqs = [
     {
       q: "Qu'est-ce que SchoolConnect ?",

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Footer from '../components/landing/Footer';
 import Navbar from '../components/landing/Navbar';
+import { useScrollToTop } from '../hooks/useScrollToTop';
 
 const plans = [
   {
@@ -84,6 +85,8 @@ const allFeatures = [
 ];
 
 export default function Tarifs() {
+  useScrollToTop();
+  
   const [billingCycle, setBillingCycle] = useState('monthly');
 
   return (

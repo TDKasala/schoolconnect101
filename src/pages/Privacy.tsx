@@ -2,6 +2,7 @@ import { ArrowLeft, BookLock, Database, ShieldCheck, UserCheck, Mail, Server } f
 import { Link } from 'react-router-dom';
 import Footer from '../components/landing/Footer';
 import Navbar from '../components/landing/Navbar';
+import { useScrollToTop } from '../hooks/useScrollToTop';
 
 const policySections = [
   {
@@ -37,6 +38,8 @@ const policySections = [
 ];
 
 export default function Privacy() {
+  useScrollToTop();
+  
   return (
     <div className="bg-white text-gray-800">
       <Navbar />

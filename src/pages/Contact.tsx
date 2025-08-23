@@ -1,8 +1,10 @@
-import { Mail, Phone, MapPin, Building, LifeBuoy } from 'lucide-react';
+import { Mail, Phone, MapPin, Building, LifeBuoy, Clock } from 'lucide-react';
 import type React from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/landing/Footer';
 import Navbar from '../components/landing/Navbar';
+import { useScrollToTop } from '../hooks/useScrollToTop';
 
 const contactInfo = [
   {
@@ -36,6 +38,16 @@ const contactInfo = [
 ];
 
 export default function Contact() {
+  useScrollToTop();
+  
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    school: '',
+    subject: '',
+    message: '',
+  });
+
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);

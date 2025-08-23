@@ -2,6 +2,7 @@ import { ArrowLeft, FileCheck, Users, Copyright, ShieldAlert, FileEdit, Mail } f
 import { Link } from 'react-router-dom';
 import Footer from '../components/landing/Footer';
 import Navbar from '../components/landing/Navbar';
+import { useScrollToTop } from '../hooks/useScrollToTop';
 
 const termsSections = [
   {
@@ -37,6 +38,8 @@ const termsSections = [
 ];
 
 export default function Terms() {
+  useScrollToTop();
+  
   return (
     <div className="bg-white text-gray-800">
       <Navbar />

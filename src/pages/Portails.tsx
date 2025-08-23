@@ -1,8 +1,9 @@
-import { ArrowLeft, CheckCircle, Users, GraduationCap, UserCog, MessageSquare, Bell, Calendar, ShieldCheck, BarChart2, Banknote, UserPlus } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Users, GraduationCap, UserCog, MessageSquare, Bell, Calendar, ShieldCheck, BarChart2, Banknote, UserPlus, Building, Globe, ArrowRight, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import Footer from '../components/landing/Footer';
 import Navbar from '../components/landing/Navbar';
+import { useScrollToTop } from '../hooks/useScrollToTop';
 import { AnimatePresence, motion } from 'framer-motion';
 
 
@@ -141,6 +142,8 @@ const portals = [
 ];
 
 export default function Portails() {
+  useScrollToTop();
+  
   const [activeTab, setActiveTab] = useState(portals[0].id);
   const activePortal = portals.find(p => p.id === activeTab);
 

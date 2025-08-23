@@ -2,6 +2,7 @@ import { ArrowRight, BookOpen, BarChart, UserCheck, Calendar, Award, TrendingUp,
 import Navbar from '../../components/landing/Navbar';
 import Footer from '../../components/landing/Footer';
 import { Link } from 'react-router-dom';
+import { useScrollToTop } from '../../hooks/useScrollToTop';
 
 const features = [
   {
@@ -87,6 +88,8 @@ const TeacherDashboardPreview = () => (
   );
 
 export default function POSP() {
+  useScrollToTop();
+  
   return (
     <div className="bg-white text-gray-800">
       <Navbar />
