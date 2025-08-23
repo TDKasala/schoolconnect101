@@ -1,81 +1,77 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/SimpleAuthContext';
 import { Eye, EyeOff, Loader2, Mail, Lock } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { user, profile, loading, signIn, error } = useAuth();
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const { user, session, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     console.log('Login: Auth state changed', { 
       user: !!user, 
-      profile: !!profile, 
-      loading,
-      profileRole: profile?.role 
+      session: !!session,
+      loading
     });
     
     if (!loading && user) {
-      if (profile?.role === 'platform_admin') {
-        console.log('Login: Platform admin authenticated, redirecting to admin dashboard');
-        navigate('/admin');
-      } else if (profile) {
-        console.log('Login: User authenticated, redirecting to dashboard');
-        navigate('/dashboard');
-      } else {
-        console.log('Login: User authenticated but no profile found');
-        // Stay on login page or show error
-      }
+      console.log('Login: User authenticated, redirecting to admin dashboard');
+      navigate('/admin/dashboard');
     }
-  }, [user, profile, loading, navigate]);
+  }, [user, session, loading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Login: Attempting to sign in with:', email);
     setIsLoading(true);
+    setLoginError(null);
 
-    const { error } = await signIn(email, password);
-    
-    if (!error) {
-      console.log('Login: Sign in successful');
-    } else {
-      console.error('Login: Sign in failed:', error);
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      
+      if (error) {
+        console.error('Login: Sign in failed:', error);
+        setLoginError(error.message);
+      } else {
+        console.log('Login: Sign in successful');
+        // Navigation will be handled by useEffect
+      }
+    } catch (err) {
+      console.error('Login: Unexpected error:', err);
+      setLoginError('An unexpected error occurred');
     }
     
     setIsLoading(false);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-blue-light to-white py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-white py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <div className="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-brand-blue">
-            <svg className="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
+          <div className="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-blue-600">
+            <Lock className="h-6 w-6 text-white" />
           </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Connexion à votre compte
+            Connexion à SchoolConnect
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Ou{' '}
-            <Link
-              to="/register"
-              className="font-medium text-brand-blue hover:text-brand-blue-dark transition-colors"
-            >
-              créez un nouveau compte
-            </Link>
+            Administration de la plateforme
           </p>
         </div>
         
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
+          <div className="space-y-4">
             <div>
-              <label htmlFor="email-address" className="sr-only">
+              <label htmlFor="email" className="sr-only">
                 Adresse email
               </label>
               <div className="relative">
@@ -83,18 +79,19 @@ export const Login: React.FC = () => {
                   <Mail className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  id="email-address"
+                  id="email"
                   name="email"
                   type="email"
                   autoComplete="email"
                   required
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-brand-blue focus:border-brand-blue focus:z-10 sm:text-sm"
+                  className="appearance-none relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                   placeholder="Adresse email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
             </div>
+            
             <div>
               <label htmlFor="password" className="sr-only">
                 Mot de passe
@@ -109,44 +106,30 @@ export const Login: React.FC = () => {
                   type={showPassword ? 'text' : 'password'}
                   autoComplete="current-password"
                   required
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 pl-10 pr-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-brand-blue focus:border-brand-blue focus:z-10 sm:text-sm"
+                  className="appearance-none relative block w-full px-3 py-2 pl-10 pr-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                   placeholder="Mot de passe"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                  <button
-                    type="button"
-                    className="text-gray-400 hover:text-gray-500 focus:outline-none focus:text-gray-500 transition ease-in-out duration-150"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-5 w-5" />
-                    ) : (
-                      <Eye className="h-5 w-5" />
-                    )}
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5 text-gray-400" />
+                  ) : (
+                    <Eye className="h-5 w-5 text-gray-400" />
+                  )}
+                </button>
               </div>
             </div>
           </div>
 
-          {error && (
+          {loginError && (
             <div className="rounded-md bg-red-50 p-4">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div className="ml-3">
-                  <h3 className="text-sm font-medium text-red-800">
-                    Erreur de connexion
-                  </h3>
-                  <div className="mt-2 text-sm text-red-700">
-                    <p>{error}</p>
-                  </div>
-                </div>
+              <div className="text-sm text-red-700">
+                {loginError}
               </div>
             </div>
           )}
@@ -155,7 +138,7 @@ export const Login: React.FC = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-brand-blue hover:bg-brand-blue-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-blue disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -166,12 +149,9 @@ export const Login: React.FC = () => {
           </div>
 
           <div className="text-center">
-            <Link
-              to="/"
-              className="text-sm text-brand-blue hover:text-brand-blue-dark transition-colors"
-            >
-              ← Retour à l'accueil
-            </Link>
+            <p className="text-sm text-gray-600">
+              Utilisateur de test: test@schoolconnect.com / TestPassword123!
+            </p>
           </div>
         </form>
       </div>
