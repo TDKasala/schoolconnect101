@@ -30,36 +30,40 @@ export default function Navbar() {
 
             <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
               <div className="relative group">
-                <button className="flex items-center gap-1 hover:text-brand-blue">
+                <button className="flex items-center gap-1 hover:text-brand-blue py-2">
                   Fonctionnalités <ChevronDown className="h-4 w-4 transition-transform duration-300 group-hover:rotate-180" />
                 </button>
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto">
+                {/* Invisible bridge to prevent dropdown from disappearing */}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 w-48 h-3 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto"></div>
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 delay-75 group-hover:delay-0 pointer-events-none group-hover:pointer-events-auto">
                   <div className="py-2">
                     {featureLinks.map((link) => (
-                      <Link key={link.name} to={link.href} className="block px-4 py-2 text-sm text-gray-700 hover:bg-brand-blue-light hover:text-brand-blue">
+                      <Link key={link.name} to={link.href} className="block px-4 py-2 text-sm text-gray-700 hover:bg-brand-blue-light hover:text-brand-blue transition-colors duration-150">
                         {link.name}
                       </Link>
                     ))}
                   </div>
                 </div>
               </div>
-              <Link to="/avantages" className="hover:text-brand-blue">Avantages</Link>
+              <Link to="/avantages" className="hover:text-brand-blue py-2">Avantages</Link>
               <div className="relative group">
-                <button className="flex items-center gap-1 hover:text-brand-blue">
+                <button className="flex items-center gap-1 hover:text-brand-blue py-2">
                   Modules <ChevronDown className="h-4 w-4 transition-transform duration-300 group-hover:rotate-180" />
                 </button>
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto">
+                {/* Invisible bridge to prevent dropdown from disappearing */}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 w-48 h-3 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto"></div>
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 delay-75 group-hover:delay-0 pointer-events-none group-hover:pointer-events-auto">
                   <div className="py-2">
                     {moduleLinks.map((link) => (
-                      <Link key={link.name} to={link.href} className="block px-4 py-2 text-sm text-gray-700 hover:bg-brand-blue-light hover:text-brand-blue">
+                      <Link key={link.name} to={link.href} className="block px-4 py-2 text-sm text-gray-700 hover:bg-brand-blue-light hover:text-brand-blue transition-colors duration-150">
                         {link.name}
                       </Link>
                     ))}
                   </div>
                 </div>
               </div>
-              <Link to="/tarifs" className="hover:text-brand-blue">Tarifs</Link>
-              <Link to="/contact" className="hover:text-brand-blue">Contact</Link>
+              <Link to="/tarifs" className="hover:text-brand-blue py-2">Tarifs</Link>
+              <Link to="/contact" className="hover:text-brand-blue py-2">Contact</Link>
             </nav>
 
             <div className="hidden md:flex items-center gap-4">

@@ -141,4 +141,26 @@
   .hover-glow-yellow:hover {
     box-shadow: 0 0 30px rgba(251, 191, 36, 0.3);
   }
+
+  /* Improved dropdown menu behavior */
+  .dropdown-menu {
+    transition: opacity 200ms ease-in-out, visibility 200ms ease-in-out, transform 200ms ease-in-out;
+    transform: translateY(-8px);
+  }
+
+  .dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  /* Ensure dropdown stays open when hovering over the gap */
+  .dropdown-trigger:hover + .dropdown-bridge,
+  .dropdown-bridge:hover,
+  .dropdown-bridge:hover + .dropdown-menu,
+  .dropdown-menu:hover {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
 }
