@@ -15,7 +15,8 @@ import {
   LogOut,
   LayoutDashboard,
   BarChart3,
-  Bell
+  Bell,
+  FileSearch
 } from 'lucide-react';
 
 interface NavigationItem {
@@ -43,6 +44,12 @@ const navigationItems: NavigationItem[] = [
     label: 'Notifications',
     icon: Bell,
     path: '/admin/notifications'
+  },
+  {
+    id: 'audit-logs',
+    label: 'Audit Logs',
+    icon: FileSearch,
+    path: '/admin/audit-logs'
   },
   {
     id: 'users',
