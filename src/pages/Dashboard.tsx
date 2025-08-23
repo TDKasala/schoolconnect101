@@ -97,27 +97,10 @@ export const Dashboard: React.FC = () => {
     );
   }
 
-  // Check if user has platform_admin role
-  if (profile.role !== 'platform_admin') {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-blue-light to-white">
-        <div className="text-center max-w-md">
-          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-            <h2 className="text-lg font-semibold text-red-800 mb-2">Accès non autorisé</h2>
-            <p className="text-red-600 mb-4">
-              Vous n'avez pas les permissions nécessaires pour accéder au tableau de bord administrateur.
-              Rôle actuel: {profile.role}
-            </p>
-            <button 
-              onClick={() => signOut()}
-              className="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
-            >
-              Se déconnecter
-            </button>
-          </div>
-        </div>
-      </div>
-    );
+  // Redirect platform admins to admin dashboard
+  if (profile.role === 'platform_admin') {
+    window.location.href = '/admin/dashboard';
+    return null;
   }
 
   const getRoleDisplayName = (role: string) => {
