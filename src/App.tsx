@@ -24,6 +24,18 @@ import { AdminAIGenerator } from './pages/admin/AdminAIGenerator';
 import { AdminReports } from './pages/admin/AdminReports';
 import { AdminSupport } from './pages/admin/AdminSupport';
 
+// School Admin components and pages
+import { SchoolAdminLayout } from './components/school/SchoolAdminLayout';
+import { SchoolDashboard } from './pages/school/SchoolDashboard';
+import { SchoolStudents } from './pages/school/SchoolStudents';
+import { SchoolTeachers } from './pages/school/SchoolTeachers';
+import { SchoolClasses } from './pages/school/SchoolClasses';
+import { SchoolAttendance } from './pages/school/SchoolAttendance';
+import { SchoolGrades } from './pages/school/SchoolGrades';
+import { SchoolPayments } from './pages/school/SchoolPayments';
+import { SchoolMessages } from './pages/school/SchoolMessages';
+import { SchoolEvents } from './pages/school/SchoolEvents';
+
 function App() {
   return (
     <SimpleAuthProvider>
@@ -50,6 +62,19 @@ function App() {
               <Route path="ai-generator" element={<AdminAIGenerator />} />
               <Route path="reports" element={<AdminReports />} />
               <Route path="support" element={<AdminSupport />} />
+            </Route>
+            
+            {/* School Admin routes with layout */}
+            <Route path="/school" element={<SchoolAdminLayout />}>
+              <Route path="dashboard" element={<SchoolDashboard />} />
+              <Route path="students" element={<SchoolStudents />} />
+              <Route path="teachers" element={<SchoolTeachers />} />
+              <Route path="classes" element={<SchoolClasses />} />
+              <Route path="attendance" element={<SchoolAttendance />} />
+              <Route path="grades" element={<SchoolGrades />} />
+              <Route path="payments" element={<SchoolPayments />} />
+              <Route path="messages" element={<SchoolMessages />} />
+              <Route path="events" element={<SchoolEvents />} />
             </Route>
             
             {/* Default redirect */}
