@@ -16,7 +16,8 @@ import {
   LayoutDashboard,
   BarChart3,
   Bell,
-  FileSearch
+  FileSearch,
+  MessageCircle
 } from 'lucide-react';
 
 interface NavigationItem {
@@ -50,6 +51,12 @@ const navigationItems: NavigationItem[] = [
     label: 'Audit Logs',
     icon: FileSearch,
     path: '/admin/audit-logs'
+  },
+  {
+    id: 'platform-messaging',
+    label: 'Platform Messaging',
+    icon: MessageCircle,
+    path: '/admin/platform-messaging'
   },
   {
     id: 'users',
