@@ -21,6 +21,13 @@ import { Login } from './pages/Login'
 import { Register } from './pages/Register'
 import { Dashboard } from './pages/Dashboard'
 import { Profile } from './pages/Profile'
+import { AdminLayout } from './components/admin/AdminLayout'
+import { AdminProtectedRoute } from './components/admin/AdminProtectedRoute'
+import { AdminOverview } from './pages/admin/AdminOverview'
+import { AdminUsers } from './pages/admin/AdminUsers'
+import { AdminSchools } from './pages/admin/AdminSchools'
+import { AdminSettings } from './pages/admin/AdminSettings'
+import { AdminMessages } from './pages/admin/AdminMessages'
 
 function App() {
   return (
@@ -57,6 +64,19 @@ function App() {
               <Profile />
             </ProtectedRoute>
           } />
+
+          {/* Admin Routes */}
+          <Route path="/admin" element={
+            <AdminProtectedRoute>
+              <AdminLayout />
+            </AdminProtectedRoute>
+          }>
+            <Route index element={<AdminOverview />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="schools" element={<AdminSchools />} />
+            <Route path="settings" element={<AdminSettings />} />
+            <Route path="messages" element={<AdminMessages />} />
+          </Route>
         </Routes>
         <PWAPrompt />
       </BrowserRouter>
