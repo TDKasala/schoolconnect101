@@ -16,12 +16,16 @@ export const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Login: Attempting to sign in with:', email);
     setIsLoading(true);
 
     const { error } = await signIn(email, password);
     
     if (!error) {
+      console.log('Login: Sign in successful, redirecting to:', from);
       navigate(from, { replace: true });
+    } else {
+      console.error('Login: Sign in failed:', error);
     }
     
     setIsLoading(false);

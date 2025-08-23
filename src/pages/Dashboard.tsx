@@ -3,7 +3,9 @@ import { useAuth } from '../hooks/useAuth';
 import { Loader2, User, Shield, Building, Users } from 'lucide-react';
 
 export const Dashboard: React.FC = () => {
-  const { user, profile, loading } = useAuth();
+  const { user, profile, loading, signOut } = useAuth();
+
+  console.log('Dashboard: Auth state', { user: !!user, profile: !!profile, loading });
 
   if (loading) {
     return (
@@ -11,16 +13,45 @@ export const Dashboard: React.FC = () => {
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin text-brand-blue mx-auto mb-4" />
           <p className="text-gray-600">Chargement du tableau de bord...</p>
+          <button 
+            onClick={() => signOut()}
+            className="mt-4 text-sm text-brand-blue hover:text-brand-blue-dark"
+          >
+            Forcer la déconnexion
+          </button>
         </div>
       </div>
     );
   }
 
-  if (!user || !profile) {
+  if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-blue-light to-white">
         <div className="text-center">
-          <p className="text-gray-600">Accès non autorisé</p>
+          <p className="text-gray-600">Utilisateur non connecté</p>
+          <button 
+            onClick={() => window.location.href = '/login'}
+            className="mt-4 bg-brand-blue text-white px-4 py-2 rounded-lg"
+          >
+            Se connecter
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-blue-light to-white">
+        <div className="text-center">
+          <p className="text-gray-600 mb-4">Profil utilisateur non trouvé</p>
+          <p className="text-sm text-gray-500 mb-4">Votre profil doit être créé par un administrateur</p>
+          <button 
+            onClick={() => signOut()}
+            className="bg-brand-blue text-white px-4 py-2 rounded-lg"
+          >
+            Se déconnecter
+          </button>
         </div>
       </div>
     );

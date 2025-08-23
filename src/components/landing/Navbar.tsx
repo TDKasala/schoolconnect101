@@ -89,7 +89,7 @@ export default function Navbar() {
                     className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-brand-blue"
                   >
                     <User className="h-4 w-4" />
-                    <span>{profile?.full_name || profile?.email}</span>
+                    <span>{profile?.first_name ? `${profile.first_name} ${profile.last_name}` : profile?.email}</span>
                     <ChevronDown className="h-4 w-4" />
                   </button>
                   {userMenuOpen && (

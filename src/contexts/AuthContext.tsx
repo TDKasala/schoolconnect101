@@ -74,7 +74,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       if (error) {
         console.error('Error fetching profile:', error);
-        // Set loading to false even if profile fetch fails
+        if (error.code === 'PGRST116') {
+          console.log('User profile not found, user needs to complete registration');
+          setProfile(null);
+        }
         setLoading(false);
         return;
       }
