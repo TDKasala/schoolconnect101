@@ -64,7 +64,7 @@ export default function Navbar() {
 
             <div className="hidden md:flex items-center gap-4">
               <Link to="/contact" className="text-sm font-medium text-gray-600 hover:text-brand-blue">Demander une démo</Link>
-              <a href="#cta" className="inline-flex items-center rounded-lg bg-brand-green px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-green/90 focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2">Ouvrir un compte</a>
+              <Link to="/contact" className="inline-flex items-center rounded-lg bg-brand-green px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-green/90 focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2">Ouvrir un compte</Link>
             </div>
 
             <button className="md:hidden p-2 text-gray-700" onClick={() => setOpen(!open)}>
@@ -110,7 +110,7 @@ export default function Navbar() {
               <Link to="/contact" className="block text-gray-700 hover:text-brand-blue">Contact</Link>
               <div className="pt-4 border-t border-gray-200 flex flex-col gap-4">
                 <Link to="/contact" className="text-center w-full rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50">Demander une démo</Link>
-                <a href="#cta" className="text-center w-full inline-flex items-center justify-center rounded-lg bg-brand-green px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-green/90">Ouvrir un compte</a>
+                <Link to="/contact" className="text-center w-full inline-flex items-center justify-center rounded-lg bg-brand-green px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-green/90">Ouvrir un compte</Link>
               </div>
             </div>
           </div>
