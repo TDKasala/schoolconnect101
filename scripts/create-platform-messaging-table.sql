@@ -299,44 +299,57 @@ CREATE TRIGGER update_platform_announcements_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
 
--- Insert sample data for testing
-INSERT INTO public.platform_announcements (
-  title,
-  content,
-  announcement_type,
-  priority,
-  target_schools,
-  target_roles,
-  is_pinned,
-  published_at,
-  created_by
-) VALUES (
-  'Welcome to SchoolConnect Platform',
-  'Welcome to the SchoolConnect platform! This is a sample announcement to demonstrate the messaging system.',
-  'general',
-  'normal',
-  NULL, -- all schools
-  NULL, -- all roles
-  true,
-  NOW(),
-  (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'platform_admin' LIMIT 1)
-) ON CONFLICT DO NOTHING;
+-- Insert sample data for testing (only if platform admin exists)
+DO $$
+DECLARE
+  admin_user_id UUID;
+BEGIN
+  -- Check if platform admin exists
+  SELECT id INTO admin_user_id 
+  FROM auth.users 
+  WHERE raw_user_meta_data->>'role' = 'platform_admin' 
+  LIMIT 1;
+  
+  -- Only insert sample data if admin user exists
+  IF admin_user_id IS NOT NULL THEN
+    INSERT INTO public.platform_announcements (
+      title,
+      content,
+      announcement_type,
+      priority,
+      target_schools,
+      target_roles,
+      is_pinned,
+      published_at,
+      created_by
+    ) VALUES (
+      'Welcome to SchoolConnect Platform',
+      'Welcome to the SchoolConnect platform! This is a sample announcement to demonstrate the messaging system.',
+      'general',
+      'normal',
+      NULL, -- all schools
+      NULL, -- all roles
+      true,
+      NOW(),
+      admin_user_id
+    ) ON CONFLICT DO NOTHING;
 
--- Insert sample platform message
-INSERT INTO public.platform_messages (
-  title,
-  content,
-  message_type,
-  priority,
-  sender_id,
-  target_audience,
-  status
-) VALUES (
-  'Platform Messaging System Initialized',
-  'The platform messaging system has been successfully set up and is ready for use.',
-  'update',
-  'normal',
-  (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'platform_admin' LIMIT 1),
-  '{"schools": null, "roles": ["platform_admin"], "specific_users": null}',
-  'draft'
-) ON CONFLICT DO NOTHING;
+    INSERT INTO public.platform_messages (
+      title,
+      content,
+      message_type,
+      priority,
+      sender_id,
+      target_audience,
+      status
+    ) VALUES (
+      'Platform Messaging System Initialized',
+      'The platform messaging system has been successfully set up and is ready for use.',
+      'update',
+      'normal',
+      admin_user_id,
+      '{"schools": null, "roles": ["platform_admin"], "specific_users": null}',
+      'draft'
+    ) ON CONFLICT DO NOTHING;
+  END IF;
+END $$;
