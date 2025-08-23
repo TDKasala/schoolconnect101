@@ -1,5 +1,6 @@
 import React from 'react';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../contexts/SimpleAuthContext';
+import { DebugUserInfo } from '../components/DebugUserInfo';
 import { Loader2, User, Shield, Building, Users } from 'lucide-react';
 
 export const Dashboard: React.FC = () => {
@@ -137,6 +138,9 @@ export const Dashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-blue-light to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Debug Info */}
+        <DebugUserInfo />
+        
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">
