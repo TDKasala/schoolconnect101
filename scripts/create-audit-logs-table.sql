@@ -16,12 +16,7 @@ CREATE TABLE IF NOT EXISTS public.audit_logs (
   severity VARCHAR(20) NOT NULL DEFAULT 'info', -- info, warning, error, critical
   metadata JSONB, -- additional context data
   session_id VARCHAR(255), -- track user sessions
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  INDEX (user_id, created_at),
-  INDEX (action, created_at),
-  INDEX (status, created_at),
-  INDEX (severity, created_at),
-  INDEX (ip_address, created_at)
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Create security_alerts table for automated threat detection
@@ -39,11 +34,7 @@ CREATE TABLE IF NOT EXISTS public.security_alerts (
   resolved_at TIMESTAMP WITH TIME ZONE,
   resolution_notes TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  INDEX (alert_type, created_at),
-  INDEX (severity, status),
-  INDEX (user_id, created_at),
-  INDEX (ip_address, created_at)
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Create audit_log_archive table for 90+ day old logs
@@ -63,11 +54,24 @@ CREATE TABLE IF NOT EXISTS public.audit_log_archive (
   metadata JSONB,
   session_id VARCHAR(255),
   original_created_at TIMESTAMP WITH TIME ZONE NOT NULL,
-  archived_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  INDEX (user_id, original_created_at),
-  INDEX (action, original_created_at),
-  INDEX (original_created_at)
+  archived_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Create indexes for performance
+CREATE INDEX IF NOT EXISTS idx_audit_logs_user_created ON public.audit_logs (user_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_audit_logs_action_created ON public.audit_logs (action, created_at);
+CREATE INDEX IF NOT EXISTS idx_audit_logs_status_created ON public.audit_logs (status, created_at);
+CREATE INDEX IF NOT EXISTS idx_audit_logs_severity_created ON public.audit_logs (severity, created_at);
+CREATE INDEX IF NOT EXISTS idx_audit_logs_ip_created ON public.audit_logs (ip_address, created_at);
+
+CREATE INDEX IF NOT EXISTS idx_security_alerts_type_created ON public.security_alerts (alert_type, created_at);
+CREATE INDEX IF NOT EXISTS idx_security_alerts_severity_status ON public.security_alerts (severity, status);
+CREATE INDEX IF NOT EXISTS idx_security_alerts_user_created ON public.security_alerts (user_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_security_alerts_ip_created ON public.security_alerts (ip_address, created_at);
+
+CREATE INDEX IF NOT EXISTS idx_audit_archive_user_created ON public.audit_log_archive (user_id, original_created_at);
+CREATE INDEX IF NOT EXISTS idx_audit_archive_action_created ON public.audit_log_archive (action, original_created_at);
+CREATE INDEX IF NOT EXISTS idx_audit_archive_original_created ON public.audit_log_archive (original_created_at);
 
 -- Enable Row Level Security
 ALTER TABLE public.audit_logs ENABLE ROW LEVEL SECURITY;
