@@ -160,7 +160,7 @@ export default function Tarifs() {
                   </ul>
                   <div className="mt-10">
                     <Link
-                      to={plan.name === 'Entreprise' ? '/contact' : 'mailto:contact@schoolconnect.cd?subject=Souscription%20-%20SchoolConnect'}
+                      to="/contact"
                       className={`w-full block text-center rounded-lg px-6 py-3 text-base font-semibold transition-colors duration-300 ${plan.featured ? 'bg-brand-yellow text-gray-900 hover:bg-brand-yellow/90' : 'bg-brand-blue text-white hover:bg-brand-blue/90'}`}>
                       {plan.cta}
                     </Link>
