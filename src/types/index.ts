@@ -19,9 +19,12 @@ export type Gender = 'M' | 'F'
 export interface CreateSchoolData {
   name: string
   address?: string
-  contact_number?: string
+  city?: string
+  province?: string
+  country?: string
+  phone?: string
   email?: string
-  registration_number?: string
+  max_students?: number
 }
 
 export interface SchoolAdminAssignment {
@@ -32,6 +35,19 @@ export interface SchoolAdminAssignment {
     full_name: string
     phone?: string
   }
+}
+
+// Activity logging
+export interface ActivityLog {
+  id: string
+  user_id?: string
+  action: string
+  resource_type: string
+  resource_id?: string
+  details?: Record<string, any>
+  ip_address?: string
+  user_agent?: string
+  created_at: string
 }
 
 // Core entities
@@ -54,9 +70,13 @@ export interface School {
   id: string
   name: string
   address?: string
-  contact_number?: string
+  city?: string
+  province?: string
+  country?: string
+  phone?: string
   email?: string
-  registration_number?: string
+  max_students?: number
+  is_active: boolean
   created_at: string
   updated_at: string
 }

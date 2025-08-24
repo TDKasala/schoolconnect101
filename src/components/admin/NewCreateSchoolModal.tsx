@@ -25,12 +25,15 @@ export const CreateSchoolModal: React.FC<CreateSchoolModalProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({})
   
   // School data
-  const [schoolData, setSchoolData] = useState<CreateSchoolData>({
+  const [formData, setFormData] = useState<CreateSchoolData>({
     name: '',
     address: '',
-    contact_number: '',
+    city: '',
+    province: '',
+    country: 'République Démocratique du Congo',
+    phone: '',
     email: '',
-    registration_number: ''
+    max_students: undefined
   })
 
   // Admin assignment data
@@ -54,12 +57,15 @@ export const CreateSchoolModal: React.FC<CreateSchoolModalProps> = ({
       setStep('school')
       setError('')
       setErrors({})
-      setSchoolData({
+      setFormData({
         name: '',
         address: '',
-        contact_number: '',
+        city: '',
+        province: '',
+        country: 'République Démocratique du Congo',
+        phone: '',
         email: '',
-        registration_number: ''
+        max_students: undefined
       })
       setAdminAssignment({
         type: 'new',

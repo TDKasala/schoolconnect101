@@ -68,33 +68,21 @@ export class SchoolDbService {
   }
   
   /**
-   * Generate a unique school code based on name
-   */
-  private static generateSchoolCode(name: string): string {
-    // Remove special characters and spaces, take first 3-6 characters, add random suffix
-    const cleanName = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase()
-    const prefix = cleanName.substring(0, Math.min(6, cleanName.length)) || 'SCH'
-    const suffix = Math.random().toString(36).substring(2, 5).toUpperCase()
-    return `${prefix}${suffix}`
-  }
-
-  /**
    * Create a new school
    */
   static async createSchool(schoolData: CreateSchoolData): Promise<School | null> {
     try {
-      // Generate a school code if not provided
-      const schoolCode = this.generateSchoolCode(schoolData.name)
-      
       const { data, error } = await supabase
         .from('schools')
         .insert([{
           name: schoolData.name,
-          code: schoolCode,
           address: schoolData.address || null,
-          contact_number: schoolData.contact_number || null,
+          city: schoolData.city || null,
+          province: schoolData.province || null,
+          country: schoolData.country || 'République Démocratique du Congo',
+          phone: schoolData.phone || null,
           email: schoolData.email || null,
-          registration_number: schoolData.registration_number || null,
+          max_students: schoolData.max_students || null,
           is_active: true
         }])
         .select()
