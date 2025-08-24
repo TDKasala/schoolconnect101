@@ -19,6 +19,7 @@ import { supabase } from '../../lib/supabase';
 import { CreateUserModal } from '../../components/admin/CreateUserModal';
 import { CreateSchoolModal } from '../../components/admin/CreateSchoolModal';
 import { SchoolService } from '../../services/schoolService';
+import { UserService } from '../../services/userService';
 
 interface UserData {
   id: string;
@@ -83,19 +84,27 @@ export const AdminUsers: React.FC = () => {
 
   const fetchUsers = async () => {
     try {
-      // Get users with school data from database only
-      const { data: usersData, error: usersError } = await supabase
-        .from('users')
-        .select(`
-          *,
-          school:schools(id, name, code)
-        `)
-        .order('created_at', { ascending: false });
+      // Use UserService to get all users (handles RLS and Admin API fallback)
+      const usersData = await UserService.getAll();
+      
+      // Convert to UserData format expected by the component
+      const formattedUsers = usersData.map(user => ({
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        full_name: user.full_name,
+        approved: user.approved,
+        school_id: user.school_id || undefined,
+        created_at: user.created_at,
+        last_login: user.last_login || undefined,
+        school: user.school ? {
+          id: user.school.id,
+          name: user.school.name,
+          code: user.school.code || user.school.registration_number || 'N/A'
+        } : undefined
+      }));
 
-      if (usersError) throw usersError;
-
-      // Use database data directly (no auth admin API needed)
-      setUsers(usersData || []);
+      setUsers(formattedUsers);
     } catch (error: any) {
       console.error('Error fetching users:', error);
       showToast({

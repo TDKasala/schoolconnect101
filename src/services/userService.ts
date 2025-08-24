@@ -26,7 +26,16 @@ export class UserService {
       return null
     }
 
-    return data
+    // Ensure all required fields are present
+    return data ? {
+      ...data,
+      is_active: data.is_active ?? true,
+      phone: data.phone ?? null,
+      avatar_url: data.avatar_url ?? null,
+      user_status_id: data.user_status_id ?? null,
+      last_login: data.last_login ?? null,
+      preferences: data.preferences ?? {}
+    } : null
   }
 
   /**
@@ -45,7 +54,15 @@ export class UserService {
       return []
     }
 
-    return data || []
+    return (data || []).map(user => ({
+      ...user,
+      is_active: user.is_active ?? true,
+      phone: user.phone ?? null,
+      avatar_url: user.avatar_url ?? null,
+      user_status_id: user.user_status_id ?? null,
+      last_login: user.last_login ?? null,
+      preferences: user.preferences ?? {}
+    }))
   }
 
   /**
@@ -69,7 +86,15 @@ export class UserService {
       return []
     }
 
-    return data || []
+    return (data || []).map(user => ({
+      ...user,
+      is_active: user.is_active ?? true,
+      phone: user.phone ?? null,
+      avatar_url: user.avatar_url ?? null,
+      user_status_id: user.user_status_id ?? null,
+      last_login: user.last_login ?? null,
+      preferences: user.preferences ?? {}
+    }))
   }
 
   /**
@@ -110,7 +135,92 @@ export class UserService {
       return []
     }
 
-    return data || []
+    return (data || []).map(user => ({
+      ...user,
+      is_active: user.is_active ?? true,
+      phone: user.phone ?? null,
+      avatar_url: user.avatar_url ?? null,
+      user_status_id: user.user_status_id ?? null,
+      last_login: user.last_login ?? null,
+      preferences: user.preferences ?? {}
+    }))
+  }
+
+  /**
+   * Get all users (Admin API for platform admins)
+   */
+  static async getAll(): Promise<User[]> {
+    try {
+      // First try to get from users table (if RLS allows)
+      const { data: usersData, error: usersError } = await supabase
+        .from('users')
+        .select(`
+          *,
+          school:schools(id, name, code)
+        `)
+        .order('created_at', { ascending: false })
+
+      if (!usersError && usersData && usersData.length > 0) {
+        // Ensure all required fields are present
+        return usersData.map(user => ({
+          ...user,
+          is_active: user.is_active ?? true,
+          phone: user.phone ?? null,
+          avatar_url: user.avatar_url ?? null,
+          user_status_id: user.user_status_id ?? null,
+          last_login: user.last_login ?? null,
+          preferences: user.preferences ?? {}
+        }))
+      }
+
+      // If RLS blocks access, use Admin API to get auth users and match with profiles
+      const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers()
+      
+      if (authError) throw authError
+
+      // Get user profiles for each auth user
+      const userProfiles: User[] = []
+      
+      for (const authUser of authUsers.users) {
+        const { data: profile, error: profileError } = await supabase
+          .from('users')
+          .select(`
+            *,
+            school:schools(id, name, code)
+          `)
+          .eq('id', authUser.id)
+          .single()
+
+        if (!profileError && profile) {
+          userProfiles.push(profile)
+        } else {
+          // Create a minimal profile from auth data if profile doesn't exist
+          const minimalProfile: User = {
+            id: authUser.id,
+            email: authUser.email || '',
+            full_name: authUser.user_metadata?.full_name || authUser.email || '',
+            role: authUser.user_metadata?.role || 'teacher',
+            school_id: null,
+            phone: null,
+            avatar_url: null,
+            is_active: true,
+            approved: false,
+            user_status_id: null,
+            last_login: authUser.last_sign_in_at,
+            preferences: {},
+            created_at: authUser.created_at,
+            updated_at: authUser.updated_at || authUser.created_at
+          }
+          userProfiles.push(minimalProfile)
+        }
+      }
+
+      return userProfiles.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+
+    } catch (error) {
+      console.error('Error fetching all users:', error)
+      return []
+    }
   }
 
   /**
