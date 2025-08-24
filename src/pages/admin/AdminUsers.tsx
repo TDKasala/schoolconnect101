@@ -72,7 +72,7 @@ export const AdminUsers: React.FC = () => {
 
   const fetchUsers = async () => {
     try {
-      // Get users with school data
+      // Get users with school data from database only
       const { data: usersData, error: usersError } = await supabase
         .from('users')
         .select(`
@@ -83,20 +83,8 @@ export const AdminUsers: React.FC = () => {
 
       if (usersError) throw usersError;
 
-      // Get auth users for additional metadata
-      const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers();
-      if (authError) throw authError;
-
-      // Merge profile and auth data
-      const mergedUsers = (usersData || []).map(user => {
-        const authUser = authUsers.users.find(au => au.id === user.id);
-        return {
-          ...user,
-          last_login: authUser?.last_sign_in_at
-        };
-      });
-
-      setUsers(mergedUsers);
+      // Use database data directly (no auth admin API needed)
+      setUsers(usersData || []);
     } catch (error: any) {
       console.error('Error fetching users:', error);
       showToast({
@@ -255,9 +243,13 @@ export const AdminUsers: React.FC = () => {
     }
 
     try {
-      // Delete from auth.users (this will cascade delete the profile)
-      const { error: authError } = await supabase.auth.admin.deleteUser(user.id);
-      if (authError) throw authError;
+      // Delete from users table only (auth deletion requires service role)
+      const { error: deleteError } = await supabase
+        .from('users')
+        .delete()
+        .eq('id', user.id);
+
+      if (deleteError) throw deleteError;
 
       // Remove from local state
       setUsers(prev => prev.filter(u => u.id !== user.id));

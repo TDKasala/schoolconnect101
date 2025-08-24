@@ -38,30 +38,38 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
     setLoading(true);
 
     try {
-      // Create user in auth.users
-      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+      // Create user using regular signup (no admin API needed)
+      const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
-        email_confirm: true
+        options: {
+          data: {
+            full_name: formData.full_name,
+            role: formData.role,
+            school_id: formData.school_id || null
+          }
+        }
       });
 
       if (authError) throw authError;
 
-      // Create user profile
-      const { error: profileError } = await supabase
-        .from('users')
-        .insert([{
-          id: authData.user.id,
-          email: formData.email,
-          full_name: formData.full_name,
-          role: formData.role,
-          school_id: formData.school_id || null,
-          approved: formData.approved,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        }]);
+      if (authData.user) {
+        // Create user profile
+        const { error: profileError } = await supabase
+          .from('users')
+          .insert([{
+            id: authData.user.id,
+            email: formData.email,
+            full_name: formData.full_name,
+            role: formData.role,
+            school_id: formData.school_id || null,
+            approved: formData.approved,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          }]);
 
-      if (profileError) throw profileError;
+        if (profileError) throw profileError;
+      }
 
       showToast({
         type: 'success',
