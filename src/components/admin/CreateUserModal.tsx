@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X, Save, User, Mail, Shield, School as SchoolIcon } from 'lucide-react';
 import { useToast } from '../../contexts/ToastContext';
-import { supabase } from '../../lib/supabase';
+import { UserService } from '../../services/userService';
 
 interface School {
   id: string;
@@ -38,33 +38,15 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
     setLoading(true);
 
     try {
-      // Create user in auth first, then profile
-      const { data: authData, error: authError } = await supabase.auth.signUp({
+      // Create user using Admin API (does not log them in)
+      await UserService.createUser({
         email: formData.email,
         password: formData.password,
-        options: {
-          emailRedirectTo: undefined // Prevent email confirmation for admin-created users
-        }
+        full_name: formData.full_name,
+        role: formData.role,
+        school_id: formData.school_id || undefined,
+        approved: formData.approved
       });
-
-      if (authError) throw authError;
-      if (!authData.user) throw new Error('Failed to create user');
-
-      // Create user profile with the auth user ID
-      const { error: profileError } = await supabase
-        .from('users')
-        .insert([{
-          id: authData.user.id,
-          email: formData.email,
-          full_name: formData.full_name,
-          role: formData.role,
-          school_id: formData.school_id || null,
-          approved: formData.approved,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        }]);
-
-      if (profileError) throw profileError;
 
       showToast({
         type: 'success',

@@ -1,5 +1,6 @@
 import { supabase } from '../lib/supabase'
-import type { School, CreateSchoolData, User, SchoolAdminAssignment } from '../types'
+import type { School, CreateSchoolData, SchoolAdminAssignment, User } from '../types'
+import { UserService } from './userService'
 
 export class SchoolService {
   /**
@@ -96,31 +97,15 @@ export class SchoolService {
           throw new Error('New user data is required')
         }
 
-        const { data: authUser, error: authError } = await supabase.auth.signUp({
+        // Create new user using Admin API (does not log them in)
+        admin = await UserService.createUser({
           email: adminAssignment.newUserData.email,
           password: 'TempPass123!', // Temporary password - user should reset
+          full_name: adminAssignment.newUserData.full_name,
+          role: 'school_admin',
+          school_id: school.id,
+          approved: true
         })
-
-        if (authError) throw authError
-        if (!authUser.user) throw new Error('Failed to create auth user')
-
-        const { data: newUser, error: userError } = await supabase
-          .from('users')
-          .insert([{
-            id: authUser.user.id,
-            email: adminAssignment.newUserData.email,
-            full_name: adminAssignment.newUserData.full_name,
-            phone: adminAssignment.newUserData.phone,
-            role: 'school_admin',
-            school_id: school.id,
-            approved: true,
-            is_active: true
-          }])
-          .select()
-          .single()
-
-        if (userError) throw userError
-        admin = newUser
       }
 
       return { school, admin }
