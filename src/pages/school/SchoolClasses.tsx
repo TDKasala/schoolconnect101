@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/SimpleAuthContext';
+import { useToast } from '../../contexts/ToastContext';
 import { supabase } from '../../lib/supabase';
-import { BookOpen, Plus, Search, Filter, Users, Clock, MapPin, AlertTriangle } from 'lucide-react';
+import { BookOpen, Plus, Search, Users, Clock, MapPin, AlertTriangle, Edit, Trash2 } from 'lucide-react';
+import { ClassModal } from '../../components/school/ClassModal';
 
 interface Class {
   id: string;
   class_name: string;
-  grade_level: string;
-  section?: string;
+  class_level: string;
   academic_year: string;
   capacity: number;
   room_number?: string;
@@ -25,12 +26,15 @@ interface Class {
 
 export const SchoolClasses: React.FC = () => {
   const { profile } = useAuth();
+  const { showToast } = useToast();
   const [classes, setClasses] = useState<Class[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [gradeFilter, setGradeFilter] = useState('all');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedClass, setSelectedClass] = useState<Class | null>(null);
 
   useEffect(() => {
     fetchClasses();
@@ -47,13 +51,13 @@ export const SchoolClasses: React.FC = () => {
 
       // Fetch classes with teacher info and student count
       const { data: classesData, error: fetchError } = await supabase
-        .from('classes')
+        .from('classes' as any)
         .select(`
           *,
           teacher:teachers(first_name, last_name)
         `)
         .eq('school_id', profile.school_id)
-        .order('grade_level', { ascending: true });
+        .order('class_level', { ascending: true });
 
       if (fetchError) throw fetchError;
 
@@ -61,7 +65,7 @@ export const SchoolClasses: React.FC = () => {
       const classesWithCounts = await Promise.all(
         (classesData || []).map(async (classItem) => {
           const { count } = await supabase
-            .from('students')
+            .from('students' as any)
             .select('*', { count: 'exact', head: true })
             .eq('class_id', classItem.id)
             .eq('status', 'active');
@@ -73,7 +77,7 @@ export const SchoolClasses: React.FC = () => {
         })
       );
 
-      setClasses(classesWithCounts);
+      setClasses((classesWithCounts as unknown as Class[]) || []);
     } catch (err) {
       console.error('Error fetching classes:', err);
       setError('Erreur lors du chargement des classes');
@@ -82,15 +86,58 @@ export const SchoolClasses: React.FC = () => {
     }
   };
 
+  const handleAddClass = () => {
+    setSelectedClass(null);
+    setIsModalOpen(true);
+  };
+
+  const handleEditClass = (classItem: Class) => {
+    setSelectedClass(classItem);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteClass = async (classItem: Class) => {
+    if (!confirm(`Êtes-vous sûr de vouloir supprimer la classe ${classItem.class_name}?`)) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('classes' as any)
+        .delete()
+        .eq('id', classItem.id);
+
+      if (error) throw error;
+
+      showToast({
+        type: 'success',
+        title: 'Classe supprimée',
+        message: 'La classe a été supprimée avec succès.'
+      });
+
+      fetchClasses();
+    } catch (error: any) {
+      console.error('Error deleting class:', error);
+      showToast({
+        type: 'error',
+        title: 'Erreur',
+        message: error.message || 'Erreur lors de la suppression de la classe.'
+      });
+    }
+  };
+
+  const handleModalSave = () => {
+    fetchClasses();
+  };
+
   const filteredClasses = classes.filter(classItem => {
     const matchesSearch = 
       classItem.class_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      classItem.grade_level.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (classItem.section && classItem.section.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      classItem.class_level.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (classItem.room_number && classItem.room_number.toLowerCase().includes(searchTerm.toLowerCase()));
     
     const matchesStatus = statusFilter === 'all' || classItem.status === statusFilter;
-    const matchesGrade = gradeFilter === 'all' || classItem.grade_level === gradeFilter;
+    const matchesGrade = gradeFilter === 'all' || classItem.class_level === gradeFilter;
     
     return matchesSearch && matchesStatus && matchesGrade;
   });
@@ -105,7 +152,7 @@ export const SchoolClasses: React.FC = () => {
   };
 
   const getUniqueGrades = () => {
-    const grades = [...new Set(classes.map(c => c.grade_level))];
+    const grades = [...new Set(classes.map(c => c.class_level))];
     return grades.sort();
   };
 
@@ -147,12 +194,15 @@ export const SchoolClasses: React.FC = () => {
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Classes Management</h1>
-            <p className="text-gray-600">Manage class schedules, subjects, and assignments</p>
+            <h1 className="text-2xl font-bold text-gray-900">Gestion des Classes</h1>
+            <p className="text-gray-600">Gérer les horaires, matières et affectations des classes</p>
           </div>
-          <button className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+          <button 
+            onClick={handleAddClass}
+            className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+          >
             <Plus className="h-4 w-4 mr-2" />
-            Create Class
+            Ajouter Classe
           </button>
         </div>
       </div>
@@ -234,13 +284,13 @@ export const SchoolClasses: React.FC = () => {
                   <div className="space-y-3">
                     <div className="flex items-center text-sm text-gray-600">
                       <Users className="h-4 w-4 mr-2" />
-                      <span>{classItem.student_count || 0} / {classItem.capacity} students</span>
+                      <span>{classItem.student_count || 0} / {classItem.capacity} étudiants</span>
                     </div>
 
                     {classItem.room_number && (
                       <div className="flex items-center text-sm text-gray-600">
                         <MapPin className="h-4 w-4 mr-2" />
-                        <span>Room {classItem.room_number}</span>
+                        <span>Salle {classItem.room_number}</span>
                       </div>
                     )}
 
@@ -264,10 +314,26 @@ export const SchoolClasses: React.FC = () => {
 
                     <div className="pt-3 border-t border-gray-100">
                       <div className="flex items-center justify-between text-xs text-gray-500">
-                        <span>Academic Year: {classItem.academic_year}</span>
+                        <span>Année: {classItem.academic_year}</span>
                         <span>
-                          {Math.round(((classItem.student_count || 0) / classItem.capacity) * 100)}% full
+                          {Math.round(((classItem.student_count || 0) / classItem.capacity) * 100)}% plein
                         </span>
+                      </div>
+                      <div className="flex items-center justify-end space-x-2 mt-2">
+                        <button
+                          onClick={() => handleEditClass(classItem)}
+                          className="text-green-600 hover:text-green-900"
+                          title="Modifier"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteClass(classItem)}
+                          className="text-red-600 hover:text-red-900"
+                          title="Supprimer"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -277,6 +343,13 @@ export const SchoolClasses: React.FC = () => {
           )}
         </div>
       </div>
+
+      <ClassModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleModalSave}
+        classData={selectedClass}
+      />
     </div>
   );
 };

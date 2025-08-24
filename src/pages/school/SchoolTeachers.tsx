@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../contexts/SimpleAuthContext';
+import { Search, Filter, Plus, Users, BookOpen, Calendar, Mail, Phone, Edit, Trash2, DollarSign } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
-import { UserCheck, Plus, Search, Filter, Mail, Phone, Calendar, AlertTriangle, DollarSign } from 'lucide-react';
+import { useAuth } from '../../contexts/SimpleAuthContext';
+import { useToast } from '../../contexts/ToastContext';
+import { TeacherModal } from '../../components/school/TeacherModal';
 
 interface Teacher {
   id: string;
@@ -22,11 +24,14 @@ interface Teacher {
 
 export const SchoolTeachers: React.FC = () => {
   const { profile } = useAuth();
+  const { showToast } = useToast();
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
 
   useEffect(() => {
     fetchTeachers();
@@ -41,21 +46,65 @@ export const SchoolTeachers: React.FC = () => {
         throw new Error('No school ID found');
       }
 
-      const { data, error: fetchError } = await supabase
-        .from('teachers')
+      const { data: teachersData, error: teachersError } = await supabase
+        .from('teachers' as any)
         .select('*')
         .eq('school_id', profile.school_id)
-        .order('created_at', { ascending: false });
+        .order('last_name', { ascending: true });
 
-      if (fetchError) throw fetchError;
+      if (teachersError) throw teachersError;
 
-      setTeachers(data || []);
+      setTeachers((teachersData as unknown as Teacher[]) || []);
     } catch (err) {
       console.error('Error fetching teachers:', err);
       setError('Erreur lors du chargement des enseignants');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleAddTeacher = () => {
+    setSelectedTeacher(null);
+    setIsModalOpen(true);
+  };
+
+  const handleEditTeacher = (teacher: Teacher) => {
+    setSelectedTeacher(teacher);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteTeacher = async (teacher: Teacher) => {
+    if (!confirm(`Êtes-vous sûr de vouloir supprimer l'enseignant ${teacher.first_name} ${teacher.last_name}?`)) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('teachers' as any)
+        .delete()
+        .eq('id', teacher.id);
+
+      if (error) throw error;
+
+      showToast({
+        type: 'success',
+        title: 'Enseignant supprimé',
+        message: 'L\'enseignant a été supprimé avec succès.'
+      });
+
+      fetchTeachers();
+    } catch (error: any) {
+      console.error('Error deleting teacher:', error);
+      showToast({
+        type: 'error',
+        title: 'Erreur',
+        message: error.message || 'Erreur lors de la suppression de l\'enseignant.'
+      });
+    }
+  };
+
+  const handleModalSave = () => {
+    fetchTeachers();
   };
 
   const filteredTeachers = teachers.filter(teacher => {
@@ -103,7 +152,7 @@ export const SchoolTeachers: React.FC = () => {
           <div className="flex items-center">
             <AlertTriangle className="h-5 w-5 text-red-600 mr-3" />
             <div>
-              <h3 className="text-sm font-medium text-red-800">Erreur</h3>
+              <p className="text-sm font-medium text-gray-500">Total Enseignants</p>
               <p className="text-sm text-red-700">{error}</p>
             </div>
           </div>
@@ -117,12 +166,15 @@ export const SchoolTeachers: React.FC = () => {
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Teachers Management</h1>
-            <p className="text-gray-600">Manage teacher profiles, assignments, and schedules</p>
+            <h1 className="text-2xl font-bold text-gray-900">Gestion des Enseignants</h1>
+            <p className="text-gray-600">Gérer les enseignants et le personnel scolaire</p>
           </div>
-          <button className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+          <button 
+            onClick={handleAddTeacher}
+            className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+          >
             <Plus className="h-4 w-4 mr-2" />
-            Add Teacher
+            Ajouter Enseignant
           </button>
         </div>
       </div>
@@ -135,7 +187,7 @@ export const SchoolTeachers: React.FC = () => {
                 <Search className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
                 <input
                   type="text"
-                  placeholder="Search teachers..."
+                  placeholder="Rechercher enseignants..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
@@ -146,14 +198,14 @@ export const SchoolTeachers: React.FC = () => {
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
               >
-                <option value="all">All Status</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="terminated">Terminated</option>
+                <option value="all">Tous les Statuts</option>
+                <option value="active">Actif</option>
+                <option value="inactive">Inactif</option>
+                <option value="on_leave">En Congé</option>
               </select>
             </div>
             <div className="text-sm text-gray-600">
-              {filteredTeachers.length} of {teachers.length} teachers
+              {filteredTeachers.length} sur {teachers.length} enseignants
             </div>
           </div>
         </div>
@@ -163,12 +215,12 @@ export const SchoolTeachers: React.FC = () => {
             <div className="text-center py-12">
               <UserCheck className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">
-                {teachers.length === 0 ? 'No Teachers Found' : 'No Matching Teachers'}
+                {teachers.length === 0 ? 'Aucun Enseignant Trouvé' : 'Aucun Enseignant Correspondant'}
               </h3>
               <p className="text-gray-600 mb-4">
                 {teachers.length === 0 
-                  ? 'Start by adding your first teacher to the system.'
-                  : 'Try adjusting your search criteria or filters.'
+                  ? 'Commencez par ajouter votre premier enseignant.'
+                  : 'Essayez d\'ajuster vos critères de recherche ou filtres.'
                 }
               </p>
             </div>
@@ -190,7 +242,10 @@ export const SchoolTeachers: React.FC = () => {
                       Status
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Hire Date
+                      Statut
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
                     </th>
                   </tr>
                 </thead>
@@ -211,13 +266,9 @@ export const SchoolTeachers: React.FC = () => {
                               {teacher.first_name} {teacher.last_name}
                             </div>
                             <div className="text-sm text-gray-500">
-                              ID: {teacher.employee_number}
+                              <span>N° Employé: {teacher.employee_number}</span>
                             </div>
-                            {teacher.qualifications && (
-                              <div className="text-sm text-gray-500">
-                                {teacher.qualifications}
-                              </div>
-                            )}
+                            <span>Qualifications: {teacher.qualifications || 'N/A'}</span>
                           </div>
                         </div>
                       </td>
@@ -239,22 +290,7 @@ export const SchoolTeachers: React.FC = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
-                          {teacher.subjects && teacher.subjects.length > 0 ? (
-                            <div className="flex flex-wrap gap-1">
-                              {teacher.subjects.slice(0, 3).map((subject, index) => (
-                                <span key={index} className="inline-flex px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-                                  {subject}
-                                </span>
-                              ))}
-                              {teacher.subjects.length > 3 && (
-                                <span className="inline-flex px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full">
-                                  +{teacher.subjects.length - 3} more
-                                </span>
-                              )}
-                            </div>
-                          ) : (
-                            <span className="text-gray-400">No subjects assigned</span>
-                          )}
+                          <span>Matières: {teacher.subjects?.join(', ') || 'N/A'}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -265,14 +301,37 @@ export const SchoolTeachers: React.FC = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center text-sm text-gray-500">
                           <Calendar className="h-4 w-4 mr-2" />
-                          {new Date(teacher.hire_date).toLocaleDateString()}
+                          <span>Date d'Embauche: {new Date(teacher.hire_date).toLocaleDateString()}</span>
                         </div>
                         {teacher.salary_amount && (
                           <div className="flex items-center text-sm text-gray-500 mt-1">
                             <DollarSign className="h-4 w-4 mr-1" />
-                            {teacher.salary_amount.toLocaleString()} {teacher.salary_currency || 'CDF'}
+                            <span>Salaire: {teacher.salary_amount.toLocaleString()} FC</span>
                           </div>
                         )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(teacher.status)}`}>
+                          {teacher.status === 'active' ? 'Actif' : teacher.status === 'inactive' ? 'Inactif' : 'En Congé'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={() => handleEditTeacher(teacher)}
+                            className="text-green-600 hover:text-green-900"
+                            title="Modifier"
+                          >
+                            <Edit className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteTeacher(teacher)}
+                            className="text-red-600 hover:text-red-900"
+                            title="Supprimer"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -282,6 +341,13 @@ export const SchoolTeachers: React.FC = () => {
           )}
         </div>
       </div>
+
+      <TeacherModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleModalSave}
+        teacher={selectedTeacher}
+      />
     </div>
   );
 };

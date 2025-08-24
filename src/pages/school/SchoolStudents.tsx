@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/SimpleAuthContext';
+import { useToast } from '../../contexts/ToastContext';
 import { supabase } from '../../lib/supabase';
-import { Users, Plus, Search, Filter, Mail, Phone, Calendar, AlertTriangle } from 'lucide-react';
+import { Users, Plus, Search, UserCheck, Calendar, GraduationCap, AlertTriangle, Edit, Trash2 } from 'lucide-react';
+import { StudentModal } from '../../components/school/StudentModal';
 
 interface Student {
   id: string;
@@ -24,11 +26,14 @@ interface Student {
 
 export const SchoolStudents: React.FC = () => {
   const { profile } = useAuth();
+  const { showToast } = useToast();
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
 
   useEffect(() => {
     fetchStudents();
@@ -43,15 +48,15 @@ export const SchoolStudents: React.FC = () => {
         throw new Error('No school ID found');
       }
 
-      const { data, error: fetchError } = await supabase
-        .from('students')
+      const { data: studentsData, error: studentsError } = await supabase
+        .from('students' as any)
         .select('*')
         .eq('school_id', profile.school_id)
-        .order('created_at', { ascending: false });
+        .order('last_name', { ascending: true });
 
-      if (fetchError) throw fetchError;
+      if (studentsError) throw studentsError;
 
-      setStudents(data || []);
+      setStudents((studentsData as unknown as Student[]) || []);
     } catch (err) {
       console.error('Error fetching students:', err);
       setError('Erreur lors du chargement des étudiants');
@@ -60,12 +65,55 @@ export const SchoolStudents: React.FC = () => {
     }
   };
 
+  const handleAddStudent = () => {
+    setSelectedStudent(null);
+    setIsModalOpen(true);
+  };
+
+  const handleEditStudent = (student: Student) => {
+    setSelectedStudent(student);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteStudent = async (student: Student) => {
+    if (!confirm(`Êtes-vous sûr de vouloir supprimer l'étudiant ${student.first_name} ${student.last_name}?`)) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('students' as any)
+        .delete()
+        .eq('id', student.id);
+
+      if (error) throw error;
+
+      showToast({
+        type: 'success',
+        title: 'Étudiant supprimé',
+        message: 'L\'étudiant a été supprimé avec succès.'
+      });
+
+      fetchStudents();
+    } catch (error: any) {
+      console.error('Error deleting student:', error);
+      showToast({
+        type: 'error',
+        title: 'Erreur',
+        message: error.message || 'Erreur lors de la suppression de l\'étudiant.'
+      });
+    }
+  };
+
+  const handleModalSave = () => {
+    fetchStudents();
+  };
+
   const filteredStudents = students.filter(student => {
     const matchesSearch = 
       student.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.student_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (student.email && student.email.toLowerCase().includes(searchTerm.toLowerCase()));
+      student.student_number.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesStatus = statusFilter === 'all' || student.status === statusFilter;
     
@@ -120,12 +168,15 @@ export const SchoolStudents: React.FC = () => {
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Students Management</h1>
-            <p className="text-gray-600">Manage student enrollment, profiles, and information</p>
+            <h1 className="text-2xl font-bold text-gray-900">Gestion des Étudiants</h1>
+            <p className="text-gray-600">Gérer les inscriptions, profils et informations des étudiants</p>
           </div>
-          <button className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+          <button 
+            onClick={handleAddStudent}
+            className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+          >
             <Plus className="h-4 w-4 mr-2" />
-            Add Student
+            Ajouter Étudiant
           </button>
         </div>
       </div>
@@ -194,7 +245,10 @@ export const SchoolStudents: React.FC = () => {
                       Status
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Enrollment
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
                     </th>
                   </tr>
                 </thead>
@@ -265,10 +319,22 @@ export const SchoolStudents: React.FC = () => {
                           {student.status}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center text-sm text-gray-500">
-                          <Calendar className="h-4 w-4 mr-2" />
-                          {new Date(student.enrollment_date).toLocaleDateString()}
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={() => handleEditStudent(student)}
+                            className="text-green-600 hover:text-green-900"
+                            title="Modifier"
+                          >
+                            <Edit className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteStudent(student)}
+                            className="text-red-600 hover:text-red-900"
+                            title="Supprimer"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -279,6 +345,13 @@ export const SchoolStudents: React.FC = () => {
           )}
         </div>
       </div>
+
+      <StudentModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleModalSave}
+        student={selectedStudent}
+      />
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/SimpleAuthContext';
 import { supabase } from '../../lib/supabase';
-import { Calendar, Plus, Search, Filter, Clock, MapPin, Users, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Calendar, Plus, Search, Clock, MapPin, Users, AlertTriangle, CheckCircle } from 'lucide-react';
 
 interface Event {
   id: string;
@@ -56,19 +56,18 @@ export const SchoolEvents: React.FC = () => {
 
       // Fetch events for the school
       const { data: eventsData, error: eventsError } = await supabase
-        .from('events')
+        .from('events' as any)
         .select('*')
         .eq('school_id', profile.school_id)
         .order('event_date', { ascending: true });
 
       if (eventsError) throw eventsError;
 
-      setEvents(eventsData || []);
+      setEvents((eventsData as Event[]) || []);
 
       // Calculate event statistics
       if (eventsData && eventsData.length > 0) {
-        const now = new Date();
-        const stats = eventsData.reduce((acc, event) => {
+        const stats = (eventsData as Event[]).reduce((acc, event) => {
           acc.total_events += 1;
           
           const eventDate = new Date(event.event_date);
@@ -185,12 +184,12 @@ export const SchoolEvents: React.FC = () => {
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Events Management</h1>
-            <p className="text-gray-600">Manage school events, activities, and calendar</p>
+            <h1 className="text-2xl font-bold text-gray-900">Gestion des Événements</h1>
+            <p className="text-gray-600">Gérer les événements scolaires, activités et calendrier</p>
           </div>
           <button className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
             <Plus className="h-4 w-4 mr-2" />
-            Add Event
+            Ajouter Événement
           </button>
         </div>
       </div>
@@ -203,7 +202,7 @@ export const SchoolEvents: React.FC = () => {
               <Calendar className="h-8 w-8 text-blue-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Total Events</p>
+              <p className="text-sm font-medium text-gray-500">Total Événements</p>
               <p className="text-2xl font-semibold text-gray-900">{eventStats.total_events}</p>
             </div>
           </div>
@@ -215,7 +214,7 @@ export const SchoolEvents: React.FC = () => {
               <Clock className="h-8 w-8 text-blue-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Upcoming</p>
+              <p className="text-sm font-medium text-gray-500">À Venir</p>
               <p className="text-2xl font-semibold text-gray-900">{eventStats.upcoming_events}</p>
             </div>
           </div>
@@ -227,7 +226,7 @@ export const SchoolEvents: React.FC = () => {
               <CheckCircle className="h-8 w-8 text-green-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Ongoing</p>
+              <p className="text-sm font-medium text-gray-500">En Cours</p>
               <p className="text-2xl font-semibold text-gray-900">{eventStats.ongoing_events}</p>
             </div>
           </div>
@@ -239,7 +238,7 @@ export const SchoolEvents: React.FC = () => {
               <CheckCircle className="h-8 w-8 text-gray-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Completed</p>
+              <p className="text-sm font-medium text-gray-500">Terminés</p>
               <p className="text-2xl font-semibold text-gray-900">{eventStats.completed_events}</p>
             </div>
           </div>
@@ -254,7 +253,7 @@ export const SchoolEvents: React.FC = () => {
                 <Search className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
                 <input
                   type="text"
-                  placeholder="Search events..."
+                  placeholder="Rechercher événements..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
@@ -265,27 +264,27 @@ export const SchoolEvents: React.FC = () => {
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
               >
-                <option value="all">All Status</option>
-                <option value="upcoming">Upcoming</option>
-                <option value="ongoing">Ongoing</option>
-                <option value="completed">Completed</option>
-                <option value="cancelled">Cancelled</option>
+                <option value="all">Tous les Statuts</option>
+                <option value="upcoming">À Venir</option>
+                <option value="ongoing">En Cours</option>
+                <option value="completed">Terminé</option>
+                <option value="cancelled">Annulé</option>
               </select>
               <select
                 value={typeFilter}
                 onChange={(e) => setTypeFilter(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
               >
-                <option value="all">All Types</option>
-                <option value="academic">Academic</option>
+                <option value="all">Tous les Types</option>
+                <option value="academic">Académique</option>
                 <option value="sports">Sports</option>
-                <option value="cultural">Cultural</option>
-                <option value="meeting">Meeting</option>
-                <option value="other">Other</option>
+                <option value="cultural">Culturel</option>
+                <option value="meeting">Réunion</option>
+                <option value="other">Autre</option>
               </select>
             </div>
             <div className="text-sm text-gray-600">
-              {filteredEvents.length} of {events.length} events
+              {filteredEvents.length} sur {events.length} événements
             </div>
           </div>
         </div>
@@ -295,12 +294,12 @@ export const SchoolEvents: React.FC = () => {
             <div className="text-center py-12">
               <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">
-                {events.length === 0 ? 'No Events Found' : 'No Matching Events'}
+                {events.length === 0 ? 'Aucun Événement Trouvé' : 'Aucun Événement Correspondant'}
               </h3>
               <p className="text-gray-600 mb-4">
                 {events.length === 0 
-                  ? 'Start by creating your first event.'
-                  : 'Try adjusting your search criteria or filters.'
+                  ? 'Commencez par créer votre premier événement.'
+                  : 'Essayez d\'ajuster vos critères de recherche ou filtres.'
                 }
               </p>
             </div>
@@ -369,8 +368,8 @@ export const SchoolEvents: React.FC = () => {
 
                     <div className="pt-3 border-t border-gray-100">
                       <div className="flex items-center justify-between text-xs text-gray-500">
-                        <span>{event.is_public ? 'Public Event' : 'Private Event'}</span>
-                        <span>Created: {new Date(event.created_at).toLocaleDateString()}</span>
+                        <span>{event.is_public ? 'Événement Public' : 'Événement Privé'}</span>
+                        <span>Créé: {new Date(event.created_at).toLocaleDateString()}</span>
                       </div>
                     </div>
                   </div>

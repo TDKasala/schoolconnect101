@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/SimpleAuthContext';
+import { useToast } from '../../contexts/ToastContext';
 import { supabase } from '../../lib/supabase';
-import { Calendar, Plus, Search, Filter, Users, CheckCircle, XCircle, Clock, AlertTriangle } from 'lucide-react';
+import { Calendar, Plus, Search, Users, CheckCircle, XCircle, Clock, AlertTriangle, Edit, Trash2 } from 'lucide-react';
+import { AttendanceModal } from '../../components/school/AttendanceModal';
 
 interface AttendanceRecord {
   id: string;
@@ -35,6 +37,7 @@ interface AttendanceSummary {
 
 export const SchoolAttendance: React.FC = () => {
   const { profile } = useAuth();
+  const { showToast } = useToast();
   const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
   const [attendanceSummary, setAttendanceSummary] = useState<AttendanceSummary[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,6 +46,8 @@ export const SchoolAttendance: React.FC = () => {
   const [classFilter, setClassFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedClassId, setSelectedClassId] = useState<string | undefined>();
 
   useEffect(() => {
     fetchAttendanceData();
@@ -59,16 +64,16 @@ export const SchoolAttendance: React.FC = () => {
 
       // Fetch attendance records for selected date
       const { data: attendanceData, error: attendanceError } = await supabase
-        .from('attendance')
+        .from('attendance' as any)
         .select(`
           *,
           student:students(first_name, last_name, student_number),
-          class:classes(class_name, grade_level)
+          class:classes(class_name, class_level)
         `)
-        .eq('date', selectedDate)
+        .eq('attendance_date', selectedDate)
         .in('class_id', 
           await supabase
-            .from('classes')
+            .from('classes' as any)
             .select('id')
             .eq('school_id', profile.school_id)
             .then(({ data }) => data?.map(c => c.id) || [])
@@ -77,7 +82,7 @@ export const SchoolAttendance: React.FC = () => {
 
       if (attendanceError) throw attendanceError;
 
-      setAttendanceRecords(attendanceData || []);
+      setAttendanceRecords((attendanceData as unknown as AttendanceRecord[]) || []);
 
       // Fetch attendance summary for the last 7 days
       const endDate = new Date();
@@ -213,12 +218,15 @@ export const SchoolAttendance: React.FC = () => {
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Attendance Management</h1>
-            <p className="text-gray-600">Track and manage student attendance records</p>
+            <h1 className="text-2xl font-bold text-gray-900">Gestion des Présences</h1>
+            <p className="text-gray-600">Suivre et gérer les présences des étudiants</p>
           </div>
-          <button className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+          >
             <Plus className="h-4 w-4 mr-2" />
-            Mark Attendance
+            Marquer Présences
           </button>
         </div>
       </div>
@@ -231,7 +239,7 @@ export const SchoolAttendance: React.FC = () => {
               <Users className="h-8 w-8 text-blue-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Total Students</p>
+              <p className="text-sm font-medium text-gray-500">Total Étudiants</p>
               <p className="text-2xl font-semibold text-gray-900">{todaySummary.total_students}</p>
             </div>
           </div>
@@ -243,7 +251,7 @@ export const SchoolAttendance: React.FC = () => {
               <CheckCircle className="h-8 w-8 text-green-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Present</p>
+              <p className="text-sm font-medium text-gray-500">Présents</p>
               <p className="text-2xl font-semibold text-gray-900">{todaySummary.present}</p>
             </div>
           </div>
@@ -255,7 +263,7 @@ export const SchoolAttendance: React.FC = () => {
               <XCircle className="h-8 w-8 text-red-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Absent</p>
+              <p className="text-sm font-medium text-gray-500">Absents</p>
               <p className="text-2xl font-semibold text-gray-900">{todaySummary.absent}</p>
             </div>
           </div>
@@ -271,7 +279,7 @@ export const SchoolAttendance: React.FC = () => {
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Attendance Rate</p>
+              <p className="text-sm font-medium text-gray-500">Taux de Présence</p>
               <p className="text-2xl font-semibold text-gray-900">{Math.round(todaySummary.attendance_rate)}%</p>
             </div>
           </div>
@@ -409,6 +417,17 @@ export const SchoolAttendance: React.FC = () => {
           )}
         </div>
       </div>
+
+      <AttendanceModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={() => {
+          fetchAttendanceData();
+          setIsModalOpen(false);
+        }}
+        selectedDate={selectedDate}
+        selectedClassId={selectedClassId}
+      />
     </div>
   );
 };
