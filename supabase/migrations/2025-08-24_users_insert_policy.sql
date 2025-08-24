@@ -11,9 +11,8 @@ drop policy if exists "Platform admins can insert users" on public.users;
 create policy "Platform admins can insert users"
   on public.users for insert
   to authenticated
-  with check (exists (
-    select 1 from public.users u
-    where u.id = auth.uid() and u.role = 'platform_admin'
-  ));
+  with check (
+    (auth.jwt() ->> 'role')::text = 'platform_admin'
+  );
 
 commit;
