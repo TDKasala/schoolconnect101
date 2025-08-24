@@ -1,16 +1,16 @@
-import { useAuthContext } from '../contexts/AuthContext'
+import { useAuth as useSimpleAuth } from '../contexts/SimpleAuthContext'
 
 // Re-export the main auth hook
-export const useAuth = useAuthContext
+export const useAuth = useSimpleAuth
 
 // Additional convenience hooks
 export function useUser() {
-  const { user, profile } = useAuthContext()
+  const { user, profile } = useSimpleAuth()
   return { user, profile }
 }
 
 export function useAuthState() {
-  const { user, profile, session, loading, error } = useAuthContext()
+  const { user, profile, session, loading, error } = useSimpleAuth()
   return {
     isAuthenticated: !!user,
     isApproved: profile?.approved || false,
@@ -24,7 +24,7 @@ export function useAuthState() {
 }
 
 export function usePermissions() {
-  const { profile } = useAuthContext()
+  const { profile } = useSimpleAuth()
   
   const hasRole = (role: string) => profile?.role === role
   
