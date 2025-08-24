@@ -21,9 +21,9 @@ create policy "Platform admins can select all users"
   on public.users for select
   to authenticated
   using (
-    auth.jwt() ->> 'role' = 'platform_admin'
+    (auth.jwt() ->> 'role')::text = 'platform_admin'
     OR 
-    (auth.jwt() ->> 'user_metadata' ->> 'role') = 'platform_admin'
+    (auth.jwt() -> 'user_metadata' ->> 'role')::text = 'platform_admin'
   );
 
 -- Policy 3: Platform admins can update users (using JWT claims)
@@ -31,14 +31,14 @@ create policy "Platform admins can update users"
   on public.users for update
   to authenticated
   using (
-    auth.jwt() ->> 'role' = 'platform_admin'
+    (auth.jwt() ->> 'role')::text = 'platform_admin'
     OR 
-    (auth.jwt() ->> 'user_metadata' ->> 'role') = 'platform_admin'
+    (auth.jwt() -> 'user_metadata' ->> 'role')::text = 'platform_admin'
   )
   with check (
-    auth.jwt() ->> 'role' = 'platform_admin'
+    (auth.jwt() ->> 'role')::text = 'platform_admin'
     OR 
-    (auth.jwt() ->> 'user_metadata' ->> 'role') = 'platform_admin'
+    (auth.jwt() -> 'user_metadata' ->> 'role')::text = 'platform_admin'
   );
 
 -- Policy 4: Platform admins can insert users (using JWT claims)
@@ -46,9 +46,9 @@ create policy "Platform admins can insert users"
   on public.users for insert
   to authenticated
   with check (
-    auth.jwt() ->> 'role' = 'platform_admin'
+    (auth.jwt() ->> 'role')::text = 'platform_admin'
     OR 
-    (auth.jwt() ->> 'user_metadata' ->> 'role') = 'platform_admin'
+    (auth.jwt() -> 'user_metadata' ->> 'role')::text = 'platform_admin'
   );
 
 commit;
