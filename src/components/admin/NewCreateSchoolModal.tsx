@@ -109,12 +109,12 @@ export const CreateSchoolModal: React.FC<CreateSchoolModalProps> = ({
     const newErrors: Record<string, string> = {}
     
     // School name is required
-    if (!schoolData.name.trim()) {
+    if (!formData.name.trim()) {
       newErrors.name = 'Le nom de l\'école est requis'
     }
     
     // Email validation if provided
-    if (schoolData.email && !/^\S+@\S+\.\S+$/.test(schoolData.email)) {
+    if (formData.email && !/^\S+@\S+\.\S+$/.test(formData.email)) {
       newErrors.email = 'Format d\'email invalide'
     }
     
@@ -169,7 +169,7 @@ export const CreateSchoolModal: React.FC<CreateSchoolModalProps> = ({
 
     try {
       // Create school with admin using our new service
-      const result = await SchoolDbService.createSchoolWithAdmin(schoolData, adminAssignment)
+      const result = await SchoolDbService.createSchoolWithAdmin(formData, adminAssignment)
       
       showToast({
         type: 'success',
@@ -197,21 +197,14 @@ export const CreateSchoolModal: React.FC<CreateSchoolModalProps> = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, formType: 'school' | 'admin') => {
     const { name, value } = e.target
     
-    // Clear field-specific error when user starts typing
-    if (errors[name]) {
-      setErrors(prev => {
-        const newErrors = { ...prev }
-        delete newErrors[name]
-        return newErrors
-      })
-    }
-    
     if (formType === 'school') {
-      setSchoolData(prev => ({ ...prev, [name]: value }))
+      // Handle number fields properly
+      const processedValue = name === 'max_students' ? (value ? parseInt(value) : undefined) : value
+      setFormData(prev => ({ ...prev, [name]: processedValue }))
     } else {
       setAdminAssignment(prev => ({
         ...prev,
-        newUserData: { ...prev.newUserData!, [name]: value }
+        newUserData: prev.newUserData ? { ...prev.newUserData, [name]: value } : { email: '', full_name: '', phone: '' }
       }))
     }
   }
@@ -284,7 +277,7 @@ export const CreateSchoolModal: React.FC<CreateSchoolModalProps> = ({
                 <input
                   type="text"
                   name="name"
-                  value={schoolData.name}
+                  value={formData.name}
                   onChange={(e) => handleInputChange(e, 'school')}
                   className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                     errors.name ? 'border-red-300' : 'border-gray-300'
@@ -302,7 +295,7 @@ export const CreateSchoolModal: React.FC<CreateSchoolModalProps> = ({
                 </label>
                 <textarea
                   name="address"
-                  value={schoolData.address || ''}
+                  value={formData.address || ''}
                   onChange={(e) => handleInputChange(e, 'school')}
                   rows={3}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -316,8 +309,8 @@ export const CreateSchoolModal: React.FC<CreateSchoolModalProps> = ({
                 </label>
                 <input
                   type="tel"
-                  name="contact_number"
-                  value={schoolData.contact_number || ''}
+                  name="phone"
+                  value={formData.phone || ''}
                   onChange={(e) => handleInputChange(e, 'school')}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="+243 XXX XXX XXX"
@@ -331,7 +324,7 @@ export const CreateSchoolModal: React.FC<CreateSchoolModalProps> = ({
                 <input
                   type="email"
                   name="email"
-                  value={schoolData.email || ''}
+                  value={formData.email || ''}
                   onChange={(e) => handleInputChange(e, 'school')}
                   className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                     errors.email ? 'border-red-300' : 'border-gray-300'
@@ -343,17 +336,46 @@ export const CreateSchoolModal: React.FC<CreateSchoolModalProps> = ({
                 )}
               </div>
 
-              <div className="md:col-span-2">
+              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Numéro d'enregistrement
+                  Ville
                 </label>
                 <input
                   type="text"
-                  name="registration_number"
-                  value={schoolData.registration_number || ''}
+                  name="city"
+                  value={formData.city || ''}
                   onChange={(e) => handleInputChange(e, 'school')}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Numéro d'enregistrement officiel"
+                  placeholder="Ex: Kinshasa"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Province
+                </label>
+                <input
+                  type="text"
+                  name="province"
+                  value={formData.province || ''}
+                  onChange={(e) => handleInputChange(e, 'school')}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Ex: Kinshasa"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Nombre maximum d'élèves
+                </label>
+                <input
+                  type="number"
+                  name="max_students"
+                  value={formData.max_students || ''}
+                  onChange={(e) => handleInputChange(e, 'school')}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Ex: 500"
+                  min="1"
                 />
               </div>
             </div>
