@@ -24,6 +24,13 @@ export class ErrorBoundary extends Component<Props, State> {
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('ErrorBoundary: Error details:', error, errorInfo);
+    
+    // Don't update state if it's a React error #300 (state update after unmount)
+    if (error.message && error.message.includes('Minified React error #300')) {
+      console.warn('ErrorBoundary: Ignoring React error #300 (state update after unmount)');
+      return;
+    }
+    
     this.setState({ error, errorInfo });
   }
 

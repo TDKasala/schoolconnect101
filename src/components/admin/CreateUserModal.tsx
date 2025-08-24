@@ -38,38 +38,23 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
     setLoading(true);
 
     try {
-      // Create user using regular signup (no admin API needed)
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          data: {
-            full_name: formData.full_name,
-            role: formData.role,
-            school_id: formData.school_id || null
-          }
-        }
-      });
+      // Create user profile directly in database (no auth signup needed for admin creation)
+      const userId = crypto.randomUUID();
+      
+      const { error: profileError } = await supabase
+        .from('users')
+        .insert([{
+          id: userId,
+          email: formData.email,
+          full_name: formData.full_name,
+          role: formData.role,
+          school_id: formData.school_id || null,
+          approved: formData.approved,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }]);
 
-      if (authError) throw authError;
-
-      if (authData.user) {
-        // Create user profile
-        const { error: profileError } = await supabase
-          .from('users')
-          .insert([{
-            id: authData.user.id,
-            email: formData.email,
-            full_name: formData.full_name,
-            role: formData.role,
-            school_id: formData.school_id || null,
-            approved: formData.approved,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          }]);
-
-        if (profileError) throw profileError;
-      }
+      if (profileError) throw profileError;
 
       showToast({
         type: 'success',
@@ -77,10 +62,7 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
         message: 'Le nouvel utilisateur a été créé avec succès.'
       });
 
-      onSave();
-      onClose();
-      
-      // Reset form
+      // Reset form before closing to prevent state update issues
       setFormData({
         email: '',
         password: '',
@@ -89,6 +71,11 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
         school_id: '',
         approved: true
       });
+
+      // Call callbacks after state is reset
+      onSave();
+      onClose();
+      
     } catch (error: any) {
       console.error('Error creating user:', error);
       showToast({

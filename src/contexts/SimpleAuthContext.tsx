@@ -38,7 +38,7 @@ export const SimpleAuthProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchProfile = async (userId: string) => {
+  const fetchProfile = async (userId: string, mounted: { current: boolean } = { current: true }) => {
     try {
       console.log('SimpleAuth: Fetching profile for user:', userId);
       
@@ -47,6 +47,8 @@ export const SimpleAuthProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         .select('id, email, full_name, role, approved, school_id')
         .eq('id', userId)
         .single();
+
+      if (!mounted.current) return; // Prevent state updates if component unmounted
 
       if (error) {
         console.error('SimpleAuth: Profile fetch error:', error);
@@ -65,7 +67,9 @@ export const SimpleAuthProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       setProfile(data);
     } catch (err) {
       console.error('SimpleAuth: Profile fetch exception:', err);
-      setError('Failed to fetch user profile');
+      if (mounted.current) {
+        setError('Failed to fetch user profile');
+      }
     }
   };
 
@@ -117,7 +121,7 @@ export const SimpleAuthProvider: React.FC<{ children: React.ReactNode }> = ({ ch
           // Fetch profile separately without affecting loading state
           if (session?.user) {
             console.log('SimpleAuth: Fetching profile for user:', session.user.id);
-            fetchProfile(session.user.id).catch(profileError => {
+            fetchProfile(session.user.id, { current: mounted }).catch(profileError => {
               console.error('SimpleAuth: Profile fetch failed during init:', profileError);
             });
           }
@@ -149,7 +153,7 @@ export const SimpleAuthProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       // Fetch profile for new session
       if (session?.user) {
         console.log('SimpleAuth: User authenticated, fetching profile...');
-        fetchProfile(session.user.id).catch(profileError => {
+        fetchProfile(session.user.id, { current: mounted }).catch(profileError => {
           console.error('SimpleAuth: Profile fetch failed during auth change:', profileError);
         });
       } else {
