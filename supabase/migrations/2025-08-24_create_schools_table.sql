@@ -11,6 +11,7 @@ create table if not exists public.schools (
   contact_number text,
   email text,
   registration_number text unique,
+  is_active boolean default true,
   created_at timestamp with time zone default now(),
   updated_at timestamp with time zone default now()
 );
