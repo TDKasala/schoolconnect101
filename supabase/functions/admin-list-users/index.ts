@@ -3,11 +3,11 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 // Comprehensive CORS headers for production
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': Deno.env.get('FRONTEND_URL') || 'https://schoolconnect101.vercel.app',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-requested-with',
   'Access-Control-Allow-Methods': 'POST, OPTIONS, GET',
   'Access-Control-Max-Age': '86400',
-  'Access-Control-Allow-Credentials': 'false'
+  'Access-Control-Allow-Credentials': 'true'
 }
 
 interface ApiResponse {
