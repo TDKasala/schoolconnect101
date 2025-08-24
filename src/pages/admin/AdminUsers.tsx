@@ -7,7 +7,6 @@ import {
 import { useAuth } from '../../hooks/useAuth';
 import { UserList } from '../../components/admin/UserList';
 import { SchoolList } from '../../components/admin/SchoolList';
-import { Helmet } from 'react-helmet-async';
 
 export const AdminUsers: React.FC = () => {
   const { profile } = useAuth();
@@ -22,26 +21,17 @@ export const AdminUsers: React.FC = () => {
   // Check if user has platform_admin role
   if (profile?.role !== 'platform_admin') {
     return (
-      <>
-        <Helmet>
-          <title>Accès Refusé | SchoolConnect</title>
-        </Helmet>
-        <div className="p-6">
-          <div className="text-center py-12">
-            <AlertTriangle className="h-12 w-12 text-red-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Accès Refusé</h3>
-            <p className="text-gray-500">Vous n'avez pas les permissions nécessaires pour accéder à cette page.</p>
-          </div>
+      <div className="p-6">
+        <div className="text-center py-12">
+          <AlertTriangle className="h-12 w-12 text-red-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Accès Refusé</h3>
+          <p className="text-gray-500">Vous n'avez pas les permissions nécessaires pour accéder à cette page.</p>
         </div>
-      </>
+      </div>
     );
   }
 
   return (
-    <>
-      <Helmet>
-        <title>Utilisateurs et Écoles | SchoolConnect</title>
-      </Helmet>
       
       <div className="p-6">
         {/* Header */}
@@ -93,6 +83,5 @@ export const AdminUsers: React.FC = () => {
           <SchoolList refreshTrigger={refreshTrigger} />
         )}
       </div>
-    </>
   );
 };
