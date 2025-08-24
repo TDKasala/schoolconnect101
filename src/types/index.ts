@@ -15,6 +15,25 @@ export type ContactMessageStatus = 'new' | 'read' | 'responded'
 export type SubscriptionType = 'flex' | 'forfait'
 export type Gender = 'M' | 'F'
 
+// School creation form types
+export interface CreateSchoolData {
+  name: string
+  address?: string
+  contact_number?: string
+  email?: string
+  registration_number?: string
+}
+
+export interface SchoolAdminAssignment {
+  type: 'existing' | 'new'
+  existingUserId?: string
+  newUserData?: {
+    email: string
+    full_name: string
+    phone?: string
+  }
+}
+
 // Core entities
 export interface User {
   id: string
@@ -34,17 +53,10 @@ export interface User {
 export interface School {
   id: string
   name: string
-  address: string
-  city: string
-  province: string
-  country: string
-  phone: string
-  email: string
-  website?: string
-  logo_url?: string
-  subscription_type: SubscriptionType
-  max_students: number
-  is_active: boolean
+  address?: string
+  contact_number?: string
+  email?: string
+  registration_number?: string
   created_at: string
   updated_at: string
 }

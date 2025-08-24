@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase'
-import type { School, SubscriptionType } from '../types'
+import type { School, CreateSchoolData, User, SchoolAdminAssignment } from '../types'
 
 export class SchoolService {
   /**
@@ -41,33 +41,94 @@ export class SchoolService {
   /**
    * Create a new school
    */
-  static async create(schoolData: {
-    name: string
-    address: string
-    city: string
-    province: string
-    phone: string
-    email: string
-    subscription_type?: SubscriptionType
-    max_students?: number
-  }): Promise<School | null> {
+  static async create(schoolData: CreateSchoolData): Promise<School | null> {
     const { data, error } = await supabase
       .from('schools')
-      .insert([{
-        ...schoolData,
-        country: 'RDC',
-        subscription_type: schoolData.subscription_type || 'flex',
-        max_students: schoolData.max_students || 100
-      }])
+      .insert([schoolData])
       .select()
       .single()
 
     if (error) {
       console.error('Error creating school:', error)
-      return null
+      throw error
     }
 
     return data
+  }
+
+  /**
+   * Create school with admin assignment
+   */
+  static async createWithAdmin(
+    schoolData: CreateSchoolData,
+    adminAssignment: SchoolAdminAssignment
+  ): Promise<{ school: School; admin: User }> {
+    // Start a transaction-like operation
+    try {
+      // 1. Create the school
+      const school = await this.create(schoolData)
+      if (!school) throw new Error('Failed to create school')
+
+      let admin: User
+
+      if (adminAssignment.type === 'existing') {
+        // 2a. Update existing user to be school admin
+        if (!adminAssignment.existingUserId) {
+          throw new Error('Existing user ID is required')
+        }
+
+        const { data: updatedUser, error: updateError } = await supabase
+          .from('users')
+          .update({
+            role: 'school_admin',
+            school_id: school.id
+          })
+          .eq('id', adminAssignment.existingUserId)
+          .select()
+          .single()
+
+        if (updateError) throw updateError
+        admin = updatedUser
+
+      } else {
+        // 2b. Create new user as school admin
+        if (!adminAssignment.newUserData) {
+          throw new Error('New user data is required')
+        }
+
+        const { data: authUser, error: authError } = await supabase.auth.signUp({
+          email: adminAssignment.newUserData.email,
+          password: 'TempPass123!', // Temporary password - user should reset
+        })
+
+        if (authError) throw authError
+        if (!authUser.user) throw new Error('Failed to create auth user')
+
+        const { data: newUser, error: userError } = await supabase
+          .from('users')
+          .insert([{
+            id: authUser.user.id,
+            email: adminAssignment.newUserData.email,
+            full_name: adminAssignment.newUserData.full_name,
+            phone: adminAssignment.newUserData.phone,
+            role: 'school_admin',
+            school_id: school.id,
+            approved: true,
+            is_active: true
+          }])
+          .select()
+          .single()
+
+        if (userError) throw userError
+        admin = newUser
+      }
+
+      return { school, admin }
+
+    } catch (error) {
+      console.error('Error creating school with admin:', error)
+      throw error
+    }
   }
 
   /**
