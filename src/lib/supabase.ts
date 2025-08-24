@@ -7,7 +7,9 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIU
 
 console.log('Supabase client initializing:', { 
   url: supabaseUrl, 
-  hasKey: !!supabaseAnonKey 
+  hasKey: !!supabaseAnonKey,
+  storage: 'localStorage',
+  storageKey: 'schoolconnect-auth'
 });
 
 if (!supabaseUrl || !supabaseAnonKey) {
@@ -17,6 +19,8 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: {
+    storage: window.localStorage,
+    storageKey: 'schoolconnect-auth',
     persistSession: true,
     autoRefreshToken: true,
     detectSessionInUrl: true,

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { sessionDebug } from '../utils/sessionDebug';
 import type { User, Session } from '@supabase/supabase-js';
 
 interface UserProfile {
@@ -70,10 +71,25 @@ export const SimpleAuthProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   useEffect(() => {
     let mounted = true;
+    let initTimeout: NodeJS.Timeout;
 
     const initializeAuth = async () => {
       try {
-        console.log('SimpleAuth: Initializing...');
+        console.log('SimpleAuth: Initializing authentication...');
+        
+        // Debug session info in development
+        if (process.env.NODE_ENV === 'development') {
+          await sessionDebug.logSessionInfo();
+        }
+        
+        // Set timeout to prevent infinite loading
+        initTimeout = setTimeout(() => {
+          if (mounted) {
+            console.warn('SimpleAuth: Initialization timeout, forcing loading to false');
+            setLoading(false);
+            setError('Authentication initialization timed out');
+          }
+        }, 10000); // 10 second timeout
         
         // Get initial session
         const { data: { session }, error } = await supabase.auth.getSession();
@@ -82,29 +98,36 @@ export const SimpleAuthProvider: React.FC<{ children: React.ReactNode }> = ({ ch
           console.error('SimpleAuth: Session error:', error);
           if (mounted) {
             setError(error.message);
+            setLoading(false);
+            clearTimeout(initTimeout);
           }
-        } else {
-          console.log('SimpleAuth: Session check complete:', session ? 'Found' : 'None');
-          if (mounted) {
-            setSession(session);
-            setUser(session?.user ?? null);
-            
-            // Fetch profile if user exists
-            if (session?.user) {
-              await fetchProfile(session.user.id);
-            }
-          }
+          return;
         }
+
+        console.log('SimpleAuth: Session check complete:', session ? 'Found' : 'None');
         
-        // Always set loading to false after session check
         if (mounted) {
+          setSession(session);
+          setUser(session?.user ?? null);
+          
+          // Always set loading to false after session check
           setLoading(false);
+          clearTimeout(initTimeout);
+          
+          // Fetch profile separately without affecting loading state
+          if (session?.user) {
+            console.log('SimpleAuth: Fetching profile for user:', session.user.id);
+            fetchProfile(session.user.id).catch(profileError => {
+              console.error('SimpleAuth: Profile fetch failed during init:', profileError);
+            });
+          }
         }
       } catch (err) {
         console.error('SimpleAuth: Initialization error:', err);
         if (mounted) {
           setError('Authentication initialization failed');
           setLoading(false);
+          clearTimeout(initTimeout);
         }
       }
     };
@@ -113,7 +136,7 @@ export const SimpleAuthProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('SimpleAuth: Auth state changed:', event);
+      console.log('SimpleAuth: Auth state changed:', event, session ? 'Session exists' : 'No session');
       
       if (!mounted) return;
       
@@ -121,17 +144,25 @@ export const SimpleAuthProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       setUser(session?.user ?? null);
       setError(null);
       
+      // Don't set loading back to true for auth state changes
+      
       // Fetch profile for new session
       if (session?.user) {
-        await fetchProfile(session.user.id);
+        console.log('SimpleAuth: User authenticated, fetching profile...');
+        fetchProfile(session.user.id).catch(profileError => {
+          console.error('SimpleAuth: Profile fetch failed during auth change:', profileError);
+        });
       } else {
+        console.log('SimpleAuth: User signed out, clearing profile');
         setProfile(null);
       }
     });
 
     return () => {
       mounted = false;
+      if (initTimeout) clearTimeout(initTimeout);
       subscription.unsubscribe();
+      console.log('SimpleAuth: Cleanup completed');
     };
   }, []);
 

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { Loader2 } from 'lucide-react';
+import { Loader2, AlertTriangle } from 'lucide-react';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -18,8 +18,21 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   allowedRoles = [],
   redirectTo = '/login'
 }) => {
-  const { user, profile, loading } = useAuth();
+  const { user, profile, loading, error } = useAuth();
   const location = useLocation();
+  const [profileTimeout, setProfileTimeout] = useState(false);
+
+  // Set timeout for profile loading to prevent infinite loading
+  useEffect(() => {
+    if (user && !profile && !loading) {
+      const timer = setTimeout(() => {
+        console.warn('ProtectedRoute: Profile loading timeout');
+        setProfileTimeout(true);
+      }, 10000); // 10 second timeout
+
+      return () => clearTimeout(timer);
+    }
+  }, [user, profile, loading]);
 
   // Show loading spinner while checking authentication
   if (loading) {
@@ -38,8 +51,41 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
   }
 
-  // Check if user profile is required
-  if (requireAuth && user && !profile) {
+  // Handle profile loading timeout or error
+  if (requireAuth && user && !profile && (profileTimeout || error)) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-blue-light to-white">
+        <div className="max-w-md mx-auto text-center p-8">
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <AlertTriangle className="w-8 h-8 text-red-600" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Erreur de chargement</h2>
+            <p className="text-gray-600 mb-6">
+              {error || 'Impossible de charger votre profil utilisateur.'}
+            </p>
+            <div className="space-y-3">
+              <button
+                onClick={() => window.location.reload()}
+                className="w-full bg-brand-blue text-white py-2 px-4 rounded-lg hover:bg-brand-blue-dark transition-colors"
+              >
+                Actualiser la page
+              </button>
+              <button
+                onClick={() => window.location.href = '/login'}
+                className="w-full bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                Se reconnecter
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show loading for profile only briefly
+  if (requireAuth && user && !profile && !profileTimeout) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-blue-light to-white">
         <div className="text-center">
