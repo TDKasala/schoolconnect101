@@ -147,7 +147,7 @@ export class UserService {
   }
 
   /**
-   * Get all users (Admin API for platform admins)
+   * Get all users (using Edge Function for platform admins)
    */
   static async getAll(): Promise<User[]> {
     try {
@@ -169,53 +169,51 @@ export class UserService {
           avatar_url: user.avatar_url ?? null,
           user_status_id: user.user_status_id ?? null,
           last_login: user.last_login ?? null,
-          preferences: user.preferences ?? {}
+          preferences: user.preferences ?? {},
+          school: user.school ? {
+            ...user.school,
+            code: user.school.code || user.school.registration_number || 'N/A'
+          } : null
         }))
       }
 
-      // If RLS blocks access, use Admin API to get auth users and match with profiles
-      const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers()
-      
-      if (authError) throw authError
-
-      // Get user profiles for each auth user
-      const userProfiles: User[] = []
-      
-      for (const authUser of authUsers.users) {
-        const { data: profile, error: profileError } = await supabase
-          .from('users')
-          .select(`
-            *,
-            school:schools(id, name, code)
-          `)
-          .eq('id', authUser.id)
-          .single()
-
-        if (!profileError && profile) {
-          userProfiles.push(profile)
-        } else {
-          // Create a minimal profile from auth data if profile doesn't exist
-          const minimalProfile: User = {
-            id: authUser.id,
-            email: authUser.email || '',
-            full_name: authUser.user_metadata?.full_name || authUser.email || '',
-            role: authUser.user_metadata?.role || 'teacher',
-            school_id: null,
-            phone: null,
-            avatar_url: null,
-            is_active: true,
-            approved: false,
-            user_status_id: null,
-            last_login: authUser.last_sign_in_at,
-            preferences: {},
-            created_at: authUser.created_at,
-            updated_at: authUser.updated_at || authUser.created_at
-          }
-          userProfiles.push(minimalProfile)
-        }
+      // If RLS blocks access, use Edge Function to get all users
+      const { data: session } = await supabase.auth.getSession()
+      if (!session?.session?.access_token) {
+        throw new Error('No authentication session')
       }
 
-      return userProfiles.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      const response = await fetch(`${supabase.supabaseUrl}/functions/v1/admin-list-users`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.session.access_token}`,
+          'Content-Type': 'application/json',
+        }
+      })
+
+      if (!response.ok) {
+        throw new Error(`Edge function error: ${response.status}`)
+      }
+
+      const result = await response.json()
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to fetch users')
+      }
+
+      // Ensure all required fields are present and add code field to school
+      return result.users.map((user: any) => ({
+        ...user,
+        is_active: user.is_active ?? true,
+        phone: user.phone ?? null,
+        avatar_url: user.avatar_url ?? null,
+        user_status_id: user.user_status_id ?? null,
+        last_login: user.last_login ?? null,
+        preferences: user.preferences ?? {},
+        school: user.school ? {
+          ...user.school,
+          code: user.school.code || user.school.registration_number || 'N/A'
+        } : null
+      }))
 
     } catch (error) {
       console.error('Error fetching all users:', error)
@@ -224,50 +222,53 @@ export class UserService {
   }
 
   /**
-   * Create a new user using Admin API (does not log them in)
+   * Create a new user using Edge Function (does not log them in)
    */
   static async createUser(userData: CreateUserData): Promise<User> {
     try {
-      // Create user in auth using Admin API
-      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-        email: userData.email,
-        password: userData.password,
-        email_confirm: true, // Skip email confirmation for admin-created users
-        user_metadata: {
-          full_name: userData.full_name,
-          role: userData.role
-        }
-      })
+      // Get current session for authentication
+      const { data: session } = await supabase.auth.getSession()
+      if (!session?.session?.access_token) {
+        throw new Error('No authentication session')
+      }
 
-      if (authError) throw authError
-      if (!authData.user) throw new Error('Failed to create user')
-
-      // Create user profile
-      const { data: profileData, error: profileError } = await supabase
-        .from('users')
-        .insert([{
-          id: authData.user.id,
+      // Call Edge Function to create user
+      const response = await fetch(`${supabase.supabaseUrl}/functions/v1/admin-create-user`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           email: userData.email,
+          password: userData.password,
           full_name: userData.full_name,
           role: userData.role,
-          school_id: userData.school_id || null,
-          approved: userData.approved ?? true,
-          is_active: true,
-          phone: null,
-          avatar_url: null,
-          user_status_id: null,
-          last_login: null,
-          preferences: {},
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        }])
-        .select()
-        .single()
+          school_id: userData.school_id,
+          approved: userData.approved ?? true
+        })
+      })
 
-      if (profileError) throw profileError
-      if (!profileData) throw new Error('Failed to create user profile')
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || `Edge function error: ${response.status}`)
+      }
 
-      return profileData
+      const result = await response.json()
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to create user')
+      }
+
+      // Ensure all required fields are present
+      return {
+        ...result.user,
+        is_active: result.user.is_active ?? true,
+        phone: result.user.phone ?? null,
+        avatar_url: result.user.avatar_url ?? null,
+        user_status_id: result.user.user_status_id ?? null,
+        last_login: result.user.last_login ?? null,
+        preferences: result.user.preferences ?? {}
+      }
     } catch (error) {
       console.error('Error creating user:', error)
       throw error

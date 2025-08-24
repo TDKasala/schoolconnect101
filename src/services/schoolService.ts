@@ -97,7 +97,7 @@ export class SchoolService {
           throw new Error('New user data is required')
         }
 
-        // Create new user using Admin API (does not log them in)
+        // Create new user using Edge Function (does not log them in)
         admin = await UserService.createUser({
           email: adminAssignment.newUserData.email,
           password: 'TempPass123!', // Temporary password - user should reset
