@@ -38,13 +38,23 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
     setLoading(true);
 
     try {
-      // Create user profile directly in database (no auth signup needed for admin creation)
-      const userId = crypto.randomUUID();
-      
+      // Create user in auth first, then profile
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          emailRedirectTo: undefined // Prevent email confirmation for admin-created users
+        }
+      });
+
+      if (authError) throw authError;
+      if (!authData.user) throw new Error('Failed to create user');
+
+      // Create user profile with the auth user ID
       const { error: profileError } = await supabase
         .from('users')
         .insert([{
-          id: userId,
+          id: authData.user.id,
           email: formData.email,
           full_name: formData.full_name,
           role: formData.role,
