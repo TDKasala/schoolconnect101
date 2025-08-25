@@ -32,10 +32,8 @@ export class UserAuthService {
       
       return data.map(user => ({
         ...user,
-        is_active: user.is_active ?? true,
         phone: user.phone ?? null,
         avatar_url: user.avatar_url ?? null,
-        user_status_id: user.user_status_id ?? null,
         last_login: user.last_login ?? null,
         preferences: user.preferences ?? {},
         school: user.school ? {
@@ -50,11 +48,15 @@ export class UserAuthService {
   }
 
   /**
-   * Create a new user directly with Supabase
+   * Create a new user directly with Supabase Admin API
+   * This method preserves the current admin session
    */
   static async createUser(userData: CreateUserData): Promise<User | null> {
     try {
-      // 1. Create auth user with email/password
+      // Store current session to restore if needed
+      const { data: { session: currentSession } } = await supabase.auth.getSession()
+      
+      // 1. Create auth user with email/password using admin API
       const { data: authData, error: authError } = await supabase.auth.admin.createUser({
         email: userData.email,
         password: userData.password,
@@ -97,6 +99,20 @@ export class UserAuthService {
         throw new Error(profileError.message)
       }
 
+      // 3. Ensure admin session is preserved
+      if (currentSession && currentSession.user) {
+        const { data: { session: newSession } } = await supabase.auth.getSession()
+        
+        // If session changed unexpectedly, restore the admin session
+        if (!newSession || newSession.user.id !== currentSession.user.id) {
+          console.log('UserAuthService: Restoring admin session after user creation')
+          await supabase.auth.setSession({
+            access_token: currentSession.access_token,
+            refresh_token: currentSession.refresh_token
+          })
+        }
+      }
+
       return {
         ...profileData,
         avatar_url: null,
@@ -128,10 +144,8 @@ export class UserAuthService {
 
     return {
       ...data,
-      is_active: data.is_active ?? true,
       phone: data.phone ?? null,
       avatar_url: data.avatar_url ?? null,
-      user_status_id: data.user_status_id ?? null,
       last_login: data.last_login ?? null,
       preferences: data.preferences ?? {},
       school: data.school ? {
@@ -149,7 +163,7 @@ export class UserAuthService {
       .from('users')
       .select('*')
       .eq('school_id', schoolId)
-      .eq('is_active', true)
+      .eq('approved', true)
       .order('full_name')
 
     if (error) {
@@ -161,7 +175,6 @@ export class UserAuthService {
       ...user,
       phone: user.phone ?? null,
       avatar_url: user.avatar_url ?? null,
-      user_status_id: user.user_status_id ?? null,
       last_login: user.last_login ?? null,
       preferences: user.preferences ?? {}
     }))
@@ -175,7 +188,7 @@ export class UserAuthService {
       .from('users')
       .select('*')
       .eq('role', role)
-      .eq('is_active', true)
+      .eq('approved', true)
 
     if (schoolId) {
       query = query.eq('school_id', schoolId)
@@ -192,7 +205,6 @@ export class UserAuthService {
       ...user,
       phone: user.phone ?? null,
       avatar_url: user.avatar_url ?? null,
-      user_status_id: user.user_status_id ?? null,
       last_login: user.last_login ?? null,
       preferences: user.preferences ?? {}
     }))
@@ -216,18 +228,6 @@ export class UserAuthService {
   }
 
   /**
-   * Delete a user (set inactive rather than permanently delete)
-   */
-  static async deleteUser(id: string): Promise<boolean> {
-    const { error } = await supabase
-      .from('users')
-      .update({ is_active: false })
-      .eq('id', id)
-
-    if (error) {
-      console.error('Error deleting user:', error)
-      return false
-    }
 
     return true
   }

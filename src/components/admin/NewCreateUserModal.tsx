@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { X, Save, User, Mail, Shield, School as SchoolIcon } from 'lucide-react'
 import { useToast } from '../../contexts/ToastContext'
 import { UserAuthService } from '../../services/userAuthService'
@@ -18,6 +19,7 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
   schools
 }) => {
   const { showToast } = useToast()
+  const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     email: '',
@@ -101,9 +103,12 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
       // Reset validation errors
       setErrors({})
 
-      // Call callbacks
+      // Call callbacks to refresh data
       onSave()
       onClose()
+      
+      // Navigate to user management page
+      navigate('/admin/users')
       
     } catch (error: any) {
       console.error('Error creating user:', error)
