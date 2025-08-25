@@ -225,117 +225,213 @@ export const UserList: React.FC<UserListProps> = ({ refreshTrigger = 0 }) => {
         </div>
       )}
 
-      {/* Users Table */}
+      {/* Users Table - Desktop */}
       <div className="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200">
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
           </div>
         ) : filteredUsers.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Utilisateur
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Rôle
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    École
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Statut
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredUsers.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center bg-blue-100 rounded-full">
-                          {user.avatar_url ? (
-                            <img className="h-9 w-9 rounded-full" src={user.avatar_url} alt="" />
-                          ) : (
-                            <User className="h-5 w-5 text-blue-600" />
-                          )}
-                        </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">{user.full_name}</div>
-                          <div className="text-sm text-gray-500 flex items-center">
-                            <Mail className="h-3 w-3 mr-1" /> {user.email}
+          <>
+            {/* Desktop Table View */}
+            <div className="hidden lg:block overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Utilisateur
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Rôle
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      École
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Statut
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {filteredUsers.map((user) => (
+                    <tr key={user.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center bg-blue-100 rounded-full">
+                            {user.avatar_url ? (
+                              <img className="h-9 w-9 rounded-full" src={user.avatar_url} alt="" />
+                            ) : (
+                              <User className="h-5 w-5 text-blue-600" />
+                            )}
+                          </div>
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">{user.full_name}</div>
+                            <div className="text-sm text-gray-500 flex items-center">
+                              <Mail className="h-3 w-3 mr-1" /> {user.email}
+                            </div>
                           </div>
                         </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <Shield className={`h-4 w-4 mr-1 ${
+                            user.role === 'platform_admin' ? 'text-purple-500' : 
+                            user.role === 'school_admin' ? 'text-green-500' :
+                            user.role === 'teacher' ? 'text-blue-500' : 'text-gray-500'
+                          }`} />
+                          <span className="text-sm text-gray-900">
+                            {translateRole(user.role)}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {user.school ? (
+                          <span className="text-sm text-gray-900">{user.school.name}</span>
+                        ) : (
+                          <span className="text-sm text-gray-400">-</span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          user.approved ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {user.approved ? 'Approuvé' : 'En attente'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div className="flex justify-end space-x-2">
+                          <button
+                            onClick={() => handleApprovalToggle(user)}
+                            className={`p-2 rounded-full transition-colors ${
+                              user.approved 
+                                ? 'hover:bg-red-100 text-green-600' 
+                                : 'hover:bg-green-100 text-yellow-600'
+                            }`}
+                            title={user.approved ? 'Révoquer l\'approbation' : 'Approuver'}
+                          >
+                            {user.approved ? (
+                              <CheckCircle className="h-5 w-5" />
+                            ) : (
+                              <XCircle className="h-5 w-5" />
+                            )}
+                          </button>
+                          <button
+                            onClick={() => {
+                              setSelectedUser(user)
+                              setDeleteModalOpen(true)
+                            }}
+                            className="p-2 rounded-full hover:bg-red-100 text-red-600 transition-colors"
+                            title="Supprimer"
+                          >
+                            <Trash2 className="h-5 w-5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="lg:hidden space-y-4 p-4">
+              {filteredUsers.map((user) => (
+                <div key={user.id} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                  {/* User Info Header */}
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center flex-1 min-w-0">
+                      <div className="flex-shrink-0 h-12 w-12 flex items-center justify-center bg-blue-100 rounded-full">
+                        {user.avatar_url ? (
+                          <img className="h-11 w-11 rounded-full" src={user.avatar_url} alt="" />
+                        ) : (
+                          <User className="h-6 w-6 text-blue-600" />
+                        )}
                       </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="ml-3 flex-1 min-w-0">
+                        <h3 className="text-base font-medium text-gray-900 truncate">{user.full_name}</h3>
+                        <p className="text-sm text-gray-500 flex items-center truncate">
+                          <Mail className="h-3 w-3 mr-1 flex-shrink-0" /> 
+                          <span className="truncate">{user.email}</span>
+                        </p>
+                      </div>
+                    </div>
+                    
+                    {/* Status Badge */}
+                    <span className={`ml-2 px-2 py-1 text-xs font-semibold rounded-full flex-shrink-0 ${
+                      user.approved ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                    }`}>
+                      {user.approved ? 'Approuvé' : 'En attente'}
+                    </span>
+                  </div>
+
+                  {/* Details Grid */}
+                  <div className="grid grid-cols-1 gap-3 mb-4">
+                    <div className="flex items-center">
+                      <Shield className={`h-4 w-4 mr-2 flex-shrink-0 ${
+                        user.role === 'platform_admin' ? 'text-purple-500' : 
+                        user.role === 'school_admin' ? 'text-green-500' :
+                        user.role === 'teacher' ? 'text-blue-500' : 'text-gray-500'
+                      }`} />
+                      <span className="text-sm text-gray-700">
+                        <span className="font-medium">Rôle:</span> {translateRole(user.role)}
+                      </span>
+                    </div>
+                    
+                    {user.school && (
                       <div className="flex items-center">
-                        <Shield className={`h-4 w-4 mr-1 ${
-                          user.role === 'platform_admin' ? 'text-purple-500' : 
-                          user.role === 'school_admin' ? 'text-green-500' :
-                          user.role === 'teacher' ? 'text-blue-500' : 'text-gray-500'
-                        }`} />
-                        <span className="text-sm text-gray-900">
-                          {translateRole(user.role)}
+                        <div className="h-4 w-4 mr-2 flex-shrink-0"></div>
+                        <span className="text-sm text-gray-700">
+                          <span className="font-medium">École:</span> {user.school.name}
                         </span>
                       </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {user.school ? (
-                        <span className="text-sm text-gray-900">{user.school.name}</span>
+                    )}
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex justify-end space-x-2 pt-3 border-t border-gray-100">
+                    <button
+                      onClick={() => handleApprovalToggle(user)}
+                      className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                        user.approved 
+                          ? 'bg-red-50 text-red-700 hover:bg-red-100' 
+                          : 'bg-green-50 text-green-700 hover:bg-green-100'
+                      }`}
+                    >
+                      {user.approved ? (
+                        <>
+                          <XCircle className="h-4 w-4 mr-1" />
+                          Révoquer
+                        </>
                       ) : (
-                        <span className="text-sm text-gray-400">-</span>
+                        <>
+                          <CheckCircle className="h-4 w-4 mr-1" />
+                          Approuver
+                        </>
                       )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        user.approved ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                      }`}>
-                        {user.approved ? 'Approuvé' : 'En attente'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <div className="flex justify-end space-x-2">
-                        <button
-                          onClick={() => handleApprovalToggle(user)}
-                          className={`p-1 rounded-full ${
-                            user.approved 
-                              ? 'hover:bg-red-100 text-green-600' 
-                              : 'hover:bg-green-100 text-yellow-600'
-                          }`}
-                          title={user.approved ? 'Révoquer l\'approbation' : 'Approuver'}
-                        >
-                          {user.approved ? (
-                            <CheckCircle className="h-5 w-5" />
-                          ) : (
-                            <XCircle className="h-5 w-5" />
-                          )}
-                        </button>
-                        <button
-                          onClick={() => {
-                            setSelectedUser(user)
-                            setDeleteModalOpen(true)
-                          }}
-                          className="p-1 rounded-full hover:bg-red-100 text-red-600"
-                          title="Supprimer"
-                        >
-                          <Trash2 className="h-5 w-5" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedUser(user)
+                        setDeleteModalOpen(true)
+                      }}
+                      className="flex items-center px-3 py-2 text-sm font-medium text-red-700 bg-red-50 rounded-md hover:bg-red-100 transition-colors"
+                    >
+                      <Trash2 className="h-4 w-4 mr-1" />
+                      Supprimer
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         ) : (
-          <div className="text-center py-8 text-gray-500">
-            Aucun utilisateur trouvé avec les critères sélectionnés
+          <div className="text-center py-12 text-gray-500">
+            <User className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+            <p className="text-lg font-medium mb-2">Aucun utilisateur trouvé</p>
+            <p className="text-sm">Aucun utilisateur ne correspond aux critères sélectionnés</p>
           </div>
         )}
       </div>

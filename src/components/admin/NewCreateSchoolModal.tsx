@@ -217,27 +217,25 @@ export const CreateSchoolModal: React.FC<CreateSchoolModalProps> = ({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b">
-          <div className="flex items-center space-x-3">
-            <Building className="h-6 w-6 text-blue-600" />
-            <h2 className="text-xl font-semibold text-gray-900">
-              Créer une nouvelle école
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
+          <div className="flex items-center min-w-0 flex-1">
+            <Building className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600 mr-2 sm:mr-3 flex-shrink-0" />
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 truncate">
+              Créer Nouvelle École
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-            disabled={loading}
+            className="text-gray-400 hover:text-gray-600 p-1 ml-2 flex-shrink-0"
           >
-            <X className="h-6 w-6" />
+            <X className="h-5 w-5 sm:h-6 sm:w-6" />
           </button>
         </div>
 
-        {/* Progress indicator */}
-        <div className="px-6 py-4 border-b bg-gray-50">
+        {/* Progress Steps - Hidden on mobile */}
+        <div className="hidden sm:flex items-center justify-center p-4 bg-gray-50 border-b border-gray-200">
           <div className="flex items-center space-x-4">
             <div className={`flex items-center space-x-2 ${step === 'school' ? 'text-blue-600' : 'text-green-600'}`}>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${

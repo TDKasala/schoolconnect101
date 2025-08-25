@@ -155,93 +155,114 @@ export const SchoolList: React.FC<SchoolListProps> = ({ refreshTrigger = 0 }) =>
       )}
 
       {/* Schools Grid */}
-      <div className="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200 p-6">
+      <div className="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200">
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
           </div>
         ) : filteredSchools.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4 sm:p-6">
             {filteredSchools.map((school) => (
               <div 
                 key={school.id} 
-                className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200"
+                className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 bg-white"
               >
-                <div className="p-4 bg-blue-50 border-b border-gray-200 flex items-start justify-between">
-                  <div>
-                    <h3 className="font-semibold text-lg text-gray-900">{school.name}</h3>
-                    {school.registration_number && (
-                      <p className="text-xs text-gray-500">N° {school.registration_number}</p>
+                <div className="p-3 sm:p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-200 flex items-start justify-between">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-base sm:text-lg text-gray-900 truncate">{school.name}</h3>
+                    {school.code && (
+                      <p className="text-xs text-gray-500 mt-1">Code: {school.code}</p>
                     )}
                   </div>
-                  <div className="flex">
-                    <button 
-                      onClick={() => {
-                        setSelectedSchool(school)
-                        setDeleteModalOpen(true)
-                      }}
-                      className="p-1 hover:bg-red-100 rounded-full text-red-500"
-                      title="Supprimer cette école"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
+                  <button 
+                    onClick={() => {
+                      setSelectedSchool(school)
+                      setDeleteModalOpen(true)
+                    }}
+                    className="p-1.5 hover:bg-red-100 rounded-full text-red-500 transition-colors flex-shrink-0 ml-2"
+                    title="Supprimer cette école"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
                 </div>
-                <div className="p-4 space-y-3">
-                  {school.address && (
+                
+                <div className="p-3 sm:p-4 space-y-3">
+                  {/* Location Info */}
+                  {(school.address || school.city || school.province) && (
                     <div className="text-sm">
-                      <span className="font-medium text-gray-700">Adresse:</span>
-                      <p className="text-gray-600">{school.address}</p>
+                      <span className="font-medium text-gray-700 block mb-1">Localisation:</span>
+                      <div className="text-gray-600 space-y-1">
+                        {school.address && <p className="truncate">{school.address}</p>}
+                        {(school.city || school.province) && (
+                          <p className="text-xs">
+                            {school.city}{school.city && school.province && ', '}{school.province}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   )}
                   
-                  {school.contact_number && (
-                    <div className="text-sm">
-                      <span className="font-medium text-gray-700">Téléphone:</span>
-                      <p className="text-gray-600">{school.contact_number}</p>
-                    </div>
-                  )}
+                  {/* Contact Info */}
+                  <div className="space-y-2">
+                    {school.phone && (
+                      <div className="text-sm flex items-center">
+                        <span className="font-medium text-gray-700 w-16 flex-shrink-0">Tél:</span>
+                        <span className="text-gray-600 truncate">{school.phone}</span>
+                      </div>
+                    )}
+                    
+                    {school.email && (
+                      <div className="text-sm flex items-center">
+                        <span className="font-medium text-gray-700 w-16 flex-shrink-0">Email:</span>
+                        <span className="text-gray-600 truncate">{school.email}</span>
+                      </div>
+                    )}
+                  </div>
                   
-                  {school.email && (
-                    <div className="text-sm">
-                      <span className="font-medium text-gray-700">Email:</span>
-                      <p className="text-gray-600">{school.email}</p>
-                    </div>
-                  )}
-                  
+                  {/* Admin Info */}
                   <div className="text-sm">
-                    <span className="font-medium text-gray-700">Admin:</span>
-                    <div className="flex items-center space-x-2 mt-1">
+                    <span className="font-medium text-gray-700 block mb-2">Administrateur:</span>
+                    <div className="flex items-center space-x-2">
                       <div className="flex-shrink-0 h-8 w-8 bg-green-100 rounded-full flex items-center justify-center">
                         <User className="h-4 w-4 text-green-700" />
                       </div>
-                      <div className="text-gray-600">
+                      <div className="text-gray-600 truncate flex-1 min-w-0">
                         {school.admin ? school.admin.full_name : 'Non assigné'}
                       </div>
                     </div>
                   </div>
                   
-                  <div className="flex justify-between pt-2 mt-2 border-t border-gray-100">
-                    <div className="text-sm">
-                      <span className="font-medium text-gray-700">Enseignants:</span>
-                      <p className="text-gray-600">
+                  {/* Stats */}
+                  <div className="grid grid-cols-2 gap-3 pt-3 mt-3 border-t border-gray-100">
+                    <div className="text-center">
+                      <div className="text-lg font-semibold text-blue-600">
                         {schoolStats[school.id]?.teachers || 0}
-                      </p>
+                      </div>
+                      <div className="text-xs text-gray-500">Enseignants</div>
                     </div>
-                    <div className="text-sm">
-                      <span className="font-medium text-gray-700">Élèves:</span>
-                      <p className="text-gray-600">
+                    <div className="text-center">
+                      <div className="text-lg font-semibold text-green-600">
                         {schoolStats[school.id]?.students || 0}
-                      </p>
+                      </div>
+                      <div className="text-xs text-gray-500">Élèves</div>
                     </div>
                   </div>
+                  
+                  {/* Capacity Info */}
+                  {school.max_students && (
+                    <div className="text-xs text-gray-500 text-center pt-2 border-t border-gray-50">
+                      Capacité max: {school.max_students} élèves
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="text-center py-8 text-gray-500">
-            Aucune école trouvée avec les critères sélectionnés
+          <div className="text-center py-12 text-gray-500">
+            <Building className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+            <p className="text-lg font-medium mb-2">Aucune école trouvée</p>
+            <p className="text-sm">Aucune école ne correspond aux critères de recherche</p>
           </div>
         )}
       </div>
