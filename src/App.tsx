@@ -7,6 +7,7 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 
 // Auth pages
 import { Login } from './pages/Login'
+import { LandingPage } from './pages/LandingPage'
 
 // Protected pages
 import { Dashboard } from './pages/Dashboard'
@@ -48,6 +49,7 @@ function App() {
               <Routes>
                 {/* Auth routes */}
                 <Route path="/login" element={<Login />} />
+                <Route path="/landing" element={<LandingPage />} />
                 
                 {/* Protected user routes */}
                 <Route path="/dashboard" element={<Dashboard />} />
@@ -82,8 +84,8 @@ function App() {
                 </Route>
                 
                 {/* Default redirect */}
-                <Route path="/" element={<Navigate to="/login" replace />} />
-                <Route path="*" element={<Navigate to="/login" replace />} />
+                <Route path="/" element={<Navigate to="/landing" replace />} />
+                <Route path="*" element={<Navigate to="/landing" replace />} />
               </Routes>
             </div>
           </Router>

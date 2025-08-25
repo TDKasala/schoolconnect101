@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/SimpleAuthContext';
 import { Eye, EyeOff, Loader2, Mail, Lock } from 'lucide-react';
 import { supabase } from '../lib/supabase';
@@ -74,14 +74,14 @@ export const Login: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-white py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-6 sm:space-y-8">
         <div>
-          <div className="mx-auto h-10 w-10 sm:h-12 sm:w-12 flex items-center justify-center rounded-full bg-blue-600">
-            <Lock className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
-          </div>
+          <Link to="/landing" className="mx-auto h-10 w-10 sm:h-12 sm:w-12 flex items-center justify-center rounded-full bg-blue-600">
+            <img src="/logo.png" alt="SchoolConnect" className="h-6 w-6 sm:h-8 sm:w-8" />
+          </Link>
           <h2 className="mt-4 sm:mt-6 text-center text-2xl sm:text-3xl font-extrabold text-gray-900">
-            Connexion à SchoolConnect
+            Se connecter à votre compte
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Administration de la plateforme
+            Accédez à votre espace SchoolConnect
           </p>
         </div>
         
@@ -165,9 +165,18 @@ export const Login: React.FC = () => {
             </button>
           </div>
 
+          <div className="flex items-center justify-between text-sm">
+            <Link to="/forgot-password" className="text-blue-600 hover:text-blue-500">
+              Mot de passe oublié?
+            </Link>
+          </div>
+
           <div className="text-center">
-            <p className="text-xs sm:text-sm text-gray-600 px-2">
-              Utilisateur de test: test@schoolconnect.com / TestPassword123!
+            <p className="text-sm text-gray-600">
+              Pas encore inscrit?{' '}
+              <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500">
+                Inscription
+              </Link>
             </p>
           </div>
         </form>
