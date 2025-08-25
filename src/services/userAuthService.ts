@@ -48,22 +48,23 @@ export class UserAuthService {
   }
 
   /**
-   * Create a new user directly with Supabase Admin API
-   * This method preserves the current admin session
+   * Create a new user using signup and immediate profile creation
+   * This method works without admin API permissions
    */
   static async createUser(userData: CreateUserData): Promise<User | null> {
     try {
-      // Store current session to restore if needed
+      // Store current session to restore after user creation
       const { data: { session: currentSession } } = await supabase.auth.getSession()
       
-      // 1. Create auth user with email/password using admin API
-      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+      // 1. Create auth user using standard signup
+      const { data: authData, error: authError } = await supabase.auth.signUp({
         email: userData.email,
         password: userData.password,
-        email_confirm: true,
-        user_metadata: { 
-          full_name: userData.full_name, 
-          role: userData.role 
+        options: {
+          data: {
+            full_name: userData.full_name,
+            role: userData.role
+          }
         }
       })
 
@@ -85,39 +86,29 @@ export class UserAuthService {
           full_name: userData.full_name,
           role: userData.role,
           school_id: userData.school_id || null,
-          approved: userData.approved ?? true,
-          is_active: true
+          approved: userData.approved ?? true
         }])
         .select('*, school:schools(id, name, code)')
         .single()
 
       if (profileError) {
         console.error('Profile creation failed:', profileError)
-        
-        // Try to clean up auth user if profile creation fails
-        await supabase.auth.admin.deleteUser(authData.user.id)
         throw new Error(profileError.message)
       }
 
-      // 3. Ensure admin session is preserved
+      // 3. Restore admin session immediately
       if (currentSession && currentSession.user) {
-        const { data: { session: newSession } } = await supabase.auth.getSession()
-        
-        // If session changed unexpectedly, restore the admin session
-        if (!newSession || newSession.user.id !== currentSession.user.id) {
-          console.log('UserAuthService: Restoring admin session after user creation')
-          await supabase.auth.setSession({
-            access_token: currentSession.access_token,
-            refresh_token: currentSession.refresh_token
-          })
-        }
+        console.log('UserAuthService: Restoring admin session after user creation')
+        await supabase.auth.setSession({
+          access_token: currentSession.access_token,
+          refresh_token: currentSession.refresh_token
+        })
       }
 
       return {
         ...profileData,
         avatar_url: null,
         phone: null,
-        user_status_id: null,
         last_login: null,
         preferences: {}
       }
