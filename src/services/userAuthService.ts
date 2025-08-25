@@ -16,6 +16,8 @@ export class UserAuthService {
    */
   static async getAllUsers(): Promise<User[]> {
     try {
+      console.log('UserAuthService: Fetching all users...')
+      
       // Fetch user profiles with school information
       const { data, error } = await supabase
         .from('users')
@@ -27,10 +29,19 @@ export class UserAuthService {
       
       if (error) {
         console.error('Error fetching users:', error)
+        console.error('Error details:', error.message, error.code, error.details)
         return []
       }
       
-      return data.map(user => ({
+      console.log('UserAuthService: Fetched users:', data?.length || 0, 'users')
+      console.log('UserAuthService: Raw data:', data)
+      
+      if (!data || data.length === 0) {
+        console.warn('UserAuthService: No users found in database')
+        return []
+      }
+      
+      const processedUsers = data.map(user => ({
         ...user,
         phone: user.phone ?? null,
         avatar_url: user.avatar_url ?? null,
@@ -41,6 +52,9 @@ export class UserAuthService {
           code: user.school.code || user.school.registration_number || 'N/A'
         } : null
       }))
+      
+      console.log('UserAuthService: Processed users:', processedUsers)
+      return processedUsers
     } catch (error) {
       console.error('Error in getAllUsers:', error)
       return []

@@ -25,6 +25,7 @@ export const UserList: React.FC<UserListProps> = ({ refreshTrigger = 0 }) => {
 
   // Fetch data
   const fetchData = async () => {
+    console.log('UserList: Starting data fetch...')
     setLoading(true)
     try {
       const [usersData, schoolsData] = await Promise.all([
@@ -32,11 +33,13 @@ export const UserList: React.FC<UserListProps> = ({ refreshTrigger = 0 }) => {
         SchoolDbService.getAllSchools()
       ])
       
+      console.log('UserList: Fetched data - Users:', usersData.length, 'Schools:', schoolsData.length)
+      
       setUsers(usersData)
       setSchools(schoolsData)
       setError('')
     } catch (err: any) {
-      console.error('Error fetching data:', err)
+      console.error('UserList: Error fetching data:', err)
       setError(err.message || 'Erreur lors du chargement des données')
     } finally {
       setLoading(false)
