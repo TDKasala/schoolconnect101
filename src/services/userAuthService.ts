@@ -228,6 +228,18 @@ export class UserAuthService {
   }
 
   /**
+   * Delete a user (set inactive rather than permanently delete)
+   */
+  static async deleteUser(id: string): Promise<boolean> {
+    const { error } = await supabase
+      .from('users')
+      .update({ approved: false })
+      .eq('id', id)
+
+    if (error) {
+      console.error('Error deleting user:', error)
+      return false
+    }
 
     return true
   }
